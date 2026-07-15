@@ -50,6 +50,11 @@ Write this spec after the visual direction is stable enough to express structure
    - what must be validated before detailed engineering
    - component availability, price, and exact supplier dimensions if unverified
 
+9. `Shared interface reference`
+   - `interface-control.v2.json` artifact ID and revision
+   - coordinate origin and datums
+   - board outline, holes, connectors, buttons, indicators, openings, keep-outs, and height zones consumed by the structure
+
 ## Writing Rule
 
 Keep the spec concrete enough for CAD translation, but do not imply production readiness unless those details were actually validated.

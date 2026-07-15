@@ -1,0 +1,82 @@
+{
+  "schema_version": "2.0",
+  "document_type": "electrical_pack",
+  "artifact_id": "electrical-pack-demo-001",
+  "revision": 1,
+  "status": "planned",
+  "provenance": {
+    "source": "synthetic example brief",
+    "producer": "product-loop example",
+    "time": "2026-01-01T00:00:00Z",
+    "hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb"
+  },
+  "evidence": [],
+  "dependencies": [
+    {
+      "artifact_id": "design-pack-demo-001",
+      "revision": 1,
+      "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f",
+      "facets": ["power", "product envelope"],
+      "on_change": "review"
+    }
+  ],
+  "electrical_requirements": {
+    "functional_blocks": [],
+    "supply_inputs": [],
+    "power_budget": [],
+    "environmental_constraints": [],
+    "safety_constraints": [],
+    "assumptions": []
+  },
+  "power_domains": [],
+  "interfaces": [],
+  "selected_devices": [],
+  "schematic": {
+    "artifact_id": null,
+    "revision": null,
+    "status": "not_started",
+    "freeze_decision_id": null,
+    "source_hash": null,
+    "strict_drc": {
+      "ruleset_ref": null,
+      "fatal": null,
+      "error": null,
+      "warning": null,
+      "exemptions": [],
+      "evidence_refs": []
+    },
+    "critical_net_result_ids": [],
+    "nc_whitelist": [],
+    "library_revisions": [],
+    "evidence_refs": []
+  },
+  "pcb": {
+    "artifact_id": null,
+    "revision": null,
+    "status": "not_started",
+    "candidate_decision_id": null,
+    "source_hash": null,
+    "schematic_source_hash": null,
+    "board_constraint_ref": null,
+    "layer_count": null,
+    "layer_count_decision_id": null,
+    "stackup_source": null,
+    "stackup_decision_id": null,
+    "evt_plan_ref": null,
+    "drc": {
+      "ruleset_ref": null,
+      "fatal": null,
+      "error": null,
+      "warning": null,
+      "exemptions": [],
+      "evidence_refs": []
+    },
+    "evidence_refs": []
+  },
+  "component_bindings": [],
+  "net_contracts": [],
+  "rule_requirements": [],
+  "verification_requirements": [],
+  "verification_results": [],
+  "open_items": []
+}

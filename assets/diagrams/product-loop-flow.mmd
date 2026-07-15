@@ -1,13 +1,16 @@
-flowchart TD
-    A["Phase 0: Environment Check"] --> B["Phase 1: Brief Clarification"]
-    B --> C{"Material module choices?"}
-    C -->|"yes"| D["Phase 1.5: Module Architecture Framing"]
-    C -->|"no"| F["Phase 1.6: Research-backed Component Selection"]
-    D --> F
-    F --> G["Phase 2: Direction Exploration"]
-    G --> H["Phase 3: Visual Convergence"]
-    H --> I["Phase 4: Design Translation"]
-    I --> J{"Execution Mode"}
-    J -->|"full"| K["Phase 5: CAD Loop"]
-    J -->|"spec-only"| L["Emit Design Pack + Review Report + Handoff Brief"]
-    J -->|"handoff"| M["Emit Normalized Brief + Handoff Package"]
+flowchart LR
+    A[Read-only capability discovery] --> B{User Route Gate}
+    B --> C[Brief architecture and components]
+    C --> D[Industrial design and visuals]
+    C --> E[Electrical architecture and schematic]
+    C --> F[Shared interfaces]
+    D --> G[Appearance and structure freeze]
+    E --> H[Schematic freeze]
+    F --> I[Interface freeze]
+    G --> J[Fusion 360 or mechanical handoff]
+    H --> K[EasyEDA PCB]
+    I --> J
+    I --> K
+    J --> L[Cross-domain review]
+    K --> L
+    L --> M[EVT validation plan]

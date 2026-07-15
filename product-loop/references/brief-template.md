@@ -36,4 +36,4 @@ Emit a normalized brief with these headings:
 
 ## Resume Rule
 
-If the user already provides a render, sketch, or partial spec, extract the same fields from that artifact and mark the missing ones explicitly.
+If the user already provides a render, sketch, model, schematic, PCB, or partial spec, extract the same fields and record the artifact revision. Do not let a downstream artifact bypass missing upstream constraints; open a decision gate for any missing material choice.

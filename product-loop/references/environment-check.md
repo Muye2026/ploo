@@ -1,118 +1,40 @@
-# Environment Check
+# Environment and Capability Check
 
-Run this phase before concept generation, document generation, or CAD work.
+Run read-only discovery before asking the user to select routes. Do not modify live CAD, EDA, project, browser, or external state during this phase.
 
-## Capability Buckets
+## Capability buckets
 
-Check four buckets:
+Probe independently:
 
-1. `Image generation`
-2. `Research access`
-3. `CAD capability`
-4. `Input completeness`
+1. Research and supplied references.
+2. Image generation and image refinement.
+3. Video generation and video refinement.
+4. Mechanical/CAD providers, including inspection, parameterization, verification, rollback, render, and export.
+5. EasyEDA schematic read, write, DRC, export, and evidence capabilities.
+6. EasyEDA PCB read, write, DRC, export, and evidence capabilities.
+7. Input completeness for each requested branch.
 
-## What to Inspect
+Product Loop has no mandatory execution backend. The core planning capability is provider-neutral and must remain available when every optional adapter is absent. Fusion 360 MCP, EasyEDA APIs or skills, and image/video providers are integrations, not Product Loop prerequisites. Their absence can make `direct`, `hybrid`, image, or video routes unavailable, but it must not prevent requirements, architecture, Design Pack, Electrical Pack, Interface Control, acceptance planning, guided work, or handoff preparation where those outputs are otherwise supportable.
 
-### Image generation
+## Capability report
 
-Confirm whether the current environment can:
+For each provider or route, record:
 
-- generate fresh concept renders
-- refine an existing direction with prompt iteration
-- accept a user-supplied reference image
+- adapter ID and detected version when available
+- status: `available`, `unavailable`, or `unknown`
+- read, write, verify, export, rollback, and render capabilities separately
+- per-operation real `provider_operation`, provider-neutral `capability_id`, and `risk_class`: read, reversible write, destructive write, export, render, verify, or rollback; unknown or non-unique write mappings stay unavailable
+- tool-schema digest or equivalent compatibility evidence
+- units and limits
+- current target/session/document identity when relevant
+- probe evidence and known limitations
 
-### Research access
+Connectivity or a successful ping is not write authorization. Documentation claims are not runtime proof. Do not mutate a production document merely to test write access.
 
-Confirm whether the current environment can:
+## Route presentation
 
-- inspect similar products
-- collect structure references
-- inspect comparable product listings, teardown notes, and application cases
-- inspect module or component references from current suppliers or distributors
-- cite current product references when needed
+After discovery, present Route Gate 0. Show feasible routes, conditionally eligible routes whose write permission still needs a user-authorized probe, and unavailable routes with reasons. Do not label an unknown write capability ready, and do not select `direct`, `guided`, `hybrid`, `spec`, `handoff`, image, video, or skip on the user's behalf.
 
-### CAD capability
+If no route is selected, persist `waiting_user_decision`. If a selected capability later fails, return to a user decision instead of silently switching modes.
 
-Confirm whether the current environment has at least one of:
-
-- a usable CAD application
-- a compatible CAD CLI
-- a local parametric modeling script pipeline
-- a stable export-and-review loop for geometry
-
-Do not require a specific CAD brand. Check for capability, not for a logo.
-
-### Input completeness
-
-Confirm whether the session already has:
-
-- a product brief or an equivalent artifact
-- component assumptions
-- component-selection assumptions or current candidate references
-- target envelope or dimensions
-- mounting or placement logic
-- any reference images or prior renders
-
-## Execution Modes
-
-Declare exactly one mode:
-
-### `full`
-
-Use when:
-
-- the brief is sufficiently specified
-- design inputs are present or can be completed
-- a usable CAD path exists
-
-Expected stop point:
-
-- reference cases
-- component selection assumptions
-- design pack
-- review report
-- CAD iteration inputs
-- parametric draft model
-- CAD iteration report
-
-### `spec-only`
-
-Use when:
-
-- the brief is sufficiently specified
-- concept and spec work can continue
-- no usable CAD path exists
-
-Expected stop point:
-
-- reference cases
-- component selection assumptions
-- design pack
-- review report
-- handoff brief
-
-### `handoff`
-
-Use when:
-
-- the environment lacks critical capabilities
-- the inputs are too incomplete to continue safely
-- the user primarily needs a downstream package for another collaborator
-
-Expected stop point:
-
-- normalized brief
-- assumptions
-- handoff brief
-- open questions
-
-## Reporting Format
-
-Report the check in this order:
-
-1. capabilities present
-2. capabilities missing
-3. selected execution mode
-4. next artifact to produce
-
-Do not switch modes silently later in the workflow.
+Do not install or require an optional provider on the user's behalf. With zero providers, still present the complete route gate: identify unavailable provider-backed choices, keep eligible `skip`, `spec`, `guided`, and `handoff` choices visible, and wait for the user to select them.

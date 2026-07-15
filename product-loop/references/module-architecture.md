@@ -28,7 +28,7 @@ These are not small implementation details. They can change:
 
 ## Trigger test
 
-Trigger `Phase 1.5` only when the unresolved architecture would change the product in a first-order way.
+Open the architecture decision node only when the unresolved architecture would change the product in a first-order way.
 
 Good trigger examples:
 
@@ -102,17 +102,9 @@ For each option, include:
 
 ## Selection behavior
 
-In `checkpointed` mode:
+Stop after module options and require the user to select every critical unresolved dimension or explicitly approve a named provisional option. The agent may recommend an architecture set, but no interaction or execution cadence authorizes autonomous selection.
 
-- stop after module options
-- require user selection on the critical unresolved dimensions
-- do not continue into concept directions yet
-
-In `auto` mode:
-
-- recommend one architecture set
-- state why it was selected
-- continue only after making the selected module architecture explicit
+Record the decision and affected downstream branches. If a later component or interface conflicts with the chosen architecture, open a conflict gate instead of silently substituting another option.
 
 ## Practical limit
 

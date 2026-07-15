@@ -1,359 +1,152 @@
 ---
 name: product-loop
-description: Drive a small hardware product from idea to design pack, with research-backed component and module selection before industrial design, plus explicit branching for CAD-capable and non-CAD environments. Use when Codex needs to research comparable products, shortlist plausible modules or components, explore physical product directions, refine concept renders, translate visuals into appearance and structure specs, emit a CAD-ready design pack, or hand off a product concept for downstream modeling. Best suited for small consumer electronics, desktop hardware, and lightweight robotic accessories; not for production-grade DFM, tooling, tolerance stacks, or large mechanical systems.
+description: Orchestrate a small hardware product from brief to evidence-backed design artifacts, including planning-only runs with no external execution backend, concept images or video, industrial design, optional Fusion 360 MCP modeling, optional EasyEDA schematic and PCB work, guided user operation, and downstream handoff. Use when Codex must plan, resume, execute, or review a multi-domain hardware workflow while preserving user authority over whether each track runs and whether work is direct, guided, hybrid, specification-only, or handed off. Best for small consumer electronics, desktop hardware, and lightweight robotic accessories; not a production DFM, tooling, tolerance-stack, or manufacturing-release certification skill.
 ---
 
 # Product Loop
 
-Run a staged workflow that turns a hardware product brief into reusable design artifacts. Keep the skill explicit about environment capability, checkpoints, outputs, and stop conditions.
+Orchestrate product design as a dependency graph. Keep design truth provider-neutral, make material choices visible, and attach evidence to every implementation claim.
 
-## Interaction Mode
+## Non-negotiable authority rule
 
-Choose one interaction mode before Phase 1. Read [references/checkpoint-mode.md](references/checkpoint-mode.md).
+Set `decision_authority: user` for every run.
 
-- `checkpointed`: default for new product ideas. Stop at each decision gate and wait for user selection or approval.
-- `auto`: only use when the user explicitly asks for an end-to-end package without intermediate approval.
+Never decide on the user's behalf whether to:
 
-Default to `checkpointed` when the user is starting from a new idea, asks for exploration, or has not explicitly authorized autonomous selection.
+- generate images or video
+- create a mechanical model
+- use Fusion 360 MCP, guide the user, or hand work off
+- create a schematic or PCB
+- let EasyEDA APIs write, guide the user, split ownership, or hand work off
+- freeze architecture, components, appearance, CAD, schematic, PCB, or shared interfaces
 
-Never auto-select a direction, module architecture, render variant, or final concept when multiple viable options exist unless the user explicitly authorizes autonomous selection.
+You may inspect, compare, recommend, normalize, and perform reversible steps already inside an approved route. A recommendation is not authorization. If a required selection is missing, set the run to `waiting_user_decision`, present the choices and consequences, then stop.
 
-## Workflow
+Read [references/decision-gates.md](references/decision-gates.md) before presenting or crossing any gate.
 
-Follow this flow in order:
+## Phase 0: read-only discovery
 
-1. Run `Phase 0: Environment Check`.
-2. Run `Phase 1: Brief Clarification`.
-3. Run `Phase 1.5: Module Architecture Framing` when needed.
-4. Run `Phase 1.6: Research-backed Component Selection`.
-5. Run `Phase 2: Direction Exploration`.
-6. Run `Phase 3: Visual Convergence`.
-7. Run `Phase 4: Design Translation`.
-8. Run `Phase 5: CAD Loop or Handoff`.
+Inspect available inputs and capabilities without modifying CAD, EDA, project files, or external systems. Read [references/environment-check.md](references/environment-check.md).
 
-Do not skip a phase unless the user already provides the required artifact from an earlier phase. In that case, resume from the earliest missing artifact.
+Probe independently:
 
-## Phase 0: Environment Check
+- research and supplied references
+- image and video generation
+- Fusion 360 or other CAD adapters
+- EasyEDA schematic operations
+- EasyEDA PCB operations
+- source export, readback, verification, rollback, and handoff paths
 
-Determine the execution mode before doing design work. Read [references/environment-check.md](references/environment-check.md).
+Record evidence in `CapabilityReport`. Do not infer write capability from connectivity alone. Do not choose a route during discovery.
 
-Inspect these capability buckets:
+Product Loop has no mandatory execution backend. Fusion 360 MCP, EasyEDA APIs or skills, and image or video providers are optional adapters, not installation dependencies. When none are available, keep the provider-neutral planning layer usable: build the brief, architecture, contracts, interface controls, acceptance plan, guided instructions, and handoff package as authorized. Mark provider-backed routes unavailable; never require installation, invent a provider, select a fallback route, or block unrelated planning work.
 
-- Image generation: confirm whether the session can generate or iterate renders.
-- Research: confirm whether current context supports comparable-product and component-reference research.
-- CAD: confirm whether the environment has a usable CAD workflow, a modeling CLI, or a local script pipeline.
-- Inputs: confirm whether the user provided a brief, constraints, reference images, component assumptions, and component dimensions.
+## Route Gate 0
 
-Declare exactly one execution mode:
+Ask the user to select every relevant track. Do not preselect or silently omit an available choice.
 
-- `full`: CAD-capable environment; continue through CAD iteration.
-- `spec-only`: no CAD environment; stop at design pack plus review artifacts.
-- `handoff`: environment or inputs are incomplete; emit a downstream handoff package.
+| Track | Allowed choices |
+| --- | --- |
+| `visualization` | `skip`, `image`, `video`, `image+video` |
+| `mechanical` | `skip`, `spec`, `direct`, `guided`, `handoff` |
+| `schematic` | `skip`, `direct`, `guided`, `hybrid`, `handoff` |
+| `pcb` | `skip`, `direct`, `guided`, `hybrid`, `handoff` |
 
-State the selected mode explicitly before moving on.
+Show available routes and conditionally eligible routes separately; label every unverified prerequisite. Show unavailable routes with reasons. A conditional route may be selected, but must pass its post-selection probe before any live write. The user may combine tracks. Record each selection and its resolved user decision ID in `run-state.v2.json` before implementation.
 
-## Phase 1: Brief Clarification
+If an approved route later becomes unavailable, do not auto-degrade. Offer `retry`, `guided`, `hybrid`, `handoff`, or `pause` as applicable and return to `waiting_user_decision`.
 
-Normalize the product brief into a stable input contract. Read [references/brief-template.md](references/brief-template.md).
+## Build the contracts
 
-Capture or confirm:
+Normalize the brief, architecture, components, requirements, and acceptance checks into `design-pack.v2.json`. Read:
 
-- product goal
-- target user
-- use scenario
-- primary functions
-- component list or module assumptions
-- size, mounting, and power constraints
-- interaction constraints
-- style intent
-- known risks and unknowns
-
-If key constraints are missing, ask for them or mark them as assumptions. Do not jump to final imagery with an underspecified brief.
-
-## Phase 1.5: Module Architecture Framing
-
-When key module or component architecture is still open, frame the choices before direction exploration. Read [references/module-architecture.md](references/module-architecture.md).
-
-Trigger this phase only when at least one unresolved module decision would materially change:
-
-- overall silhouette or body proportion
-- front-face layout
-- opening, port, or interface zoning
-- mounting logic
-- internal stacking or cooling path
-- stability, balance, or service access
-
-Typical trigger categories include:
-
-- display strategy
-- sensor or camera strategy
-- audio strategy
-- mounting strategy
-- power strategy
-- thermal strategy
-- board topology or module split
-
-Do not trigger this phase for trivial part-level uncertainty that does not materially affect industrial design or structure.
-
-When triggered, provide 2-4 viable options for each unresolved architecture dimension. For each option, provide:
-
-- option name
-- what it means physically
-- impact on appearance
-- impact on structure
-- main risk
-- what kinds of product directions it enables
-
-### Gate 0.5: Module Selection
-
-In `checkpointed` mode:
-
-- output only `Module Options`
-- do not continue into direction exploration yet
-- do not auto-select a module architecture
-- ask the user to:
-  - choose one option for each critical unresolved module dimension, or
-  - authorize a narrowed recommendation set for the next pass
-- stop and wait
-
-In `auto` mode, you may recommend and continue with one architecture set, but you must state why it was selected and which downstream constraints it fixed.
-
-## Phase 1.6: Research-backed Component Selection
-
-Before direction exploration, translate the product goal and module architecture into plausible real-world component and packaging constraints. Read [references/component-selection.md](references/component-selection.md).
-
-When research access is available, inspect comparable products, teardown notes, marketplace listings, maker modules, and manufacturer or distributor references. Use a globally balanced source mix unless the user asks for a specific market.
-
-Emit:
-
-- `Reference Cases`
-- `Component Requirements`
-- `Candidate Components`
-- `Selected or Assumed Components`
-- `Packaging Constraints`
-- `Sourcing Risks`
-
-Default depth:
-
-- choose module-level solutions first
-- include 2-4 concrete candidate parts, modules, or structural material options for each critical module
-- capture package size, interface, mounting, thermal, service, and sourcing implications when available
-- mark uncertain dimensions as assumptions instead of pretending they are verified
-
-In `checkpointed` mode, recommend a component set and continue into Phase 2 unless there is no feasible component path, the options conflict with hard constraints, or the user explicitly asks to approve component selection first.
-
-Do not treat industrial design as free-form styling. Direction exploration must inherit the selected or assumed component envelopes, visible module constraints, mounting logic, and sourcing risks from this phase.
-
-## Phase 2: Direction Exploration
-
-Generate 2-4 distinct directions, not 2-4 cosmetic variants of the same direction.
-
-For each direction, provide:
-
-- a short name
-- 3-6 keywords
-- a one-paragraph concept summary
-- why the direction fits the brief
-- structural plausibility notes
-- main risks
-- what would need validation before CAD
-- best-fit use case or product posture
-
-Favor directions that remain buildable after selected or assumed components, packaging constraints, component envelopes, and mounting logic are applied.
-
-### Gate A: Direction Selection
-
-In `checkpointed` mode:
-
-- output only `Concept Directions`
-- do not generate final renders yet
-- do not auto-select a direction
-- ask the user to either:
-  - select 1 direction to continue, or
-  - shortlist up to 2 directions for another comparison round
-- stop and wait
-
-In `auto` mode, you may recommend and continue with one direction, but you must state why it was selected.
-
-## Phase 3: Visual Convergence
-
-Refine only the selected direction. Keep all hard constraints stable while iterating visuals.
-
-When driving image work:
-
-- vary emphasis, proportion, front-face layout, and silhouette intentionally
-- preserve mounting logic and component plausibility
-- reject aesthetic drift that breaks usability or structure
-- treat renders as visual targets, not geometry truth
-
-### First Pass: Render Variants
-
-In `checkpointed` mode, the first pass of Phase 3 must produce 3-4 render variants within the selected direction. These must vary along meaningful axes such as:
-
-- silhouette emphasis
-- front-face hierarchy
-- CMF mood
-- hardware expression level
-- home vs. professional product posture
-
-Do not produce a final hero render on the first pass.
-
-### Gate B: Variant Selection
-
-In `checkpointed` mode:
-
-- output only `Render Variants`
-- ask the user to select one variant and list any adjustment notes
-- stop and wait
-
-### Second Pass: Near-Final Candidate
-
-After the user selects a variant, refine it into a near-final candidate render set.
-
-At the end of this pass, provide:
-
-- the near-final candidate
-- a short change summary
-- unresolved visual questions
-
-### Gate C: Render Freeze
-
-In `checkpointed` mode:
-
-- ask the user whether to freeze the candidate render and move into design translation
-- do not enter `Phase 4` without approval unless the user explicitly authorizes autonomous continuation
-- stop and wait
-
-In `auto` mode, you may freeze the candidate render yourself and continue, but you must call out the unresolved visual questions.
-
-## Phase 4: Design Translation
-
-Translate the chosen visual direction into structured design artifacts. Do not write a loose summary. Read:
-
+- [references/brief-template.md](references/brief-template.md)
+- [references/module-architecture.md](references/module-architecture.md)
+- [references/component-selection.md](references/component-selection.md)
+- [references/design-pack-schema.md](references/design-pack-schema.md)
 - [references/appearance-spec-template.md](references/appearance-spec-template.md)
 - [references/structure-spec-template.md](references/structure-spec-template.md)
-- [references/design-pack-schema.md](references/design-pack-schema.md)
 
-Emit:
+For electronic products, create `electrical-pack.v2.json`. For cross-domain geometry, create `interface-control.v2.json`. Read:
 
-- `Appearance Spec`
-- `Structure Spec`
-- `Design Pack`
-- `Review Report`
+- [references/electrical-pack-schema.md](references/electrical-pack-schema.md)
+- [references/interface-control-schema.md](references/interface-control-schema.md)
 
-Translate visuals into executable constraints, including:
+Do not hide missing facts as assumptions when they require a material user choice. Open a decision gate instead.
 
-- proportion and overall envelope
-- front, side, top, and rear zoning
-- openings, ports, and button placement
-- selected or assumed components
-- component envelopes
-- packaging constraints
-- sourcing risks
-- mounting strategy
-- structure and manufacturability risks
-- forbidden features
-- acceptance checks
+## Run the dependency graph
 
-If the session is not in `full` mode, also emit a downstream handoff brief with [references/handoff-brief-template.md](references/handoff-brief-template.md).
+Read [references/workflow-v2.md](references/workflow-v2.md) and follow artifact dependencies rather than a rigid phase number.
 
-## Phase 5: CAD Loop or Handoff
+Core readiness rules:
 
-### Full Mode
+- Start direction exploration only after material architecture and component choices are user-approved or explicitly marked provisional by the user.
+- Start Fusion modeling only after the visual/structure target and required shared interfaces are frozen.
+- Start PCB work only after the schematic and required shared interfaces are frozen.
+- Converge CAD and PCB through cross-domain checks before emitting an EVT validation plan.
+- Never treat a supplied render or draft model as permission to bypass missing upstream contracts.
 
-Drive a parametric draft model from the design pack.
+Use `Appearance Spec`, `Structure Spec`, `Design Pack`, `Electrical Pack`, and `Interface Control` as design truth. Treat images as appearance evidence, not geometry truth.
 
-Use the design pack as the source of truth for:
+## Execute through operation cards
 
-- target envelope
-- selected or assumed components
-- component keep-outs
-- packaging constraints
-- mounting logic
-- split strategy
-- key style features
-- acceptance checks
+Before each direct or guided batch, create an `OperationCard` containing:
 
-After each iteration, compare:
+- `step_id`, one-call `call_id`, unique `attempt_id`, exact canonical `parameters` and their `parameter_digest`, goal, track, route, selected adapter, resolved route-decision ID, any additional authorization-decision IDs, ownership, risk level, one `execution_capability_id`, supporting capability requirements, and preconditions
+- target identifiers and expected delta
+- `do_not_touch` boundaries
+- rollback or recovery path
+- acceptance checks and required evidence
 
-- render target vs. current geometry
-- structure spec vs. current layout
-- design pack constraints vs. current model
+Use the common adapter lifecycle:
 
-Record only actionable deltas:
+```text
+probe(context) -> CapabilityReport
+plan(pack, artifacts) -> RunPlan
+execute_step(step, session) -> StepResult
+verify(step, result, checks) -> VerificationResult
+rollback(checkpoint) -> RollbackResult
+export(formats, artifact_root) -> ArtifactManifest
+```
 
-- appearance delta
-- layout delta
-- structure delta
-- manufacturing-risk delta
+For Fusion 360, read [references/fusion360-adapter.md](references/fusion360-adapter.md). For EasyEDA, read [references/easyeda-adapter.md](references/easyeda-adapter.md). Do not invent provider APIs or silently substitute another backend.
 
-Emit:
+Before every provider write, obtain a full-bundle authorization bound to the exact state, capability, probed provider operation, parameters, targets, and attempt. Use it for read-only preflight, atomically reserve the attempt and any high-risk approval, revalidate the updated bundle for a single-use write lease, guard the actual call, invoke that one provider operation once, then record readback. A pending decision, stale/blocked dependency, changed hash, mismatched attempt, or prior reservation blocks the write.
 
-- `CAD Iteration Inputs`
-- `Parametric Draft Model`
-- `CAD Iteration Report`
+### Execution boundary
 
-### Spec-Only or Handoff Mode
+An execution token proves that a previously approved route and exact Operation Card are currently executable; it does not grant a new architecture, component, freeze, conflict, or route decision. If the intended provider operation, parameters, target, or ownership changes, discard the card and return to the relevant user gate.
 
-Stop after creating:
+## Evidence and claims
 
-- `Design Pack`
-- `Handoff Brief`
-- `Review Report`
+Use these artifact states:
 
-Make the handoff unambiguous for a downstream modeler:
+`planned`, `waiting_user_decision`, `implemented-unverified`, `verified`, `stale`, `blocked`
 
-- modeling target
-- envelope and critical dimensions
-- selected or assumed components
-- packaging constraints and sourcing risks
-- suggested part split
-- priority constraints
-- open questions
+Use these evidence types:
 
-## Output Contract
+`api_readback`, `source_export`, `screenshot`, `user_self_report`, `unverified`
 
-Produce only the artifacts for the current approved phase.
+Only API readback, source export, or a clear screenshot can support `implemented-unverified` or `verified`. A self-report alone remains unverified. Never describe planned work as implemented.
 
-### Checkpointed Mode
+## Conflict and invalidation protocol
 
-- After `Phase 1.5` when triggered: `Module Options`
-- During `Phase 1.6`: produce `Reference Cases`, `Component Requirements`, `Candidate Components`, `Selected or Assumed Components`, `Packaging Constraints`, and `Sourcing Risks`; continue into Phase 2 unless component selection is infeasible or user approval is requested.
-- After `Phase 2`: `Concept Directions` plus the Phase 1.6 component-selection artifacts that constrained those directions
-- After first `Phase 3` pass: `Render Variants`
-- After final `Phase 3` approval: `Render Set`
-- After `Phase 4`: `Appearance Spec`, `Structure Spec`, `Design Pack`, `Review Report`
-- After `Phase 4` in non-`full` modes: also `Handoff Brief`
-- After `Phase 5` in `full` mode: `CAD Iteration Inputs`, `Parametric Draft Model`, `CAD Iteration Report`
+When sources conflict, show both values, revisions, downstream effects, and a recommendation. Do not apply newest-wins or any hidden precedence. Wait for the user to decide, record the resolution, and invalidate only dependent descendants.
 
-### Auto Mode
+Persist run status and dependency hashes using [references/workflow-state-schema.md](references/workflow-state-schema.md). On resume, validate upstream hashes and return to the pending gate; do not merely continue from the earliest missing file.
 
-You may produce the full end-to-end package in one run when the user explicitly asks for it.
+## Review and stop conditions
 
-Use `execution_mode` inside the design pack so downstream tools or collaborators can see which path was used.
+Use [references/review-rubric.md](references/review-rubric.md) before every freeze and final handoff. A Design Pack freeze is valid only when its strict passing `review_results` document is stored as a verified Run State artifact and the user's freeze decision binds that exact review digest.
 
-## References
+Complete a loop only when all approved acceptance checks have evidence-backed pass results and the user freezes the candidate. Stop without claiming completion when the run becomes blocked or the user pauses it. Do not iterate indefinitely.
 
-Use the reference files selectively:
+Use [references/handoff-brief-template.md](references/handoff-brief-template.md) for `spec` or `handoff` routes. Emit only artifacts for approved tracks. Label PCB output `PCB design candidate / waiting EVT`; never imply production or manufacturing readiness.
 
-- `checkpoint-mode.md`: choose the interaction style and obey phase gates
-- `brief-template.md`: gather or normalize the brief
-- `module-architecture.md`: decide whether module selection is needed and frame the options
-- `component-selection.md`: research comparable products and shortlist plausible modules or components before styling
-- `environment-check.md`: choose the execution mode
-- `design-pack-schema.md`: define the machine-readable design pack
-- `appearance-spec-template.md`: write visual and CMF constraints
-- `structure-spec-template.md`: write structure and layout constraints
-- `handoff-brief-template.md`: prepare non-CAD delivery
-- `review-rubric.md`: assess quality and readiness
-- `use-cases.md`: inspect examples and non-goals
+## V1 compatibility
 
-## Rules
+Migrate V1 inputs before resuming. Map `checkpointed` to `confirmation_policy: material_decisions`. Map `auto` only to continuous cadence inside approved routes; it never grants route or material-decision authority. Missing routes must enter `waiting_user_decision`.
 
-- Prefer explicit assumptions over silent guessing.
-- Keep the design pack structured enough for scripts and downstream modeling.
-- Base industrial design on researched or assumed component constraints, not on pure appearance.
-- Treat image outputs as visual targets, not as geometry truth.
-- Stop at the appropriate boundary for the execution mode.
-- Stop at the appropriate checkpoint for the interaction mode.
-- Refuse to imply production readiness when only a concept, spec, or draft model exists.
+Use `scripts/migrate_v1_to_v2.py` for migration, `scripts/validate_v2.py` for each document, `scripts/validate_bundle.py` before any cross-document freeze or execution, and `scripts/manage_run_state.py` for route resolution, non-route decision gates, validation, and descendant invalidation. Treat any validator failure as blocking; never repair a material value by guessing.
+
+Read [references/checkpoint-mode.md](references/checkpoint-mode.md) for migration semantics and [references/use-cases.md](references/use-cases.md) for examples and boundaries.

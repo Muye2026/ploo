@@ -1,0 +1,12 @@
+{"id":"route-authority","state":"waiting_user_decision","observations":["mechanical route choices","recommendation is not authorization"],"actions":[]}
+{"id":"capability-loss","state":"waiting_user_decision","observations":["readback current scene","retry or guided or handoff or pause"],"actions":[]}
+{"id":"source-conflict","state":"waiting_user_decision","observations":["both values and revisions","downstream impact","user decision"],"actions":[]}
+{"id":"resume-pending","state":"waiting_user_decision","observations":["pending PCB route gate"],"actions":[]}
+{"id":"self-report-evidence","state":"planned","observations":["request API readback, source export, or screenshot"],"actions":[]}
+{"id":"pcb-boundary","state":"waiting_user_decision","observations":["PCB design candidate","waiting EVT"],"actions":[]}
+{"id":"eda-route-independence","state":"waiting_user_decision","observations":["schematic and PCB routes are independent","PCB route still requires user choice"],"actions":[]}
+{"id":"fusion-timeout","state":"waiting_user_decision","observations":["read back actual scene before retry","new attempt and authorization"],"actions":[]}
+{"id":"easyeda-target-ambiguity","state":"waiting_user_decision","observations":["show candidate window, project, and document IDs","user selects the target"],"actions":[]}
+{"id":"dangerous-provider-call","state":"waiting_user_decision","observations":["exact tool, parameters, impact, verification, and rollback limits","one-call high-risk approval"],"actions":[]}
+{"id":"cross-domain-mismatch","state":"waiting_user_decision","observations":["show both values, source revisions, and downstream impact","invalidate only affected descendants after user decision"],"actions":[]}
+{"id":"zero-provider-planning","state":"waiting_user_decision","observations":["core planning remains available without optional providers","show skip, spec, guided, and handoff choices","ask the user to choose routes"],"actions":[]}

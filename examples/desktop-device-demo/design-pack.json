@@ -59,6 +59,115 @@
       "placement_note": "Lower or rear-support-adjacent volume"
     }
   ],
+  "reference_cases": [
+    {
+      "case": "monitor-top video accessory",
+      "lesson": "A narrow horizontal body can align sensing and status hardware without dominating the display.",
+      "design_implication": "Keep the front hierarchy shallow and preserve rear support clearance.",
+      "source_note": "Synthetic category reference for the public example."
+    },
+    {
+      "case": "desktop presence indicator",
+      "lesson": "Status information should remain glanceable without resembling a face or toy.",
+      "design_implication": "Use a restrained display window and separate it from the sensor island.",
+      "source_note": "Synthetic category reference for the public example."
+    }
+  ],
+  "component_requirements": [
+    {
+      "module": "vision sensor",
+      "requirement": "Fit a centered sensing package while preserving a shallow front body.",
+      "envelope_target_mm": [
+        16,
+        16,
+        10
+      ],
+      "design_implication": "The sensor island controls minimum body depth."
+    },
+    {
+      "module": "status display",
+      "requirement": "Provide glanceable status without creating a toy-like face.",
+      "envelope_target_mm": [
+        30,
+        18,
+        4
+      ],
+      "design_implication": "Reserve a quiet left-side window with controlled contrast."
+    }
+  ],
+  "component_candidates": [
+    {
+      "module": "vision sensor",
+      "candidate": "compact fixed-focus camera module",
+      "approx_envelope_mm": [
+        16,
+        16,
+        10
+      ],
+      "interface_or_mounting": "Rigid front datum with rear cable relief",
+      "visible_design_impact": "Centered lens island",
+      "risk": "Actual lens and cable depth remain unverified"
+    },
+    {
+      "module": "vision sensor",
+      "candidate": "low-profile ambient sensor cluster",
+      "approx_envelope_mm": [
+        14,
+        8,
+        4
+      ],
+      "interface_or_mounting": "Front window on the main PCB",
+      "visible_design_impact": "Smaller, less camera-like focal point",
+      "risk": "May not support the intended sensing functions"
+    },
+    {
+      "module": "status display",
+      "candidate": "small monochrome display module",
+      "approx_envelope_mm": [
+        30,
+        18,
+        4
+      ],
+      "interface_or_mounting": "Board-mounted behind a front window",
+      "visible_design_impact": "Readable but controlled information zone",
+      "risk": "Connector and active-area dimensions vary by module"
+    }
+  ],
+  "selected_components": [
+    {
+      "module": "vision sensor",
+      "selection": "compact fixed-focus camera envelope",
+      "why": "It represents the higher-depth packaging case.",
+      "fixed_constraints": "Preserve a centered rigid datum and 10 mm depth allowance.",
+      "unverified": "Exact module, lens, and cable exit",
+      "fallback_envelope_mm": [
+        18,
+        18,
+        12
+      ]
+    },
+    {
+      "module": "status display",
+      "selection": "small monochrome display envelope",
+      "why": "It supports glanceable status with low visual noise.",
+      "fixed_constraints": "Reserve a 30 x 18 mm front window zone.",
+      "unverified": "Exact active area and connector position",
+      "fallback_envelope_mm": [
+        34,
+        20,
+        5
+      ]
+    }
+  ],
+  "packaging_constraints": [
+    "Reserve rear cable relief behind the centered sensor.",
+    "Keep the display and sensor mounting datums independent.",
+    "Preserve right-side access for service and power connections."
+  ],
+  "sourcing_risks": [
+    "The public example uses synthetic component envelopes rather than current supplier parts.",
+    "Display connector and camera cable orientation must be verified before CAD freeze."
+  ],
   "layout_zones": [
     {
       "name": "display window",

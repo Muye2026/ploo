@@ -1,4 +1,9 @@
 .DS_Store
+.workbuddy/
+.env
+.env.*
+!.env.example
+.venv/
 __pycache__/
 *.pyc
 *.pyo
@@ -13,4 +18,10 @@ build/
 *.log
 *.tmp
 *.bak
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
 examples/**/generated/

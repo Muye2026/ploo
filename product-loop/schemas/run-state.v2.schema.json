@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-loop.local/schemas/run-state.v2.schema.json",
+  "title": "Product Loop Run State V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "document_type", "run_id", "status", "decision_authority",
+    "confirmation_policy", "execution_cadence", "track_routes", "route_decision_ids", "pending_decision_gate",
+    "decision_ledger", "capability_reports", "artifacts", "operation_cards", "execution_reservations", "authorization_consumptions",
+    "cross_domain_checks"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "document_type": {"const": "run_state"},
+    "run_id": {"type": "string", "minLength": 1},
+    "status": {"$ref": "#/$defs/artifact_status"},
+    "decision_authority": {"const": "user"},
+    "confirmation_policy": {"const": "material_decisions"},
+    "execution_cadence": {"enum": ["stepwise", "continuous_within_approved_route"]},
+    "track_routes": {"$ref": "#/$defs/track_routes"},
+    "route_decision_ids": {"$ref": "#/$defs/route_decision_ids"},
+    "pending_decision_gate": {
+      "oneOf": [{"$ref": "#/$defs/decision_gate"}, {"type": "null"}]
+    },
+    "decision_ledger": {"type": "array", "items": {"$ref": "#/$defs/decision_gate"}},
+    "capability_reports": {"type": "array", "items": {"$ref": "#/$defs/capability_report"}},
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "operation_cards": {"type": "array", "items": {"$ref": "#/$defs/operation_card"}},
+    "execution_reservations": {
+      "type": "array", "items": {"$ref": "#/$defs/execution_reservation"}
+    },
+    "authorization_consumptions": {
+      "type": "array", "items": {"$ref": "#/$defs/authorization_consumption"}
+    },
+    "cross_domain_checks": {"type": "array", "items": {"$ref": "#/$defs/cross_domain_check"}}
+  },
+  "$defs": {
+    "artifact_status": {
+      "enum": ["planned", "waiting_user_decision", "implemented-unverified", "verified", "stale", "blocked"]
+    },
+    "evidence_type": {
+      "enum": ["api_readback", "source_export", "screenshot", "user_self_report", "unverified"]
+    },
+    "track": {"enum": ["visualization", "mechanical", "schematic", "pcb"]},
+    "track_routes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visualization", "mechanical", "schematic", "pcb"],
+      "properties": {
+        "visualization": {"type": ["string", "null"], "enum": [null, "skip", "image", "video", "image+video"]},
+        "mechanical": {"type": ["string", "null"], "enum": [null, "skip", "spec", "direct", "guided", "handoff"]},
+        "schematic": {"type": ["string", "null"], "enum": [null, "skip", "direct", "guided", "hybrid", "handoff"]},
+        "pcb": {"type": ["string", "null"], "enum": [null, "skip", "direct", "guided", "hybrid", "handoff"]}
+      }
+    },
+    "route_decision_ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visualization", "mechanical", "schematic", "pcb"],
+      "properties": {
+        "visualization": {"type": ["string", "null"]},
+        "mechanical": {"type": ["string", "null"]},
+        "schematic": {"type": ["string", "null"]},
+        "pcb": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "producer", "time", "hash"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "producer": {"type": "string", "minLength": 1},
+        "time": {"type": ["string", "null"]},
+        "hash": {"type": ["string", "null"]}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "type", "source", "captured_at", "ref", "note"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "type": {"$ref": "#/$defs/evidence_type"},
+        "source": {"type": "string", "minLength": 1},
+        "captured_at": {"type": ["string", "null"]},
+        "ref": {"type": ["string", "null"]},
+        "note": {"type": "string"}
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "content_hash"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 1},
+        "content_hash": {"type": ["string", "null"]}
+      }
+    },
+    "invalidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_artifact_id", "source_revision", "reason"],
+      "properties": {
+        "source_artifact_id": {"type": "string", "minLength": 1},
+        "source_revision": {"type": "integer", "minimum": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id", "artifact_type", "revision", "status", "path", "content_hash",
+        "source_hashes", "provenance", "evidence", "depends_on", "invalidation_reasons"
+      ],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "artifact_type": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 1},
+        "status": {"$ref": "#/$defs/artifact_status"},
+        "path": {"type": ["string", "null"]},
+        "content_hash": {"type": ["string", "null"]},
+        "source_hashes": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+        "depends_on": {"type": "array", "items": {"$ref": "#/$defs/artifact_ref"}},
+        "invalidation_reasons": {"type": "array", "items": {"$ref": "#/$defs/invalidation"}}
+      }
+    },
+    "decision_option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "description", "impact"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "impact": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id", "decision_type", "scope", "status", "question", "options",
+        "recommendation", "recommendation_rationale", "impact",
+        "selected_option", "decided_by", "decided_at", "decision_evidence", "dependency_revisions"
+      ],
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "decision_type": {"type": "string", "minLength": 1},
+        "scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "status": {"enum": ["pending", "resolved", "superseded"]},
+        "question": {"type": "string", "minLength": 1},
+        "options": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/decision_option"}},
+        "recommendation": {"type": ["string", "null"]},
+        "recommendation_rationale": {"type": ["string", "null"]},
+        "impact": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "selected_option": {"type": ["string", "null"]},
+        "decided_by": {"type": ["string", "null"]},
+        "decided_at": {"type": ["string", "null"]},
+        "decision_evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+        "dependency_revisions": {"type": "array", "items": {"$ref": "#/$defs/artifact_ref"}}
+      }
+    },
+    "capability_flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read", "write", "verify", "export", "rollback", "render"],
+      "properties": {
+        "read": {"type": "boolean"},
+        "write": {"type": "boolean"},
+        "verify": {"type": "boolean"},
+        "export": {"type": "boolean"},
+        "rollback": {"type": "boolean"},
+        "render": {"type": "boolean"}
+      }
+    },
+    "capability_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_id", "track", "adapter_id", "adapter_version", "status", "checked_at",
+        "tool_schema_digest", "capabilities", "operations", "units", "limitations", "evidence"
+      ],
+      "properties": {
+        "report_id": {"type": "string", "minLength": 1},
+        "track": {"$ref": "#/$defs/track"},
+        "adapter_id": {"type": "string", "minLength": 1},
+        "adapter_version": {"type": ["string", "null"]},
+        "status": {"enum": ["available", "unavailable", "unknown"]},
+        "checked_at": {"type": ["string", "null"]},
+        "tool_schema_digest": {"type": ["string", "null"]},
+        "capabilities": {"$ref": "#/$defs/capability_flags"},
+        "operations": {"type": "array", "items": {"$ref": "#/$defs/capability_operation"}},
+        "units": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+      }
+    },
+    "capability_operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability_id", "provider_operation", "risk_class", "status", "schema_digest", "limitations", "route_options_if_unavailable", "evidence"],
+      "properties": {
+        "capability_id": {"type": "string", "minLength": 1},
+        "provider_operation": {"type": "string", "minLength": 1},
+        "risk_class": {"enum": ["read", "reversible_write", "destructive_write", "export", "render", "verify", "rollback"]},
+        "status": {"enum": ["available", "unavailable", "unknown"]},
+        "schema_digest": {"type": ["string", "null"]},
+        "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "route_options_if_unavailable": {
+          "type": "array", "uniqueItems": true,
+          "items": {"enum": ["retry", "skip", "spec", "direct", "guided", "hybrid", "handoff", "pause"]}
+        },
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "checkpoint_ref", "limitations"],
+      "properties": {
+        "method": {"type": "string", "minLength": 1},
+        "checkpoint_ref": {"type": ["string", "null"]},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "operation_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id", "goal", "track", "route", "adapter_id", "route_decision_id", "authorization_decision_ids",
+        "ownership", "risk_level", "call_id", "attempt_id", "parameters", "parameter_digest", "status", "required_capabilities", "preconditions",
+        "execution_capability_id", "target_ids", "expected_delta", "do_not_touch", "rollback", "acceptance_checks",
+        "evidence_required", "evidence", "depends_on", "produces"
+      ],
+      "properties": {
+        "step_id": {"type": "string", "minLength": 1},
+        "goal": {"type": "string", "minLength": 1},
+        "track": {"$ref": "#/$defs/track"},
+        "route": {"type": "string", "minLength": 1},
+        "adapter_id": {"type": ["string", "null"]},
+        "route_decision_id": {"type": "string", "minLength": 1},
+        "authorization_decision_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "ownership": {"enum": ["agent", "user", "shared", "handoff"]},
+        "risk_level": {"enum": ["low", "medium", "high", "destructive"]},
+        "call_id": {"type": "string", "minLength": 1},
+        "attempt_id": {"type": "string", "minLength": 1},
+        "parameters": {"type": "object", "minProperties": 1},
+        "parameter_digest": {"type": "string", "minLength": 1},
+        "status": {"$ref": "#/$defs/artifact_status"},
+        "required_capabilities": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "execution_capability_id": {"type": ["string", "null"], "minLength": 1},
+        "preconditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "target_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "expected_delta": {"type": "object", "minProperties": 1},
+        "do_not_touch": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "rollback": {"$ref": "#/$defs/rollback"},
+        "acceptance_checks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "evidence_required": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/evidence_type"}},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+        "depends_on": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifact_ref"}},
+        "produces": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifact_ref"}}
+      }
+    },
+    "execution_reservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reservation_id", "run_id", "step_id", "call_id", "attempt_id", "parameter_digest", "operation_digest",
+        "capability_id", "provider_operation", "risk_class", "reserved_at", "status", "result_fingerprint"
+      ],
+      "properties": {
+        "reservation_id": {"type": "string", "minLength": 1},
+        "run_id": {"type": "string", "minLength": 1},
+        "step_id": {"type": "string", "minLength": 1},
+        "call_id": {"type": "string", "minLength": 1},
+        "attempt_id": {"type": "string", "minLength": 1},
+        "parameter_digest": {"type": "string", "minLength": 1},
+        "operation_digest": {"type": "string", "minLength": 1},
+        "capability_id": {"type": "string", "minLength": 1},
+        "provider_operation": {"type": "string", "minLength": 1},
+        "risk_class": {"enum": ["reversible_write", "destructive_write", "export", "render", "verify", "rollback"]},
+        "reserved_at": {"type": "string", "minLength": 1},
+        "status": {"enum": ["reserved", "completed", "failed", "unknown"]},
+        "result_fingerprint": {"type": ["string", "null"]}
+      }
+    },
+    "authorization_consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consumption_id", "decision_id", "run_id", "step_id", "call_id", "attempt_id",
+        "parameter_digest", "operation_digest", "capability_id", "consumed_at", "status", "result_fingerprint"
+      ],
+      "properties": {
+        "consumption_id": {"type": "string", "minLength": 1},
+        "decision_id": {"type": "string", "minLength": 1},
+        "run_id": {"type": "string", "minLength": 1},
+        "step_id": {"type": "string", "minLength": 1},
+        "call_id": {"type": "string", "minLength": 1},
+        "attempt_id": {"type": "string", "minLength": 1},
+        "parameter_digest": {"type": "string", "minLength": 1},
+        "operation_digest": {"type": "string", "minLength": 1},
+        "capability_id": {"type": "string", "minLength": 1},
+        "consumed_at": {"type": "string", "minLength": 1},
+        "status": {"enum": ["reserved", "completed", "failed", "unknown"]},
+        "result_fingerprint": {"type": ["string", "null"]}
+      }
+    },
+    "cross_domain_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id", "status", "interface_ref", "cad_ref", "pcb_ref", "groups", "evidence"
+      ],
+      "properties": {
+        "check_id": {"type": "string", "minLength": 1},
+        "status": {"$ref": "#/$defs/artifact_status"},
+        "interface_ref": {"oneOf": [{"$ref": "#/$defs/artifact_ref"}, {"type": "null"}]},
+        "cad_ref": {"oneOf": [{"$ref": "#/$defs/artifact_ref"}, {"type": "null"}]},
+        "pcb_ref": {"oneOf": [{"$ref": "#/$defs/artifact_ref"}, {"type": "null"}]},
+        "groups": {
+          "type": "object", "additionalProperties": false,
+          "required": ["pcb_thickness", "mounting_holes", "connectors", "height_zones", "antenna_keepouts"],
+          "properties": {
+            "pcb_thickness": {"enum": ["pending", "match", "mismatch"]},
+            "mounting_holes": {"enum": ["pending", "match", "mismatch"]},
+            "connectors": {"enum": ["pending", "match", "mismatch"]},
+            "height_zones": {"enum": ["pending", "match", "mismatch"]},
+            "antenna_keepouts": {"enum": ["pending", "match", "mismatch"]}
+          }
+        },
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+      }
+    }
+  }
+}

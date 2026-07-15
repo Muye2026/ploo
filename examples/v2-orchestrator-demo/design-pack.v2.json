@@ -1,0 +1,80 @@
+{
+  "schema_version": "2.0",
+  "document_type": "design_pack",
+  "artifact_id": "design-pack-demo-001",
+  "revision": 1,
+  "status": "planned",
+  "architecture_decision_id": null,
+  "freeze_decision_id": null,
+  "provenance": {
+    "source": "synthetic example brief",
+    "producer": "product-loop example",
+    "time": "2026-01-01T00:00:00Z",
+    "hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+  },
+  "evidence": [
+    {
+      "evidence_id": "evidence-design-brief-001",
+      "type": "unverified",
+      "source": "synthetic example brief",
+      "captured_at": "2026-01-01T00:00:00Z",
+      "ref": null,
+      "note": "Example data only; no physical verification is claimed."
+    }
+  ],
+  "product_goal": "A palm-sized USB status beacon for demonstrating Product Loop V2 orchestration.",
+  "hard_constraints": [
+    {
+      "id": "hc-envelope",
+      "category": "mechanical",
+      "rule": "The product envelope shall not exceed 70 x 45 x 24 mm.",
+      "priority": "must",
+      "value": [70, 45, 24],
+      "unit": "mm",
+      "status": "confirmed",
+      "source": "synthetic example brief"
+    }
+  ],
+  "component_envelopes": [
+    {
+      "id": "ce-usb-c",
+      "name": "USB-C receptacle envelope",
+      "size_mm": [9, 8, 4],
+      "placement_note": "Centered on the rear wall.",
+      "source_status": "assumed"
+    }
+  ],
+  "reference_cases": [],
+  "component_requirements": [
+    {
+      "id": "cr-power",
+      "module": "power",
+      "requirement": "Accept 5 V USB input.",
+      "design_implication": "Reserve rear connector access and ESD protection."
+    }
+  ],
+  "component_candidates": [],
+  "selected_components": [],
+  "packaging_constraints": [],
+  "sourcing_risks": [],
+  "layout_zones": [],
+  "mounting_strategy": {
+    "type": "two-part enclosure",
+    "contact_points": "Four corner bosses",
+    "support_logic": "PCB supported above the base",
+    "service_access_notes": "Top cover removable",
+    "suggested_part_split": ["base", "top cover"]
+  },
+  "style_features": [],
+  "manufacturing_risks": [],
+  "forbidden_features": [],
+  "acceptance_checks": [
+    {
+      "id": "ac-envelope",
+      "title": "Overall envelope",
+      "method": "Measure the exported model bounding box.",
+      "pass_condition": "All axes are within 70 x 45 x 24 mm.",
+      "priority": "must"
+    }
+  ]
+}

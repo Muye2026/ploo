@@ -1,6 +1,6 @@
 # Appearance Spec Template
 
-Write this spec after a direction has been selected and render work has converged.
+Write this spec after the user selects a direction. If the user selected an image/video route, use the frozen visual candidate as evidence. If visualization is skipped, derive the spec from the approved textual direction and clearly mark unvisualized details; do not force a render phase.
 
 ## Required Sections
 
@@ -41,4 +41,4 @@ Write this spec after a direction has been selected and render work has converge
 
 ## Writing Rule
 
-Translate from the image into reusable constraints. Do not write only mood or taste language. Make sure a downstream modeler can infer geometry priorities from this spec.
+Translate the approved direction and any visual evidence into reusable constraints. Do not write only mood or taste language. Make sure a downstream modeler can infer geometry priorities, and never treat an image as dimensional truth.

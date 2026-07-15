@@ -1,69 +1,30 @@
 # Use Cases
 
-## Good Fits
+## Good fits
 
-Use `product-loop` for requests such as:
+- Explore several physical product directions and let the user select one.
+- Generate only images/video, only a design pack, or both, after route selection.
+- Turn approved product constraints into a Fusion 360 MCP modeling plan or guided CAD steps.
+- Produce or review an EasyEDA schematic through direct, guided, hybrid, or handoff work.
+- Move a frozen schematic and shared interface into PCB planning and incremental verification.
+- Resume a mixed CAD/EDA workflow without confusing planned work with implemented work.
+- Detect a conflict between a render, structure document, schematic, PCB, and enclosure, then ask the user to resolve it.
 
-- "Turn this desktop hardware idea into three industrial design directions."
-- "Give me several reference directions first, and let me choose before you render anything final."
-- "Let me choose the module strategy first, then give me design directions."
-- "Research comparable products and likely modules before creating industrial design directions."
-- "For this parking number plate idea, compare display, privacy, mounting, illumination, and power options before styling."
-- "Use these component assumptions to create concept directions and a CAD-ready design pack."
-- "We already have a chosen render; extract appearance and structure specs."
-- "We do not have CAD installed, but we still need a clean handoff package for a modeler."
-- "Compare the current draft model against the approved direction and summarize the next geometry changes."
+## Expected decision behavior
 
-## Checkpointed Examples
+- “Give me options first” stops at the relevant gate.
+- “Run end to end” permits continuous low-risk execution only after routes and material decisions are explicit.
+- “You teach me; I draw it” selects `guided` for that track and requires step-by-step acceptance.
+- “Use the MCP directly” selects `direct` only for the named track; it does not authorize destructive tools or unrelated branches.
+- A supplied render, schematic, or model shortens discovery but does not waive missing contracts or freezes.
 
-Use `checkpointed` mode for requests such as:
+## Resume examples
 
-- "Show me the critical module choices first and stop for selection."
-- "Show me 3 distinct design directions and stop for selection."
-- "Within the chosen direction, give me 4 render variants and wait for my pick."
-- "Do not auto-select a final concept. I want to choose each step."
+- Existing render: validate brief, components, views, and structure before CAD.
+- Frozen schematic: verify the freeze manifest and shared mechanical inputs before PCB.
+- Draft PCB: compare source hashes and interface revision before continuing layout or routing.
+- Draft CAD: validate the design-pack and interface-control revisions before editing.
 
-Expected behavior:
+## Non-goals
 
-- If key module architecture is unresolved, stop after `Phase 1.5`.
-- After `Phase 1.6`, continue with a recommended provisional component set unless the user asks to approve it or no feasible path exists.
-- After `Phase 2`, stop at concept directions.
-- After first `Phase 3` pass, stop at render variants.
-- Before `Phase 4`, stop again for render freeze approval.
-
-## Auto Examples
-
-Use `auto` mode only for requests such as:
-
-- "Run this product idea end to end and give me the complete package."
-- "Pick the best module architecture and direction yourself and continue without waiting."
-
-Expected behavior:
-
-- The agent may continue across checkpoints.
-- The agent must still explain why it selected the architecture and direction.
-- The agent must still explain why it selected provisional components.
-
-## Resume Cases
-
-Resume from the earliest missing artifact:
-
-- If the user already fixed the module strategy, skip `Phase 1.5`.
-- If the user already provides component selections with usable envelopes, summarize them and skip or shorten `Phase 1.6`.
-- If the user already has a render, skip direction exploration and move into design translation.
-- If the user already has appearance and structure specs, emit a design pack and review report.
-- If the user already has a draft CAD model, run the CAD review loop against the design pack.
-
-## Non-Goals
-
-Do not use this skill as the primary path for:
-
-- large furniture or architectural systems
-- production tooling documentation
-- tolerance analysis
-- direct mass-manufacturing release
-- pure branding or marketing-page design work
-
-## Boundary Reminder
-
-This skill helps produce concept-ready and CAD-ready artifacts. It does not certify manufacturability or production readiness on its own.
+Do not use this skill as the primary path for production tooling, tolerance stacks, final manufacturing release, large architectural systems, or certification. Product Loop may produce design candidates and EVT plans; it does not certify production readiness.

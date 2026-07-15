@@ -1,0 +1,47 @@
+{
+  "schema_version": "2.0",
+  "document_type": "interface_control",
+  "artifact_id": "interface-control-demo-001",
+  "revision": 1,
+  "status": "planned",
+  "freeze_decision_id": null,
+  "provenance": {
+    "source": "synthetic example brief",
+    "producer": "product-loop example",
+    "time": "2026-01-01T00:00:00Z",
+    "hash": "sha256:ee9cae70efb2311af50f1adb9c543a60dce3652149cb57bd2d593e33611b9447"
+  },
+  "evidence": [],
+  "units": "mm",
+  "coordinate_system": {
+    "origin_mm": [0, 0, 0],
+    "x_axis": [1, 0, 0],
+    "y_axis": [0, 1, 0],
+    "z_axis": [0, 0, 1],
+    "datum_refs": ["synthetic base lower-left corner"]
+  },
+  "product_envelope": {
+    "size_mm": [70, 45, 24],
+    "status": "confirmed",
+    "source_refs": ["design-pack-demo-001@1"]
+  },
+  "pcb": {
+    "outline_points_mm": [],
+    "thickness_mm": null,
+    "board_origin_mm": null,
+    "status": "missing",
+    "source_refs": []
+  },
+  "mounting_holes": [],
+  "interface_features": [],
+  "keepouts": [],
+  "height_zones": [],
+  "volumes": [],
+  "dependencies": [
+    {
+      "artifact_id": "design-pack-demo-001",
+      "revision": 1,
+      "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+    }
+  ]
+}

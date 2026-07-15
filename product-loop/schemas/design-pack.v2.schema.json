@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-loop.local/schemas/design-pack.v2.schema.json",
+  "title": "Product Loop Design Pack V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "document_type", "artifact_id", "revision", "status", "architecture_decision_id", "freeze_decision_id",
+    "provenance", "evidence", "product_goal", "hard_constraints",
+    "component_envelopes", "reference_cases", "component_requirements",
+    "component_candidates", "selected_components", "packaging_constraints",
+    "sourcing_risks", "layout_zones", "mounting_strategy", "style_features",
+    "manufacturing_risks", "forbidden_features", "acceptance_checks"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "document_type": {"const": "design_pack"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "status": {"$ref": "#/$defs/artifact_status"},
+    "architecture_decision_id": {"type": ["string", "null"]},
+    "freeze_decision_id": {"type": ["string", "null"]},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "product_goal": {"type": "string", "minLength": 1},
+    "hard_constraints": {"type": "array", "items": {"$ref": "#/$defs/hard_constraint"}},
+    "component_envelopes": {"type": "array", "items": {"$ref": "#/$defs/component_envelope"}},
+    "reference_cases": {"type": "array", "items": {"$ref": "#/$defs/reference_case"}},
+    "component_requirements": {"type": "array", "items": {"$ref": "#/$defs/component_requirement"}},
+    "component_candidates": {"type": "array", "items": {"$ref": "#/$defs/component_candidate"}},
+    "selected_components": {"type": "array", "items": {"$ref": "#/$defs/selected_component"}},
+    "packaging_constraints": {"type": "array", "items": {"$ref": "#/$defs/text_record"}},
+    "sourcing_risks": {"type": "array", "items": {"$ref": "#/$defs/text_record"}},
+    "layout_zones": {"type": "array", "items": {"$ref": "#/$defs/layout_zone"}},
+    "mounting_strategy": {"$ref": "#/$defs/mounting_strategy"},
+    "style_features": {"type": "array", "items": {"$ref": "#/$defs/style_feature"}},
+    "manufacturing_risks": {"type": "array", "items": {"$ref": "#/$defs/text_record"}},
+    "forbidden_features": {"type": "array", "items": {"$ref": "#/$defs/text_record"}},
+    "acceptance_checks": {"type": "array", "items": {"$ref": "#/$defs/acceptance_check"}},
+    "artifact_refs": {"type": "array", "items": {"$ref": "#/$defs/artifact_ref"}},
+    "migration": {"$ref": "#/$defs/migration"}
+  },
+  "$defs": {
+    "artifact_status": {
+      "enum": ["planned", "waiting_user_decision", "implemented-unverified", "verified", "stale", "blocked"]
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "producer", "time", "hash"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "producer": {"type": "string", "minLength": 1},
+        "time": {"type": ["string", "null"]},
+        "hash": {"type": ["string", "null"]}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "type", "source", "captured_at", "ref", "note"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["api_readback", "source_export", "screenshot", "user_self_report", "unverified"]},
+        "source": {"type": "string", "minLength": 1},
+        "captured_at": {"type": ["string", "null"]},
+        "ref": {"type": ["string", "null"]},
+        "note": {"type": "string"}
+      }
+    },
+    "size": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"type": "number", "minimum": 0}},
+    "hard_constraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "category", "rule", "priority"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "category": {"type": "string", "minLength": 1},
+        "rule": {"type": "string", "minLength": 1}, "priority": {"enum": ["must", "should", "could"]},
+        "value": {}, "unit": {"type": ["string", "null"]},
+        "status": {"enum": ["confirmed", "assumed", "missing", "conflict"]},
+        "source": {"type": ["string", "null"]}
+      }
+    },
+    "component_envelope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "size_mm", "placement_note", "source_status"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1},
+        "size_mm": {"$ref": "#/$defs/size"}, "placement_note": {"type": "string"},
+        "source_status": {"enum": ["confirmed", "assumed", "missing", "conflict"]}
+      }
+    },
+    "reference_case": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "case", "lesson", "design_implication", "source_note"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "case": {"type": "string", "minLength": 1},
+        "lesson": {"type": "string"}, "design_implication": {"type": "string"}, "source_note": {"type": "string"}
+      }
+    },
+    "component_requirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "module", "requirement", "design_implication"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "module": {"type": "string", "minLength": 1},
+        "requirement": {"type": "string", "minLength": 1}, "envelope_target_mm": {"$ref": "#/$defs/size"},
+        "design_implication": {"type": "string"}
+      }
+    },
+    "component_candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "module", "candidate", "interface_or_mounting", "visible_design_impact", "risk"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "module": {"type": "string", "minLength": 1},
+        "candidate": {"type": "string", "minLength": 1}, "approx_envelope_mm": {"$ref": "#/$defs/size"},
+        "interface_or_mounting": {"type": "string"}, "visible_design_impact": {"type": "string"},
+        "risk": {"type": "string"}
+      }
+    },
+    "selected_component": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "module", "selection", "selection_status", "decision_id", "why", "fixed_constraints", "unverified"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "module": {"type": "string", "minLength": 1},
+        "selection": {"type": "string", "minLength": 1},
+        "selection_status": {"enum": ["user_confirmed", "user_approved_provisional", "needs_user_confirmation"]},
+        "decision_id": {"type": ["string", "null"]},
+        "why": {"type": "string"},
+        "fixed_constraints": {"type": "string"}, "unverified": {"type": "string"},
+        "fallback_envelope_mm": {"$ref": "#/$defs/size"}
+      }
+    },
+    "text_record": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {"id": {"type": "string", "minLength": 1}, "text": {"type": "string", "minLength": 1}}
+    },
+    "layout_zone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "surface", "purpose", "priority"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1},
+        "surface": {"type": "string", "minLength": 1}, "purpose": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["must", "should", "could"]},
+        "evidence_required": {
+          "type": "array", "uniqueItems": true,
+          "items": {"enum": ["api_readback", "source_export", "screenshot", "user_self_report", "unverified"]}
+        }
+      }
+    },
+    "artifact_ref": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "revision", "content_hash"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "artifact_type": {"enum": ["electrical_pack", "interface_control", "appearance_spec", "structure_spec"]},
+        "revision": {"type": "integer", "minimum": 1},
+        "content_hash": {"type": ["string", "null"]}
+      }
+    },
+    "mounting_strategy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "contact_points", "support_logic", "service_access_notes", "suggested_part_split"],
+      "properties": {
+        "type": {"type": "string"}, "contact_points": {"type": "string"},
+        "support_logic": {"type": "string"}, "service_access_notes": {"type": "string"},
+        "suggested_part_split": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "style_feature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "rule"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1},
+        "rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptance_check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "method", "pass_condition", "priority"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1}, "pass_condition": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["must", "should", "could"]},
+        "evidence_required": {
+          "type": "array", "uniqueItems": true,
+          "items": {"enum": ["api_readback", "source_export", "screenshot", "user_self_report", "unverified"]}
+        }
+      }
+    },
+    "migration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_schema", "migrated_at"],
+      "properties": {
+        "source_schema": {"const": "design-pack.v1"},
+        "source_execution_mode": {"type": ["string", "null"], "enum": [null, "full", "spec-only", "handoff"]},
+        "source_interaction_mode": {"type": ["string", "null"], "enum": [null, "auto", "checkpointed"]},
+        "migrated_at": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

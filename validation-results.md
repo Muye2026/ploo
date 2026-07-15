@@ -1,57 +1,56 @@
-# product-loop Validation Results
+# Product Loop V2 Validation Results
 
-Date: 2026-06-02
+Date: 2026-07-15
 
-## Global install
+## Validated scope
 
-- Global install path: `${CODEX_HOME:-$HOME/.codex}/skills/product-loop`
-- Install type: symlink
-- Symlink target: local checkout `product-loop/` skill package
-- Verification: `SKILL.md` is readable through the global path, and the install boundary points only to the inner skill package.
+- The installable `SKILL.md` is a 152-line router and state-machine entrypoint.
+- All four V2 JSON documents pass strict structural and semantic validation.
+- The synthetic four-document planned bundle and strict frozen-schematic, PCB-candidate, and waiting-EVT bundles pass cross-document hash, freeze, dependency, review, and evidence checks.
+- V1 migration leaves every missing route at a user decision gate.
+- Fusion and EasyEDA adapter contracts bind one Operation Card attempt to one runtime-probed provider operation, capability ID, risk class, canonical parameter digest, full material Operation Card digest, execution reservation, and readback result.
+- V2 review and handoff data are external, strict, hash-bound contracts; Design Pack freeze cannot bypass a failing or missing review.
+- Behavior evaluation covers route authority, independent EDA routes, capability loss, source conflicts, resume, evidence, partial writes, target identity, high-risk calls, cross-domain mismatch, the EVT boundary, and planning with zero optional providers.
 
-## Helper script smoke test
+## Automated results
 
-Input example:
-- `examples/desktop-device-demo/design-pack.json`
+```text
+python3 -m unittest discover -s tests -v
+105 tests passed
 
-Results:
-- `normalize_design_pack.py`: pass
-- `build_review_matrix.py`: pass
-- `emit_handoff_brief.py`: pass
+validate_v2.py
+design-pack: valid
+electrical-pack: valid
+interface-control: valid
+run-state: valid
 
-Generated artifacts:
-- `/tmp/product-loop-design-pack.normalized.json`
-- `/tmp/product-loop-review-matrix.md`
-- `/tmp/product-loop-handoff-brief.md`
+validate_bundle.py
+synthetic V2 bundle: valid
 
-## Behavioral validation matrix
+evaluate_behavior_contracts.py
+12 behavior contracts: passed
 
-| Test name | Expected mode | Actual mode | Required outputs | Boundary behavior | Result | Notes |
-|---|---|---|---|---|---|---|
-| spec-only baseline | `spec-only` | `spec-only` | Present: Concept Directions, Appearance Spec, Structure Spec, Design Pack, Review Report, Handoff Brief | Correctly stopped before CAD | Pass | Local output folder recorded outside the public repo |
-| midstream resume | `spec-only` | `spec-only` | Present: Appearance Spec, Structure Spec, Design Pack, Review Report | Correctly skipped unnecessary direction exploration | Pass | Local output folder recorded outside the public repo |
-| handoff incomplete-input test | `handoff` | `handoff` | Present: Normalized Brief, Assumptions, Open Questions, Handoff Brief | Correctly stopped at handoff boundary | Pass | Local output folder recorded outside the public repo |
-| scope boundary test | `handoff` | `handoff` | Present: bounded concept/spec/handoff pack | Correctly refused to imply large-furniture production release | Pass | Local output artifact recorded outside the public repo |
-| full-mode decision test | `full` when CAD path is truly usable | `full` | Present: Design Pack, CAD Iteration Inputs, Parametric Draft Model, CAD Iteration Report structure, STEP, STL | Correctly stopped at concept-CAD draft boundary, without implying DFM release | Pass | Local output folder recorded outside the public repo |
+skill frontmatter
+Ruby YAML equivalent validation: passed
+official quick_validate.py: unavailable because PyYAML is not installed in this workspace runtime
+```
 
-## Notes from validation
+## Safety properties exercised
 
-- `spec-only` mode was selected only when image/spec capability existed but no usable CAD path was confirmed.
-- `handoff` mode was selected when the brief or environment was too incomplete for downstream modeling.
-- The boundary test did not fabricate wardrobe production tooling, tolerance stacks, or release data.
-- The `full` test proved a real local CAD loop through an OCP-compatible Python environment with `OCP`, `trimesh`, and `numpy`.
-- The `full` run exported both STEP and STL draft artifacts in the local validation output folder.
+- No image, video, CAD, schematic, or PCB route is inferred without a user selection.
+- The provider-neutral planning layer remains usable without Fusion, EasyEDA, image, or video integrations; optional tools are never required or installed implicitly.
+- V1 migration refuses same-path or pre-existing outputs, publishes new files atomically, and avoids embedding an absolute input path by default.
+- An unavailable MCP or API never silently changes the route.
+- Conflicting source values cannot be hidden by status or document order.
+- A pending decision, stale or unverified dependency, mismatched content/provenance hash, changed parameter or material Operation Card, reused attempt, or ambiguous provider binding blocks execution.
+- The reserved write lease rechecks input/output readiness, preventing a time-of-check/time-of-use status change from crossing the provider boundary.
+- Dangerous or destructively named tools cannot be down-classified; high-risk calls require one exact scoped user decision.
+- Fusion timeout, no-change, partial-write, rollback, unit conversion, and external export paths are handled fail-closed.
+- EasyEDA window/document identity, permission, schematic/PCB units, D+/D-, Pin 1, FPC direction, pin-pad mapping, and DRC conditions are checked.
+- Frozen schematics require non-empty requirements, power/interface contracts, device/binding/net truth, rules, library revisions, and evidence-complete critical checks; empty contracts cannot pass vacuously.
+- CAD/PCB board thickness, holes, connectors, height zones, and antenna keep-outs require an evidence-backed cross-domain match.
+- PCB output is bounded to `PCB design candidate / waiting EVT`, never manufacturing release.
 
-## Overall status
+## Boundary
 
-`product-loop` passes the planned first-round validation for:
-- global installation boundary
-- helper-script health
-- `spec-only` behavior
-- resume behavior
-- `handoff` behavior
-- scope boundary behavior
-- `full` mode selection and draft export behavior
-
-Remaining limitation:
-- `full` mode is validated through an OCP-based parametric loop, not through a named end-user CAD application such as FreeCAD or Fusion.
+These tests validate the orchestration contracts and pure adapter guards. They do not claim that a live Fusion 360 or EasyEDA backend was modified or exercised; backend changes are intentionally outside this phase.

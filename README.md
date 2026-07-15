@@ -1,173 +1,121 @@
 # product-loop
 
-`product-loop` is an open skill package for taking a small hardware product from idea to a reusable design pack, with an optional CAD iteration path when the environment supports it.
+`product-loop` is an open Codex skill for orchestrating a small hardware product across concept visuals, industrial design, Fusion 360 modeling, EasyEDA schematic and PCB work, guided user operation, and downstream handoff.
 
-It is designed for:
+Its central rule is simple: the agent may inspect, recommend, and execute reversible steps inside an approved route, but the user decides whether each track runs and who performs it.
 
-- small consumer electronics
-- desktop hardware
-- lightweight robotic accessories
-- concept-to-spec workflows that need structured handoff artifacts
-- industrial design workflows that need component and packaging assumptions before styling
+## Works without Fusion, EasyEDA, or generation plugins
 
-It is not designed for:
+The core skill is a provider-neutral planning and decision orchestrator. Fusion 360 MCP, EasyEDA APIs/skills, and image or video generators are optional integrations, not install dependencies.
 
-- production DFM
-- tooling and mold design
-- tolerance-stack engineering
-- large mechanical systems
-- direct final-CAD generation from a single render
+| Available tools | Product Loop can still do |
+| --- | --- |
+| No MCP or plugin | Requirements, architecture, Design Pack, Electrical Pack, Interface Control, acceptance planning, guided steps, and external handoff |
+| Image/video provider | The same core workflow plus user-approved concept visuals |
+| CAD provider | The same core workflow plus user-approved direct mechanical execution |
+| EasyEDA provider | The same core workflow plus user-approved direct or hybrid schematic/PCB execution |
 
-## Core idea
+Missing tools only change which routes are currently eligible. Product Loop must not install an optional provider, choose a fallback, or convert planning into a write operation without a new user decision. The helper scripts use only the Python 3 standard library.
 
-The skill enforces three operating rules:
+## What V2 adds
 
-1. Check the environment first.
-2. Research comparable products and plausible modules before styling.
-3. Use a `Design Pack` as the shared interface between concept work and downstream modeling.
-4. Keep repository boundaries clean: installable skill, references, scripts, examples, and repo docs are separated from day one.
+- A mandatory user Route Gate after read-only capability discovery.
+- Independent visual, mechanical, schematic, and PCB tracks.
+- Direct, guided, hybrid, specification-only, and handoff execution paths.
+- Provider-neutral Design Pack, Electrical Pack, Interface Control, and Run State contracts.
+- Fusion 360 MCP and EasyEDA adapter protocols with readback, evidence, and recovery.
+- Conflict gates, dependency-aware invalidation, resumable state, and evidence-backed claims.
+
+Product Loop produces design candidates and EVT inputs. It does not certify DFM, tooling, tolerance stacks, compliance, or manufacturing release.
 
 ## Repository layout
 
 ```text
 product-loop/
-├── README.md
-├── 说明.md
-├── LICENSE
-├── .gitignore
 ├── product-loop/
 │   ├── SKILL.md
 │   ├── agents/
 │   ├── references/
+│   ├── schemas/
 │   └── scripts/
+├── tests/
 ├── examples/
-│   └── desktop-device-demo/
-└── assets/
-    └── diagrams/
+└── assets/diagrams/
 ```
 
-The installable skill lives in [`product-loop/`](./product-loop). The `examples/` directory is documentation-only and should not be merged into the skill folder when you install it.
+The installable skill is the inner `product-loop/` directory. Examples are public synthetic fixtures and are not installed with the skill.
 
-## What the skill does
+## Core artifacts
 
-The workflow is split into six main phases, with one optional architecture gate and one required component-selection pass:
+- `design-pack.v2.json`: product, component, appearance, structure, and acceptance truth.
+- `electrical-pack.v2.json`: electrical architecture, pin, net, footprint, schematic, and PCB constraints.
+- `interface-control.v2.json`: shared millimeter-based geometry across enclosure and board.
+- `run-state.v2.json`: routes, decisions, capabilities, artifacts, dependencies, evidence, and execution state.
 
-1. `Phase 0: Environment Check`
-2. `Phase 1: Brief Clarification`
-3. `Phase 1.5: Module Architecture Framing` when unresolved module choices would materially change the product
-4. `Phase 1.6: Research-backed Component Selection`
-5. `Phase 2: Direction Exploration`
-6. `Phase 3: Visual Convergence`
-7. `Phase 4: Design Translation`
-8. `Phase 5: CAD Loop or Handoff`
+## Route choices
 
-The environment check selects one execution mode:
+- Visualization: skip, image, video, or image+video.
+- Mechanical: skip, specification, direct MCP, guided, or handoff.
+- Schematic: skip, direct, guided, hybrid, or handoff.
+- PCB: skip, direct, guided, hybrid, or handoff.
 
-- `full`: CAD-capable environment; continue into a parametric draft-model loop
-- `spec-only`: no CAD environment; stop at a design pack plus review artifacts
-- `handoff`: environment or inputs are incomplete; emit a downstream handoff package
-
-## Standard outputs
-
-Complete `spec-only` and `full` runs should produce:
-
-- `Reference Cases`
-- `Candidate Components`
-- `Selected or Assumed Components`
-- `Packaging Constraints`
-- `Concept Directions`
-- `Render Set`
-- `Appearance Spec`
-- `Structure Spec`
-- `Design Pack`
-- `Review Report`
-
-`handoff` mode may stop earlier when inputs or environment capability are incomplete. In that case, the expected outputs are:
-
-- `Normalized Brief`
-- `Assumptions`
-- `Open Questions`
-- `Handoff Brief`
-
-`full` mode adds:
-
-- `CAD Iteration Inputs`
-- `Parametric Draft Model`
-- `CAD Iteration Report`
-
-## Design Pack contract
-
-Version 1 of the structured `Design Pack` uses these top-level fields:
-
-- `product_goal`
-- `execution_mode`
-- `hard_constraints`
-- `component_envelopes`
-- `reference_cases`
-- `component_requirements`
-- `component_candidates`
-- `selected_components`
-- `packaging_constraints`
-- `sourcing_risks`
-- `layout_zones`
-- `mounting_strategy`
-- `style_features`
-- `manufacturing_risks`
-- `forbidden_features`
-- `acceptance_checks`
-
-The skill ships helper scripts that normalize the design pack, generate a review matrix, and emit a handoff brief.
-
-## Install
-
-Copy or symlink the inner `product-loop/` directory into your Codex skills directory.
-
-Example:
-
-```bash
-cp -R product-loop/product-loop "${CODEX_HOME:-$HOME/.codex}/skills/"
-```
-
-After installation, Codex should discover the skill as `$product-loop`.
-
-## Example
-
-See [`examples/desktop-device-demo/`](./examples/desktop-device-demo/) for a complete non-private example that includes:
-
-- a normalized brief
-- concept directions
-- appearance and structure specs
-- a structured design pack
-- a review report
-
-See [`examples/parking-number-plate-demo/`](./examples/parking-number-plate-demo/) for a component-selection-focused example that shows reference cases, candidate modules, provisional selections, and packaging constraints before concept directions.
+Unavailable capabilities never trigger silent fallback. Product Loop pauses and asks the user to choose a new route.
 
 ## Helper scripts
 
-The skill includes three lightweight Python helpers:
-
-- [`normalize_design_pack.py`](./product-loop/scripts/normalize_design_pack.py)
-- [`build_review_matrix.py`](./product-loop/scripts/build_review_matrix.py)
-- [`emit_handoff_brief.py`](./product-loop/scripts/emit_handoff_brief.py)
-
-Example usage:
-
 ```bash
-python3 product-loop/scripts/normalize_design_pack.py \
-  examples/desktop-device-demo/design-pack.json \
-  /tmp/design-pack.normalized.json
-
-python3 product-loop/scripts/build_review_matrix.py \
-  examples/desktop-device-demo/design-pack.json \
-  /tmp/review-matrix.md
-
-python3 product-loop/scripts/emit_handoff_brief.py \
-  examples/desktop-device-demo/design-pack.json \
-  /tmp/handoff-brief.md
+python3 product-loop/scripts/migrate_v1_to_v2.py INPUT --output-dir NEW_DIRECTORY
+python3 product-loop/scripts/validate_v2.py design-pack INPUT
+python3 product-loop/scripts/validate_bundle.py --run-state RUN_STATE --design-pack DESIGN_PACK --electrical-pack ELECTRICAL_PACK --interface-control INTERFACE_CONTROL --review-results REVIEW_RESULTS
+python3 product-loop/scripts/manage_run_state.py validate RUN_STATE
+python3 product-loop/scripts/manage_run_state.py resolve-routes RUN_STATE OUTPUT --decision-ref chat-message:route-choice-001 --visualization image --mechanical direct --schematic guided --pcb hybrid
+python3 product-loop/scripts/manage_run_state.py open-decision RUN_STATE OUTPUT --gate DECISION_GATE_JSON
+python3 product-loop/scripts/manage_run_state.py resolve-decision RUN_STATE OUTPUT --selected-option freeze --decision-ref approval-record:freeze-001
+python3 product-loop/scripts/manage_run_state.py record-execution RUN_STATE OUTPUT --step-id STEP --attempt-id ATTEMPT --status completed --result-fingerprint sha256:READBACK
+python3 product-loop/scripts/manage_run_state.py change-route RUN_STATE OUTPUT --track mechanical --decision-id DECISION
+python3 product-loop/scripts/manage_run_state.py stale RUN_STATE OUTPUT --artifact-id interface-control --revision 3 --reason "Board outline changed"
+python3 product-loop/scripts/normalize_design_pack.py INPUT OUTPUT
+python3 product-loop/scripts/build_review_matrix.py INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
+python3 product-loop/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
+python3 product-loop/scripts/evaluate_behavior_contracts.py --cases product-loop/evals/product-loop-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
-## Notes for maintainers
+`adapter_contracts.py` supplies pure safety checks for Fusion/EasyEDA unit boundaries, write recovery classification, per-call dangerous-tool authorization, EasyEDA identity/hash preflight, and CAD–PCB shared-geometry comparison. Provider writes must run through one same-process host transaction: authorize the exact bundle, perform read-only preflight, call `reserve_execution(...)`, reauthorize the reserved snapshot, consume the single-use lease, invoke the provider once, and record readback. The CLI intentionally does not expose reservation because it cannot preserve the sealed token or guarantee that preflight occurred. Decision references are provenance pointers, not cryptographic authentication: the host must supply a stable reference obtained from the real user message or approval record. The synthetic golden bundle is in `examples/v2-orchestrator-demo/`. Behavior cases and golden captured outcomes live in `product-loop/evals/`; the evaluator accepts outcomes captured from real skill runs and fails on missing safeguards or prohibited actions.
 
-- Keep the skill body concise; push detailed templates and schemas into `references/`.
-- Do not bake local machine paths, proprietary repositories, or personal CAD setups into the skill.
-- Treat the example as a public demo artifact, not as product-specific source truth.
+## Test
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+## Install
+
+Clone the repository, then install the inner `product-loop/` directory. A symlink is recommended because future `git pull --ff-only` updates are immediately visible to the installed skill:
+
+```bash
+git clone https://github.com/Muye2026/product-loop.git
+cd product-loop
+skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$skills_root"
+ln -s "$(pwd)/product-loop" "$skills_root/product-loop"
+```
+
+For a copy-based install, run this from the repository root only when the destination does not already exist:
+
+```bash
+skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$skills_root"
+if [ -e "$skills_root/product-loop" ]; then
+  echo "product-loop already exists; follow UPGRADING.md"
+else
+  cp -R product-loop "$skills_root/product-loop"
+fi
+```
+
+After installing or updating, start a new Codex task (or restart the host) so skill discovery reloads the files. Existing V1 users should follow [UPGRADING.md](UPGRADING.md); it covers symlink and copied installs, safe backup, V1 data migration, verification, and rollback. Release changes are summarized in [CHANGELOG.md](CHANGELOG.md).
+
+## Maintainer rules
+
+- Keep `SKILL.md` concise and route detailed rules through one-level references.
+- Use synthetic examples; do not embed private project data, local paths, credentials, or live document IDs.
+- Before committing, inspect `.gitignore`, `git status --short`, untracked files, generated artifacts, caches, logs, temporary files, and secrets.

@@ -1,0 +1,184 @@
+{
+  "schema_version": "2.0",
+  "document_type": "run_state",
+  "run_id": "run-demo-001",
+  "status": "waiting_user_decision",
+  "decision_authority": "user",
+  "confirmation_policy": "material_decisions",
+  "execution_cadence": "stepwise",
+  "track_routes": {
+    "visualization": null,
+    "mechanical": null,
+    "schematic": null,
+    "pcb": null
+  },
+  "route_decision_ids": {
+    "visualization": null,
+    "mechanical": null,
+    "schematic": null,
+    "pcb": null
+  },
+  "pending_decision_gate": {
+    "decision_id": "gate-route-selection-001",
+    "decision_type": "route_selection",
+    "scope": ["track:visualization", "track:mechanical", "track:schematic", "track:pcb"],
+    "status": "pending",
+    "question": "Which explicit route should each of the four tracks use?",
+    "options": [
+      {
+        "id": "choose_routes",
+        "label": "Choose each route",
+        "description": "Record one user-owned decision for every track.",
+        "impact": "No visual, CAD, schematic, or PCB execution starts before all choices are recorded."
+      }
+    ],
+    "recommendation": null,
+    "recommendation_rationale": null,
+    "impact": [
+      "Creates four independent route decisions.",
+      "Does not authorize architecture, freeze, or destructive operations."
+    ],
+    "selected_option": null,
+    "decided_by": null,
+    "decided_at": null,
+    "decision_evidence": [],
+    "dependency_revisions": [
+      {
+        "artifact_id": "design-pack-demo-001",
+        "revision": 1,
+        "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+      }
+    ]
+  },
+  "decision_ledger": [],
+  "capability_reports": [
+    {
+      "report_id": "cap-visualization-001",
+      "track": "visualization",
+      "adapter_id": "unknown",
+      "adapter_version": null,
+      "status": "unknown",
+      "checked_at": null,
+      "tool_schema_digest": null,
+      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "operations": [],
+      "units": {},
+      "limitations": ["Example capability report; probe at runtime."],
+      "evidence": []
+    },
+    {
+      "report_id": "cap-mechanical-001",
+      "track": "mechanical",
+      "adapter_id": "unknown",
+      "adapter_version": null,
+      "status": "unknown",
+      "checked_at": null,
+      "tool_schema_digest": null,
+      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "operations": [],
+      "units": {"public": "mm"},
+      "limitations": ["Example capability report; probe at runtime."],
+      "evidence": []
+    },
+    {
+      "report_id": "cap-schematic-001",
+      "track": "schematic",
+      "adapter_id": "unknown",
+      "adapter_version": null,
+      "status": "unknown",
+      "checked_at": null,
+      "tool_schema_digest": null,
+      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "operations": [],
+      "units": {"public": "mm", "native_grid": "0.01 inch"},
+      "limitations": ["Example capability report; probe at runtime."],
+      "evidence": []
+    },
+    {
+      "report_id": "cap-pcb-001",
+      "track": "pcb",
+      "adapter_id": "unknown",
+      "adapter_version": null,
+      "status": "unknown",
+      "checked_at": null,
+      "tool_schema_digest": null,
+      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "operations": [],
+      "units": {"public": "mm", "native": "mil"},
+      "limitations": ["Example capability report; probe at runtime."],
+      "evidence": []
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "design-pack-demo-001",
+      "artifact_type": "design_pack",
+      "revision": 1,
+      "status": "planned",
+      "path": "design-pack.v2.json",
+      "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f",
+      "source_hashes": {"synthetic brief": "sha256:demo-brief-v1"},
+      "provenance": {
+        "source": "synthetic example brief",
+        "producer": "product-loop example",
+        "time": "2026-01-01T00:00:00Z",
+        "hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+      },
+      "evidence": [],
+      "depends_on": [],
+      "invalidation_reasons": []
+    },
+    {
+      "artifact_id": "electrical-pack-demo-001",
+      "artifact_type": "electrical_pack",
+      "revision": 1,
+      "status": "planned",
+      "path": "electrical-pack.v2.json",
+      "content_hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb",
+      "source_hashes": {"design-pack-demo-001@1": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"},
+      "provenance": {
+        "source": "synthetic example brief",
+        "producer": "product-loop example",
+        "time": "2026-01-01T00:00:00Z",
+        "hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb"
+      },
+      "evidence": [],
+      "depends_on": [
+        {
+          "artifact_id": "design-pack-demo-001",
+          "revision": 1,
+          "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+        }
+      ],
+      "invalidation_reasons": []
+    },
+    {
+      "artifact_id": "interface-control-demo-001",
+      "artifact_type": "interface_control",
+      "revision": 1,
+      "status": "planned",
+      "path": "interface-control.v2.json",
+      "content_hash": "sha256:ee9cae70efb2311af50f1adb9c543a60dce3652149cb57bd2d593e33611b9447",
+      "source_hashes": {"design-pack-demo-001@1": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"},
+      "provenance": {
+        "source": "synthetic example brief",
+        "producer": "product-loop example",
+        "time": "2026-01-01T00:00:00Z",
+        "hash": "sha256:ee9cae70efb2311af50f1adb9c543a60dce3652149cb57bd2d593e33611b9447"
+      },
+      "evidence": [],
+      "depends_on": [
+        {
+          "artifact_id": "design-pack-demo-001",
+          "revision": 1,
+          "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+        }
+      ],
+      "invalidation_reasons": []
+    }
+  ],
+  "operation_cards": [],
+  "execution_reservations": [],
+  "authorization_consumptions": [],
+  "cross_domain_checks": []
+}
