@@ -69,6 +69,21 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("migrate_v1_to_v2.py", upgrade)
         self.assertIn("waiting_user_decision", upgrade)
 
+    def test_v21_agent_portability_is_documented(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        portability = (ROOT / "AGENT_PORTABILITY.md").read_text(encoding="utf-8")
+
+        self.assertIn("AGENT_PORTABILITY.md", readme)
+        self.assertIn("## V2.1", changelog)
+        self.assertIn("schema_version: 2.0", changelog)
+        for host in ("Codex", "Claude Code", "Cursor", "OpenClaw", "Other agent"):
+            self.assertIn(host, portability)
+        self.assertIn("Native discovery means", portability)
+        self.assertIn("Manual entrypoint for another agent", portability)
+        self.assertIn("Never infer provider support from the host name", portability)
+        self.assertIn("V2.1 is a workflow and distribution release", portability)
+
 
 if __name__ == "__main__":
     unittest.main()

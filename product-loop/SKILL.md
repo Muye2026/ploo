@@ -1,6 +1,6 @@
 ---
 name: product-loop
-description: Orchestrate a small hardware product from brief to evidence-backed design artifacts, including planning-only runs with no external execution backend, concept images or video, industrial design, optional Fusion 360 MCP modeling, optional EasyEDA schematic and PCB work, guided user operation, and downstream handoff. Use when Codex must plan, resume, execute, or review a multi-domain hardware workflow while preserving user authority over whether each track runs and whether work is direct, guided, hybrid, specification-only, or handed off. Best for small consumer electronics, desktop hardware, and lightweight robotic accessories; not a production DFM, tooling, tolerance-stack, or manufacturing-release certification skill.
+description: Orchestrate a small hardware product from brief to evidence-backed design artifacts, including planning-only runs with no external execution backend, concept images or video, industrial design, optional Fusion 360 MCP modeling, optional EasyEDA schematic and PCB work, guided user operation, and downstream handoff. Use when an AI agent must plan, resume, execute, or review a multi-domain hardware workflow while preserving user authority over whether each track runs and whether work is direct, guided, hybrid, specification-only, or handed off. Best for small consumer electronics, desktop hardware, and lightweight robotic accessories; not a production DFM, tooling, tolerance-stack, or manufacturing-release certification skill.
 ---
 
 # Product Loop

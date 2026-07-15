@@ -1,13 +1,32 @@
-# Upgrading Product Loop from V1 to V2
+# Upgrading Product Loop to V2.1
 
-V2 keeps the planning layer usable without Fusion 360 MCP, EasyEDA, or image/video plugins. It adds explicit route decisions, strict V2 artifacts, dependency-aware invalidation, and optional provider adapters. Updating the skill does not modify a CAD/EDA document or migrate project data automatically.
+V2 keeps the planning layer usable without Fusion 360 MCP, EasyEDA, or image/video plugins. It adds explicit route decisions, strict V2 artifacts, dependency-aware invalidation, and optional provider adapters. V2.1 adds cross-Agent installation guidance and does not change the V2 artifact schemas. Updating the skill does not modify a CAD/EDA document or migrate project data automatically.
+
+## 0. V2 to V2.1
+
+If the installed skill is a symlink to this repository's inner `product-loop/` directory, `git pull --ff-only` is enough. Valid V2 files remain `schema_version: 2.0` and need no data migration.
+
+Current Codex documentation recommends `~/.agents/skills/product-loop` for personal discovery. Older Product Loop releases documented `${CODEX_HOME:-$HOME/.codex}/skills/product-loop`. If the old location is still discovered, it can remain in place. To migrate discovery paths without touching the repository or run data:
+
+1. Confirm the old installation target with `readlink`.
+2. Create a link under `~/.agents/skills` to the same inner repository directory.
+3. Start a new Codex task and run the V2.1 smoke test in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md).
+4. Remove or disable the legacy discovery entry only after the new entry is confirmed, so duplicate skills do not remain visible.
+
+Claude Code, Cursor, OpenClaw, and manual host setup are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md).
 
 ## 1. Identify the installation type
 
 ```bash
-skill_dir="${CODEX_HOME:-$HOME/.codex}/skills/product-loop"
-ls -ld "$skill_dir"
-readlink "$skill_dir" || true
+for skill_dir in \
+  "$HOME/.agents/skills/product-loop" \
+  "${CODEX_HOME:-$HOME/.codex}/skills/product-loop"
+do
+  if [ -e "$skill_dir" ] || [ -L "$skill_dir" ]; then
+    ls -ld "$skill_dir"
+    readlink "$skill_dir" || true
+  fi
+done
 ```
 
 - If `readlink` prints the repository's inner `product-loop/` path, this is a symlink install.
@@ -26,7 +45,7 @@ No reinstall is needed. The installed skill points at the updated files. Start a
 
 ## 2B. Update a copied install
 
-First update or freshly clone the public repository. Then move the old installed directory to a timestamped backup and copy the inner V2 directory into its place:
+First update or freshly clone the public repository. Then move the old installed directory to a timestamped backup and copy the inner V2.1 directory into its place. Set `skills_root` to the host location you are actually updating; this example preserves the legacy Codex V1 path:
 
 ```bash
 git -C /path/to/product-loop pull --ff-only
@@ -61,7 +80,7 @@ test -f "${CODEX_HOME:-$HOME/.codex}/skills/product-loop/scripts/migrate_v1_to_v
 grep -q "waiting_user_decision" "${CODEX_HOME:-$HOME/.codex}/skills/product-loop/SKILL.md"
 ```
 
-V2 discovery should present four independent route choices and state that recommendations are not authorization. It must also work in planning-only mode when no optional provider is installed.
+V2.1 discovery should present four independent route choices and state that recommendations are not authorization. It must also work in planning-only mode when no optional provider is installed.
 
 ## 4. Migrate V1 run data only when needed
 
@@ -102,6 +121,8 @@ Migration is deliberately conservative:
 Keep the original V1 file until the migrated bundle has been reviewed and the user has explicitly selected the four V2 routes.
 
 ## 5. Compatibility and rollback
+
+V2.1 changes distribution guidance, not the V2 JSON contracts. Do not rewrite a valid V2 run merely to label it V2.1.
 
 | V1 behavior | V2 behavior |
 | --- | --- |

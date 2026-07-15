@@ -1,10 +1,11 @@
-# Product Loop V2 Validation Results
+# Product Loop V2.1 Validation Results
 
 Date: 2026-07-15
 
 ## Validated scope
 
 - The installable `SKILL.md` is a 152-line router and state-machine entrypoint.
+- The same inner Agent Skills folder is documented for Codex, Claude Code, Cursor, OpenClaw, and manual host loading without making any provider a core dependency.
 - All four V2 JSON documents pass strict structural and semantic validation.
 - The synthetic four-document planned bundle and strict frozen-schematic, PCB-candidate, and waiting-EVT bundles pass cross-document hash, freeze, dependency, review, and evidence checks.
 - V1 migration leaves every missing route at a user decision gate.
@@ -16,7 +17,7 @@ Date: 2026-07-15
 
 ```text
 python3 -m unittest discover -s tests -v
-105 tests passed
+106 tests passed
 
 validate_v2.py
 design-pack: valid
@@ -31,8 +32,7 @@ evaluate_behavior_contracts.py
 12 behavior contracts: passed
 
 skill frontmatter
-Ruby YAML equivalent validation: passed
-official quick_validate.py: unavailable because PyYAML is not installed in this workspace runtime
+official quick_validate.py: passed
 ```
 
 ## Safety properties exercised

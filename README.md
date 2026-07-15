@@ -1,6 +1,6 @@
 # product-loop
 
-`product-loop` is an open Codex skill for orchestrating a small hardware product across concept visuals, industrial design, Fusion 360 modeling, EasyEDA schematic and PCB work, guided user operation, and downstream handoff.
+`product-loop` is an open, agent-portable skill for orchestrating a small hardware product across concept visuals, industrial design, mechanical modeling, schematic and PCB work, guided user operation, and downstream handoff.
 
 Its central rule is simple: the agent may inspect, recommend, and execute reversible steps inside an approved route, but the user decides whether each track runs and who performs it.
 
@@ -17,7 +17,16 @@ The core skill is a provider-neutral planning and decision orchestrator. Fusion 
 
 Missing tools only change which routes are currently eligible. Product Loop must not install an optional provider, choose a fallback, or convert planning into a write operation without a new user decision. The helper scripts use only the Python 3 standard library.
 
-## What V2 adds
+## What V2.1 adds
+
+- Native Agent Skills installation guidance for Codex, Claude Code, Cursor, and OpenClaw.
+- A manual entrypoint for agents that can read the folder but do not support native skill discovery.
+- A strict separation between workflow portability and optional CAD, EDA, image, video, or MCP capability.
+- A current Codex personal-install path plus a safe migration path for legacy `~/.codex/skills` users.
+
+V2.1 does not change the V2 artifact schemas. Valid `schema_version: 2.0` files remain compatible.
+
+## What V2 introduced
 
 - A mandatory user Route Gate after read-only capability discovery.
 - Independent visual, mechanical, schematic, and PCB tracks.
@@ -90,20 +99,22 @@ python3 -m unittest discover -s tests -v
 
 ## Install
 
-Clone the repository, then install the inner `product-loop/` directory. A symlink is recommended because future `git pull --ff-only` updates are immediately visible to the installed skill:
+Clone the repository, then install the inner `product-loop/` directory. A symlink is recommended because future `git pull --ff-only` updates are immediately visible to every linked host.
+
+For current Codex personal discovery:
 
 ```bash
 git clone https://github.com/Muye2026/product-loop.git
 cd product-loop
-skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
+skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
 ln -s "$(pwd)/product-loop" "$skills_root/product-loop"
 ```
 
-For a copy-based install, run this from the repository root only when the destination does not already exist:
+Codex, Claude Code, Cursor, OpenClaw, copied installs, legacy Codex paths, updates, rollback, and host capability boundaries are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md). For a copy-based current Codex install, run this from the repository root only when the destination does not already exist:
 
 ```bash
-skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
+skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
 if [ -e "$skills_root/product-loop" ]; then
   echo "product-loop already exists; follow UPGRADING.md"
@@ -112,7 +123,7 @@ else
 fi
 ```
 
-After installing or updating, start a new Codex task (or restart the host) so skill discovery reloads the files. Existing V1 users should follow [UPGRADING.md](UPGRADING.md); it covers symlink and copied installs, safe backup, V1 data migration, verification, and rollback. Release changes are summarized in [CHANGELOG.md](CHANGELOG.md).
+After installing or updating, start a new agent task if the host caches skill discovery. Existing V1 or V2 users should follow [UPGRADING.md](UPGRADING.md); it covers symlink and copied installs, safe backup, V1 data migration, V2.1 path compatibility, verification, and rollback. Release changes are summarized in [CHANGELOG.md](CHANGELOG.md).
 
 ## Maintainer rules
 

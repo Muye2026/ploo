@@ -1,5 +1,13 @@
 # Changelog
 
+## V2.1 — 2026-07-15
+
+- Documented native Agent Skills installation for Codex, Claude Code, Cursor, and OpenClaw, plus a manual entrypoint for other agents.
+- Generalized the Skill trigger language from Codex-only to agent-portable without weakening the user decision gates.
+- Separated workflow portability from optional CAD, EDA, image, video, MCP, and provider capabilities.
+- Updated the preferred Codex personal skill path to `~/.agents/skills` while preserving a safe path for legacy `~/.codex/skills` installations.
+- Kept the V2 artifact contracts at `schema_version: 2.0`; V2.1 requires no run-data migration.
+
 ## V2 — 2026-07-15
 
 - Made all visual, mechanical, schematic, and PCB routes explicit user decisions.
