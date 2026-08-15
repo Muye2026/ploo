@@ -16,7 +16,7 @@ export function resolveCoreDir(config = {}) {
   if (cfg.coreDir) {
     const dir = String(cfg.coreDir)
     if (!existsSync(join(dir, 'scripts'))) {
-      throw new Error(`dsh-product-loop: config.coreDir ${dir} does not contain scripts/`)
+      throw new Error(`dsh-ploo: config.coreDir ${dir} does not contain scripts/`)
     }
     return dir
   }
@@ -32,7 +32,7 @@ export function loadSkillDefinition(coreDir) {
   const skillPath = join(coreDir, 'SKILL.md')
   const raw = readFileSync(skillPath, 'utf8')
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
-  let name = 'product-loop'
+  let name = 'ploo'
   let description =
     'Orchestrate a small hardware product from brief to evidence-backed design artifacts.'
   let body = raw
@@ -48,7 +48,7 @@ export function loadSkillDefinition(coreDir) {
 
 ---
 
-Harness runtime note: this skill is embedded by the dsh-product-loop plugin. The core files for this session live at:
+Harness runtime note: this skill is embedded by the dsh-ploo plugin. The core files for this session live at:
 
     ${coreDir}
 
@@ -58,7 +58,7 @@ Resolve relative paths such as \`references/\`, \`schemas/\`, \`scripts/\`, and 
     name,
     description,
     source: 'runtime',
-    provider: 'product-loop',
+    provider: 'ploo',
     resourceBase: { kind: 'directory', path: coreDir },
     path: skillPath,
     content,

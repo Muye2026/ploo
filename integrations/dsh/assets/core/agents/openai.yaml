@@ -1,4 +1,4 @@
 interface:
-  display_name: "Product Loop"
+  display_name: "Ploo"
   short_description: "Hardware planning with optional CAD, EDA, and visuals"
-  default_prompt: "Use $product-loop to plan this hardware product even with no execution backend, then present user-approved visual, mechanical, schematic, PCB, guided, or handoff routes."
+  default_prompt: "Use $ploo to plan this hardware product even with no execution backend, then present user-approved visual, mechanical, schematic, PCB, guided, or handoff routes."

@@ -1,12 +1,12 @@
-# dsh-product-loop — DeepSeek Harness 插件 / Plugin
+# dsh-ploo — DeepSeek Harness 插件 / Plugin
 
 [English](#english) · [中文](#中文)
 
 ## English
 
-DeepSeek Harness bundle plugin for the Product Loop hardware product workflow. It turns the repository into a packaged harness-level integration:
+DeepSeek Harness bundle plugin for the Ploo hardware product workflow. It turns the repository into a packaged harness-level integration:
 
-- **Runtime skill**: registers `product-loop` via `ctx.skills.register` (rank: runtime), so the workflow appears in the skill catalog even without any filesystem skill installation.
+- **Runtime skill**: registers `ploo` via `ctx.skills.register` (rank: runtime), so the workflow appears in the skill catalog even without any filesystem skill installation.
 - **Host tools**: registers eight `ploo_*` tools that wrap the stdlib-only core scripts — `ploo_validate`, `ploo_validate_bundle`, `ploo_run_state`, `ploo_migrate`, `ploo_normalize`, `ploo_review_matrix`, `ploo_handoff`, `ploo_evaluate_behavior`.
 - **Self-contained**: a snapshot of `core/` ships inside the package under `assets/core/`, so an installed profile runs without the repository checkout. `config.coreDir` overrides the snapshot with a live checkout when developing the core.
 
@@ -15,17 +15,17 @@ Verified against `@deepseek-ai/dsh` 0.1.0-rc.6.
 ### Install (local path)
 
 ```bash
-dsh plugin --profile web add /path/to/product-loop/integrations/dsh
+dsh plugin --profile web add /path/to/ploo/integrations/dsh
 # restart the profile afterwards; the plugin row is cached per boot
 ```
 
 For a dedicated agent profile, copy the preset and install the plugin into it:
 
 ```bash
-mkdir -p "$HOME/.dsh/profiles/product-loop"
-cp integrations/dsh/profile/product-loop/package.json "$HOME/.dsh/profiles/product-loop/package.json"
-dsh plugin --profile product-loop add /path/to/product-loop/integrations/dsh
-dsh --profile product-loop          # boots the web app with Product Loop mounted
+mkdir -p "$HOME/.dsh/profiles/ploo"
+cp integrations/dsh/profile/ploo/package.json "$HOME/.dsh/profiles/ploo/package.json"
+dsh plugin --profile ploo add /path/to/ploo/integrations/dsh
+dsh --profile ploo          # boots the web app with Ploo mounted
 ```
 
 Swap `@deepseek-ai/dsh-web-app` for `@deepseek-ai/dsh-headless` in the preset's `bundles` to make a job-style headless profile instead.
@@ -36,10 +36,10 @@ In the profile's `cordis.patch.yml`, extend the inserted row:
 
 ```yaml
 - insert:
-    - id: product-loop
-      name: dsh-product-loop
+    - id: ploo
+      name: dsh-ploo
       config:
-        coreDir: /absolute/path/to/product-loop/core   # live checkout override
+        coreDir: /absolute/path/to/ploo/core   # live checkout override
         pythonPath: python3                            # interpreter for core scripts
 ```
 
@@ -58,9 +58,9 @@ The plugin only wraps the core's deterministic validators and state helpers. It 
 
 ## 中文
 
-Product Loop 硬件产品工作流的 DeepSeek Harness 打包插件,把仓库变成 Harness 级集成:
+Ploo 硬件产品工作流的 DeepSeek Harness 打包插件,把仓库变成 Harness 级集成:
 
-- **运行时 Skill**:通过 `ctx.skills.register` 注册 `product-loop`,不装任何文件系统 Skill 也能出现在 Skill 目录里。
+- **运行时 Skill**:通过 `ctx.skills.register` 注册 `ploo`,不装任何文件系统 Skill 也能出现在 Skill 目录里。
 - **宿主工具**:注册 8 个 `ploo_*` 工具,封装仅依赖标准库的核心脚本 —— `ploo_validate`、`ploo_validate_bundle`、`ploo_run_state`、`ploo_migrate`、`ploo_normalize`、`ploo_review_matrix`、`ploo_handoff`、`ploo_evaluate_behavior`。
 - **自包含**:`core/` 快照随包分发(`assets/core/`),装好后不依赖仓库 checkout;开发核心时可用 `config.coreDir` 指向实时 checkout。
 
@@ -69,17 +69,17 @@ Product Loop 硬件产品工作流的 DeepSeek Harness 打包插件,把仓库变
 ### 安装(本地路径)
 
 ```bash
-dsh plugin --profile web add /path/to/product-loop/integrations/dsh
+dsh plugin --profile web add /path/to/ploo/integrations/dsh
 # 装完重启该 profile
 ```
 
 专用 Agent profile:
 
 ```bash
-mkdir -p "$HOME/.dsh/profiles/product-loop"
-cp integrations/dsh/profile/product-loop/package.json "$HOME/.dsh/profiles/product-loop/package.json"
-dsh plugin --profile product-loop add /path/to/product-loop/integrations/dsh
-dsh --profile product-loop
+mkdir -p "$HOME/.dsh/profiles/ploo"
+cp integrations/dsh/profile/ploo/package.json "$HOME/.dsh/profiles/ploo/package.json"
+dsh plugin --profile ploo add /path/to/ploo/integrations/dsh
+dsh --profile ploo
 ```
 
 ### 开发

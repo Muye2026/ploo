@@ -1,7 +1,7 @@
 {
-  "name": "dsh-product-loop",
+  "name": "dsh-ploo",
   "version": "0.1.0",
-  "description": "DeepSeek Harness bundle plugin for the Product Loop hardware product workflow: ploo_* host tools over core/scripts plus a runtime-registered product-loop skill.",
+  "description": "DeepSeek Harness bundle plugin for the Ploo hardware product workflow: ploo_* host tools over core/scripts plus a runtime-registered ploo skill.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {

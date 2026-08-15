@@ -8,9 +8,9 @@
   "freeze_decision_id": null,
   "provenance": {
     "source": "synthetic example brief",
-    "producer": "product-loop example",
+    "producer": "ploo example",
     "time": "2026-01-01T00:00:00Z",
-    "hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+    "hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
   },
   "evidence": [
     {
@@ -22,14 +22,18 @@
       "note": "Example data only; no physical verification is claimed."
     }
   ],
-  "product_goal": "A palm-sized USB status beacon for demonstrating Product Loop V2 orchestration.",
+  "product_goal": "A palm-sized USB status beacon for demonstrating Ploo V2 orchestration.",
   "hard_constraints": [
     {
       "id": "hc-envelope",
       "category": "mechanical",
       "rule": "The product envelope shall not exceed 70 x 45 x 24 mm.",
       "priority": "must",
-      "value": [70, 45, 24],
+      "value": [
+        70,
+        45,
+        24
+      ],
       "unit": "mm",
       "status": "confirmed",
       "source": "synthetic example brief"
@@ -39,7 +43,11 @@
     {
       "id": "ce-usb-c",
       "name": "USB-C receptacle envelope",
-      "size_mm": [9, 8, 4],
+      "size_mm": [
+        9,
+        8,
+        4
+      ],
       "placement_note": "Centered on the rear wall.",
       "source_status": "assumed"
     }
@@ -63,7 +71,10 @@
     "contact_points": "Four corner bosses",
     "support_logic": "PCB supported above the base",
     "service_access_notes": "Top cover removable",
-    "suggested_part_split": ["base", "top cover"]
+    "suggested_part_split": [
+      "base",
+      "top cover"
+    ]
   },
   "style_features": [],
   "manufacturing_risks": [],

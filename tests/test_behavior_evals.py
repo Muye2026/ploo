@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EVAL_FILE = ROOT / "core" / "evals" / "product-loop-v2.jsonl"
-GOLDEN_FILE = ROOT / "core" / "evals" / "product-loop-v2-golden-responses.jsonl"
+EVAL_FILE = ROOT / "core" / "evals" / "ploo-v2.jsonl"
+GOLDEN_FILE = ROOT / "core" / "evals" / "ploo-v2-golden-responses.jsonl"
 sys.path.insert(0, str(ROOT / "core" / "scripts"))
 
 from evaluate_behavior_contracts import evaluate_response_set  # noqa: E402

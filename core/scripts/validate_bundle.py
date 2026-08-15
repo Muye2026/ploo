@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cross-document validator for a complete Product Loop V2 contract bundle."""
+"""Cross-document validator for a complete Ploo V2 contract bundle."""
 
 import argparse
 import json
@@ -710,7 +710,7 @@ def authorize_reserved_execute_step(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate a complete Product Loop V2 bundle.")
+    parser = argparse.ArgumentParser(description="Validate a complete Ploo V2 bundle.")
     parser.add_argument("--run-state", required=True, type=Path)
     parser.add_argument("--design-pack", required=True, type=Path)
     parser.add_argument("--electrical-pack", required=True, type=Path)
@@ -736,7 +736,7 @@ def main() -> int:
     except (OSError, json.JSONDecodeError, ValidationError) as exc:
         print(f"invalid bundle: {exc}", file=sys.stderr)
         return 1
-    print("valid: product_loop_v2_bundle")
+    print("valid: ploo_v2_bundle")
     return 0
 
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://product-loop.local/schemas/interface-control.v2.schema.json",
-  "title": "Product Loop Interface Control V2",
+  "$id": "https://ploo.local/schemas/interface-control.v2.schema.json",
+  "title": "Ploo Interface Control V2",
   "type": "object",
   "additionalProperties": false,
   "required": [

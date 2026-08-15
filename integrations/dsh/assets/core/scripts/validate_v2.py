@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed validator for Product Loop V2 machine documents.
+"""Fail-closed validator for Ploo V2 machine documents.
 
 Only the Python standard library is used.  The structural validator implements
 the JSON Schema features used by the checked-in V2 schemas; semantic checks
@@ -1839,7 +1839,7 @@ def load_and_validate(path: Path, schema_dir: Path = None, expected_kind: str = 
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate a Product Loop V2 JSON document.")
+    parser = argparse.ArgumentParser(description="Validate a Ploo V2 JSON document.")
     parser.add_argument("kind", choices=sorted(KIND_ALIASES), help="Document kind")
     parser.add_argument("input", type=Path, help="V2 JSON document")
     return parser.parse_args()

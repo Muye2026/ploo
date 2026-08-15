@@ -29,7 +29,7 @@ DESIGN_PACK_REF_KEYS = {"artifact_id", "revision", "content_hash"}
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Emit a markdown handoff brief from a Product Loop design pack."
+        description="Emit a markdown handoff brief from a Ploo design pack."
     )
     parser.add_argument("input", type=Path)
     parser.add_argument("output", type=Path, nargs="?")

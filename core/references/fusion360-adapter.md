@@ -1,6 +1,6 @@
 # Fusion 360 Adapter V2
 
-本规范定义 `product-loop` 如何通过可插拔 adapter 使用 Fusion 360 MCP。它只负责把 mechanical implementation plan 映射为具体工具调用，不改变 provider-neutral 设计合同，也不负责安装 Fusion、启动 Add-in 或写入用户的 MCP 客户端配置。
+本规范定义 `ploo` 如何通过可插拔 adapter 使用 Fusion 360 MCP。它只负责把 mechanical implementation plan 映射为具体工具调用，不改变 provider-neutral 设计合同，也不负责安装 Fusion、启动 Add-in 或写入用户的 MCP 客户端配置。
 
 ## 1. 用户先选择 CAD 路线
 

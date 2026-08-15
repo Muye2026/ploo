@@ -37,7 +37,7 @@ Run status uses the same six values as artifacts: `planned`, `waiting_user_decis
   "source_hashes": {"design-pack": "sha256:..."},
   "provenance": {
     "source": "approved product contracts",
-    "producer": "product-loop",
+    "producer": "ploo",
     "time": "2026-01-01T00:00:00Z",
     "hash": "sha256:..."
   },

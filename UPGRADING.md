@@ -1,24 +1,37 @@
-# Upgrading Product Loop
+# Upgrading Ploo
 
 V2 keeps the planning layer usable without Fusion 360 MCP, EasyEDA, or image/video plugins. It adds explicit route decisions, strict V2 artifacts, dependency-aware invalidation, and optional provider adapters. V2.1 adds cross-Agent installation guidance and does not change the V2 artifact schemas. Updating the skill does not modify a CAD/EDA document or migrate project data automatically.
 
-## 0. V2.1 to V2.2: repository layout change
+## 0. V2.2 to V3.0: project renamed to ploo
 
-V2.2 reorganizes the repository into `core/` plus `integrations/`. The installable skill moved from the inner `product-loop/` directory to `core/`; the workflow, contracts, and `schema_version: 2.0` artifacts are unchanged.
+V3.0 renames the project from product-loop to ploo: the skill is now named `ploo`, the CLI package is `ploo-cli`, the DeepSeek Harness plugin is `dsh-ploo`, the WorkBuddy skill is `ploo`, and the GitHub repository is `Muye2026/ploo` (the old URL redirects). The workflow, contracts, and `schema_version: 2.0` artifacts are unchanged.
+
+To migrate an installed skill:
+
+```bash
+ln -sfn /path/to/ploo/core "$HOME/.agents/skills/ploo"
+rm -f "$HOME/.agents/skills/product-loop"
+```
+
+For copied installs, back up the old `product-loop` folder, install the new `core/` as `ploo`, verify the smoke test, then remove the backup. Hosts that cache skill discovery need a new task or restart.
+
+## 1. V2.1 to V2.2: repository layout change
+
+V2.2 reorganizes the repository into `core/` plus `integrations/`. The installable skill moved from the inner `ploo/` directory to `core/`; the workflow, contracts, and `schema_version: 2.0` artifacts are unchanged.
 
 If the installed skill is a symlink into a repository clone, re-point it after `git pull --ff-only`:
 
 ```bash
-ln -sfn /path/to/product-loop/core "$HOME/.agents/skills/product-loop"
+ln -sfn /path/to/ploo/core "$HOME/.agents/skills/ploo"
 ```
 
 For copied installs, replace the destination with the new `core/` directory instead of the old inner directory. New host integrations (terminal CLI, DeepSeek Harness, WorkBuddy) are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md) and [integrations/](integrations/).
 
-## 1. V2 to V2.1
+## 2. V2 to V2.1
 
 If the installed skill is a symlink to this repository's inner `core/` directory, `git pull --ff-only` is enough. Valid V2 files remain `schema_version: 2.0` and need no data migration.
 
-Current Codex documentation recommends `~/.agents/skills/product-loop` for personal discovery. Older Product Loop releases documented `${CODEX_HOME:-$HOME/.codex}/skills/product-loop`. If the old location is still discovered, it can remain in place. To migrate discovery paths without touching the repository or run data:
+Current Codex documentation recommends `~/.agents/skills/ploo` for personal discovery. Older Ploo releases documented `${CODEX_HOME:-$HOME/.codex}/skills/ploo`. If the old location is still discovered, it can remain in place. To migrate discovery paths without touching the repository or run data:
 
 1. Confirm the old installation target with `readlink`.
 2. Create a link under `~/.agents/skills` to the same inner repository directory.
@@ -27,12 +40,12 @@ Current Codex documentation recommends `~/.agents/skills/product-loop` for perso
 
 Claude Code, Cursor, OpenClaw, and manual host setup are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md).
 
-## 1. Identify the installation type
+## 3. Identify the installation type
 
 ```bash
 for skill_dir in \
-  "$HOME/.agents/skills/product-loop" \
-  "${CODEX_HOME:-$HOME/.codex}/skills/product-loop"
+  "$HOME/.agents/skills/ploo" \
+  "${CODEX_HOME:-$HOME/.codex}/skills/ploo"
 do
   if [ -e "$skill_dir" ] || [ -L "$skill_dir" ]; then
     ls -ld "$skill_dir"
@@ -43,39 +56,39 @@ done
 
 - If `readlink` prints the repository's inner `core/` path, this is a symlink install.
 - If it prints nothing and `SKILL.md` is inside the directory, this is usually a copied install.
-- If another installer manages the directory, use its update flow after making a backup. Do not copy a second `product-loop/` directory inside the existing one.
+- If another installer manages the directory, use its update flow after making a backup. Do not copy a second `ploo/` directory inside the existing one.
 
-## 2A. Update a symlink install
+## 4A. Update a symlink install
 
 Pull the repository that the link points to:
 
 ```bash
-git -C /path/to/product-loop pull --ff-only
+git -C /path/to/ploo pull --ff-only
 ```
 
 No reinstall is needed. The installed skill points at the updated files. Start a new Codex task or restart the host to reload skill discovery.
 
-## 2B. Update a copied install
+## 4B. Update a copied install
 
 First update or freshly clone the public repository. Then move the old installed directory to a timestamped backup and copy the inner V2.1 directory into its place. Set `skills_root` to the host location you are actually updating; this example preserves the legacy Codex V1 path:
 
 ```bash
-git -C /path/to/product-loop pull --ff-only
+git -C /path/to/ploo pull --ff-only
 skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
-backup="$skills_root/product-loop.v1-backup-$(date +%Y%m%d-%H%M%S)"
-mv "$skills_root/product-loop" "$backup"
-cp -R /path/to/product-loop/core "$skills_root/product-loop"
+backup="$skills_root/ploo.v1-backup-$(date +%Y%m%d-%H%M%S)"
+mv "$skills_root/ploo" "$backup"
+cp -R /path/to/ploo/core "$skills_root/ploo"
 ```
 
 If the repository is not already present, clone it first:
 
 ```bash
-git clone https://github.com/Muye2026/product-loop.git /path/to/product-loop
+git clone https://github.com/Muye2026/ploo.git /path/to/ploo
 ```
 
 Installers that refuse to overwrite an existing skill should be handled the same way: back up or rename the existing destination, install V2 from the same GitHub source, verify it, and only then remove the backup.
 
-## 3. Verify the update
+## 5. Verify the update
 
 From the repository root:
 
@@ -87,14 +100,14 @@ python3 core/scripts/migrate_v1_to_v2.py --help
 Confirm the installed entrypoint exists:
 
 ```bash
-test -f "${CODEX_HOME:-$HOME/.codex}/skills/product-loop/SKILL.md"
-test -f "${CODEX_HOME:-$HOME/.codex}/skills/product-loop/scripts/migrate_v1_to_v2.py"
-grep -q "waiting_user_decision" "${CODEX_HOME:-$HOME/.codex}/skills/product-loop/SKILL.md"
+test -f "${CODEX_HOME:-$HOME/.codex}/skills/ploo/SKILL.md"
+test -f "${CODEX_HOME:-$HOME/.codex}/skills/ploo/scripts/migrate_v1_to_v2.py"
+grep -q "waiting_user_decision" "${CODEX_HOME:-$HOME/.codex}/skills/ploo/SKILL.md"
 ```
 
 V2.1 discovery should present four independent route choices and state that recommendations are not authorization. It must also work in planning-only mode when no optional provider is installed.
 
-## 4. Migrate V1 run data only when needed
+## 6. Migrate V1 run data only when needed
 
 The skill files and project/run data are separate. Existing briefs and V1 Design Packs are not rewritten during installation. The recommended command creates a new directory containing separate standard V2 files plus a migration manifest:
 
@@ -132,7 +145,7 @@ Migration is deliberately conservative:
 
 Keep the original V1 file until the migrated bundle has been reviewed and the user has explicitly selected the four V2 routes.
 
-## 5. Compatibility and rollback
+## 7. Compatibility and rollback
 
 V2.1 changes distribution guidance, not the V2 JSON contracts. Do not rewrite a valid V2 run merely to label it V2.1.
 

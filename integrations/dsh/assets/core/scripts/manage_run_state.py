@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and safely mutate Product Loop V2 run-state documents."""
+"""Validate and safely mutate Ploo V2 run-state documents."""
 
 import argparse
 import copy
@@ -665,7 +665,7 @@ def _add_route_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Manage a Product Loop V2 run-state document.")
+    parser = argparse.ArgumentParser(description="Manage a Ploo V2 run-state document.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     validate_parser = subparsers.add_parser("validate", help="Validate without mutation")

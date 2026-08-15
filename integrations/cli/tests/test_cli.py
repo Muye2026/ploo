@@ -7,7 +7,7 @@ CORE = REPO / "core"
 EXAMPLES = REPO / "examples" / "v2-orchestrator-demo"
 sys.path.insert(0, str(REPO / "integrations" / "cli" / "src"))
 
-from product_loop_cli.cli import find_core, main  # noqa: E402
+from ploo_cli.cli import find_core, main  # noqa: E402
 
 
 class PlooCliTests(unittest.TestCase):

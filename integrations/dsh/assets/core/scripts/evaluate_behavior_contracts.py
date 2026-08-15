@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate captured Product Loop responses against machine-readable behavior cases.
+"""Evaluate captured Ploo responses against machine-readable behavior cases.
 
 This harness does not invoke a model. A host records the resulting state plus
 observable behaviors/actions from a real skill run, then this script checks the
@@ -78,7 +78,7 @@ def evaluate_response_set(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Evaluate Product Loop captured behavior responses")
+    parser = argparse.ArgumentParser(description="Evaluate Ploo captured behavior responses")
     parser.add_argument("--cases", required=True, type=Path)
     parser.add_argument("--responses", required=True, type=Path)
     return parser.parse_args()

@@ -1,4 +1,4 @@
-# Product Loop 架构:一个核心,多套宿主外壳 / Architecture
+# Ploo 架构:一个核心,多套宿主外壳 / Architecture
 
 [English](#english) · [中文](#中文)
 
@@ -30,8 +30,8 @@
 ### Per-integration decisions
 
 - **Agent Skills hosts** — no adapter needed; `core/` already is the open Agent Skills folder. Install = symlink `core/` into the host's skill root. See [AGENT_PORTABILITY.md](../AGENT_PORTABILITY.md).
-- **`ploo` CLI** (`integrations/cli/`) — a stdlib-only argparse dispatcher. It resolves the core via `--core`, `$PRODUCT_LOOP_CORE`, the installing checkout, then cwd ancestors, and forwards every subcommand to the matching script. Passthrough subcommands bypass argparse so `--flags` reach the scripts verbatim.
-- **DeepSeek Harness** (`integrations/dsh/`) — a bundle plugin with **zero runtime dependencies**: tool definitions are hand-written against the registry's raw-definition contract instead of importing helper packages. It registers the runtime `product-loop` skill (content = core `SKILL.md` body + a pointer to the on-disk core) and eight `ploo_*` tools that spawn the core scripts with cooperative cancellation. Non-zero exits are reported, not raised. The `profile/product-loop/` preset boots a dedicated agent; install from a local path today, publish to npm later.
+- **`ploo` CLI** (`integrations/cli/`) — a stdlib-only argparse dispatcher. It resolves the core via `--core`, `$PLOO_CORE`, the installing checkout, then cwd ancestors, and forwards every subcommand to the matching script. Passthrough subcommands bypass argparse so `--flags` reach the scripts verbatim.
+- **DeepSeek Harness** (`integrations/dsh/`) — a bundle plugin with **zero runtime dependencies**: tool definitions are hand-written against the registry's raw-definition contract instead of importing helper packages. It registers the runtime `ploo` skill (content = core `SKILL.md` body + a pointer to the on-disk core) and eight `ploo_*` tools that spawn the core scripts with cooperative cancellation. Non-zero exits are reported, not raised. The `profile/ploo/` preset boots a dedicated agent; install from a local path today, publish to npm later.
 - **WorkBuddy** (`integrations/workbuddy/`) — a WorkBuddy-frontmatter `SKILL.md` that defers to `core/SKILL.md`; install = symlink into `~/.workbuddy/connectors/skills/`.
 
 ### Safety boundary
@@ -44,7 +44,7 @@ Adapters never widen authority. Route selection, freezes, conflict resolution, a
 | --- | --- | --- |
 | core | `python3 -m unittest discover -s tests -v` | smoke prompt in any host |
 | cli | `python3 -m unittest discover -s integrations/cli/tests -v` | `ploo validate design-pack examples/v2-orchestrator-demo/design-pack.v2.json` |
-| dsh | `node integrations/dsh/scripts/verify.mjs` | `dsh --profile product-loop` boots; all eight `ploo_*` tools visible |
+| dsh | `node integrations/dsh/scripts/verify.mjs` | `dsh --profile ploo` boots; all eight `ploo_*` tools visible |
 | workbuddy | `tests/test_integrations.py` frontmatter checks | skill discovered after linking into `~/.workbuddy/connectors/skills/` |
 
 ## 中文
@@ -75,8 +75,8 @@ Adapters never widen authority. Route selection, freezes, conflict resolution, a
 ### 各接入层的设计决策
 
 - **Agent Skills 宿主** —— 无需适配层;`core/` 本身就是开放的 Agent Skills 目录,软链安装即可。
-- **`ploo` CLI** —— 仅标准库的 argparse 分发器;核心目录解析顺序:`--core` → `$PRODUCT_LOOP_CORE` → 安装它的 checkout → 向上遍历当前目录;透传类子命令绕过 argparse,保证 `--flags` 原样到达脚本。
-- **DeepSeek Harness** —— **零运行时依赖**的 bundle 插件:工具定义直接按注册表的原始定义契约手写,不 import 任何辅助包;注册运行时 `product-loop` Skill(内容 = core 的 SKILL.md 正文 + 磁盘上核心目录指针)和 8 个 `ploo_*` 工具(以协作式取消 spawn 核心脚本);非零退出按报告处理;`profile/product-loop/` 预设可一键启动专用 Agent;当前本地路径安装,后续可发 npm。
+- **`ploo` CLI** —— 仅标准库的 argparse 分发器;核心目录解析顺序:`--core` → `$PLOO_CORE` → 安装它的 checkout → 向上遍历当前目录;透传类子命令绕过 argparse,保证 `--flags` 原样到达脚本。
+- **DeepSeek Harness** —— **零运行时依赖**的 bundle 插件:工具定义直接按注册表的原始定义契约手写,不 import 任何辅助包;注册运行时 `ploo` Skill(内容 = core 的 SKILL.md 正文 + 磁盘上核心目录指针)和 8 个 `ploo_*` 工具(以协作式取消 spawn 核心脚本);非零退出按报告处理;`profile/ploo/` 预设可一键启动专用 Agent;当前本地路径安装,后续可发 npm。
 - **WorkBuddy** —— WorkBuddy 专用 frontmatter 的 `SKILL.md`,正文把权威工作流指回 `core/SKILL.md`。
 
 ### 安全边界

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Offline smoke verification for the dsh-product-loop bundle plugin.
+ * Offline smoke verification for the dsh-ploo bundle plugin.
  *
  * Checks, in order:
  *  1. package.json and cordis.patch.yml bundle shape.
@@ -32,7 +32,7 @@ const fail = (message) => {
 
 // 1. package + patch shape -------------------------------------------------
 const pkg = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'))
-if (pkg.name !== 'dsh-product-loop') fail(`package name is ${pkg.name}`)
+if (pkg.name !== 'dsh-ploo') fail(`package name is ${pkg.name}`)
 if (pkg.type !== 'module') fail('package type must be module')
 if (pkg.main !== 'lib/index.js') fail('main must be lib/index.js')
 if (!pkg.exports || !pkg.exports['./cordis.patch.yml']) fail('exports must expose ./cordis.patch.yml')
@@ -40,7 +40,7 @@ if (!pkg.dsh || !pkg.dsh.bundle || pkg.dsh.bundle.patch !== './cordis.patch.yml'
   fail('dsh.bundle.patch must point at ./cordis.patch.yml')
 }
 const patch = readFileSync(join(pkgDir, 'cordis.patch.yml'), 'utf8')
-if (!patch.includes('name: dsh-product-loop')) fail('cordis.patch.yml must name dsh-product-loop')
+if (!patch.includes('name: dsh-ploo')) fail('cordis.patch.yml must name dsh-ploo')
 if (!patch.includes('insert:')) fail('cordis.patch.yml must contain an insert row')
 if (failures === 0) ok('package.json and cordis.patch.yml bundle shape')
 
@@ -123,7 +123,7 @@ try {
     },
   }
   const plugin = await import(join(pkgDir, 'lib', 'index.js'))
-  if (plugin.name !== 'product-loop') fail(`plugin name is ${plugin.name}`)
+  if (plugin.name !== 'ploo') fail(`plugin name is ${plugin.name}`)
   for (const key of ['tools', 'skills']) {
     if (!plugin.inject.includes(key)) fail(`inject must include ${key}`)
   }
@@ -160,9 +160,9 @@ try {
     walkSchema(def.output.schema, toolName)
     if (badTypes.length > 0) fail(`tool ${toolName} uses type arrays at ${badTypes.join(', ')}`)
   }
-  const skill = skills.get('product-loop')
+  const skill = skills.get('ploo')
   if (!skill) {
-    fail('runtime skill product-loop not registered')
+    fail('runtime skill ploo not registered')
   } else {
     if (skill.source !== 'runtime') fail('skill source must be runtime')
     if (!skill.resourceBase || skill.resourceBase.kind !== 'directory') fail('skill resourceBase must be a directory')

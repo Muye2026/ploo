@@ -19,7 +19,7 @@ class DshPluginContractTests(unittest.TestCase):
 
     def test_package_manifest_shape(self):
         pkg = json.loads((self.pkg_dir / "package.json").read_text(encoding="utf-8"))
-        self.assertEqual(pkg["name"], "dsh-product-loop")
+        self.assertEqual(pkg["name"], "dsh-ploo")
         self.assertEqual(pkg["type"], "module")
         self.assertEqual(pkg["main"], "lib/index.js")
         self.assertEqual(pkg["dsh"]["bundle"]["patch"], "./cordis.patch.yml")
@@ -29,7 +29,7 @@ class DshPluginContractTests(unittest.TestCase):
     def test_patch_row_names_package(self):
         patch = (self.pkg_dir / "cordis.patch.yml").read_text(encoding="utf-8")
         self.assertIn("insert:", patch)
-        self.assertIn("name: dsh-product-loop", patch)
+        self.assertIn("name: dsh-ploo", patch)
 
     def test_plugin_entry_exports(self):
         entry = (self.pkg_dir / "lib" / "index.js").read_text(encoding="utf-8")
@@ -44,10 +44,10 @@ class DshPluginContractTests(unittest.TestCase):
 
     def test_profile_preset_bundles(self):
         preset = json.loads(
-            (self.pkg_dir / "profile" / "product-loop" / "package.json").read_text(encoding="utf-8")
+            (self.pkg_dir / "profile" / "ploo" / "package.json").read_text(encoding="utf-8")
         )
         bundles = preset["dsh"]["profile"]["bundles"]
-        self.assertIn("dsh-product-loop", bundles)
+        self.assertIn("dsh-ploo", bundles)
 
 
 class WorkbuddySkillContractTests(unittest.TestCase):
@@ -69,8 +69,8 @@ class WorkbuddySkillContractTests(unittest.TestCase):
 class CliPackageContractTests(unittest.TestCase):
     def test_pyproject_console_script(self):
         pyproject = (INTEGRATIONS / "cli" / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('ploo = "product_loop_cli.cli:main"', pyproject)
-        self.assertIn('name = "product-loop-cli"', pyproject)
+        self.assertIn('ploo = "ploo_cli.cli:main"', pyproject)
+        self.assertIn('name = "ploo-cli"', pyproject)
 
 
 if __name__ == "__main__":

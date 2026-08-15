@@ -14,7 +14,7 @@ Probe independently:
 6. EasyEDA PCB read, write, DRC, export, and evidence capabilities.
 7. Input completeness for each requested branch.
 
-Product Loop has no mandatory execution backend. The core planning capability is provider-neutral and must remain available when every optional adapter is absent. Fusion 360 MCP, EasyEDA APIs or skills, and image/video providers are integrations, not Product Loop prerequisites. Their absence can make `direct`, `hybrid`, image, or video routes unavailable, but it must not prevent requirements, architecture, Design Pack, Electrical Pack, Interface Control, acceptance planning, guided work, or handoff preparation where those outputs are otherwise supportable.
+Ploo has no mandatory execution backend. The core planning capability is provider-neutral and must remain available when every optional adapter is absent. Fusion 360 MCP, EasyEDA APIs or skills, and image/video providers are integrations, not Ploo prerequisites. Their absence can make `direct`, `hybrid`, image, or video routes unavailable, but it must not prevent requirements, architecture, Design Pack, Electrical Pack, Interface Control, acceptance planning, guided work, or handoff preparation where those outputs are otherwise supportable.
 
 ## Capability report
 

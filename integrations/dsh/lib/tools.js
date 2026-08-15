@@ -70,7 +70,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_validate',
     description:
-      'Validate one Product Loop V2 artifact (design-pack, electrical-pack, interface-control, or run-state) against its JSON schema. Read-only.',
+      'Validate one Ploo V2 artifact (design-pack, electrical-pack, interface-control, or run-state) against its JSON schema. Read-only.',
     parameters: {
       type: 'object',
       properties: {
@@ -95,7 +95,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_validate_bundle',
     description:
-      'Cross-document Product Loop validation of the four V2 artifacts before a freeze or any execution. Read-only; required before crossing a freeze gate.',
+      'Cross-document Ploo validation of the four V2 artifacts before a freeze or any execution. Read-only; required before crossing a freeze gate.',
     parameters: {
       type: 'object',
       properties: {
@@ -131,7 +131,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_run_state',
     description:
-      'Inspect or update a Product Loop run-state.v2.json: validate, resolve-routes, open-decision, resolve-decision, record-execution, change-route, or stale. Mutating actions write the output file you name; they never overwrite inputs.',
+      'Inspect or update a Ploo run-state.v2.json: validate, resolve-routes, open-decision, resolve-decision, record-execution, change-route, or stale. Mutating actions write the output file you name; they never overwrite inputs.',
     parameters: {
       type: 'object',
       properties: {
@@ -175,7 +175,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_migrate',
     description:
-      'Migrate a V1 Product Loop design pack into V2 artifacts. Creates a new output directory (design-pack.v2.json, run-state.v2.json, migration-bundle.v2.json); never overwrites existing files.',
+      'Migrate a V1 Ploo design pack into V2 artifacts. Creates a new output directory (design-pack.v2.json, run-state.v2.json, migration-bundle.v2.json); never overwrites existing files.',
     parameters: {
       type: 'object',
       properties: {
@@ -210,7 +210,7 @@ export function buildTools({ coreDir, pythonPath }) {
 
   definitions.push({
     name: 'ploo_normalize',
-    description: 'Normalize a Product Loop design pack into canonical form. Writes the output file you name.',
+    description: 'Normalize a Ploo design pack into canonical form. Writes the output file you name.',
     parameters: {
       type: 'object',
       properties: {
@@ -230,7 +230,7 @@ export function buildTools({ coreDir, pythonPath }) {
 
   definitions.push({
     name: 'ploo_review_matrix',
-    description: 'Build a Product Loop review matrix from review results. Writes the output file you name.',
+    description: 'Build a Ploo review matrix from review results. Writes the output file you name.',
     parameters: {
       type: 'object',
       properties: {
@@ -258,7 +258,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_handoff',
     description:
-      'Emit a Product Loop handoff brief for spec or handoff routes. Writes the output file you name.',
+      'Emit a Ploo handoff brief for spec or handoff routes. Writes the output file you name.',
     parameters: {
       type: 'object',
       properties: {
@@ -286,7 +286,7 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_evaluate_behavior',
     description:
-      'Score captured Product Loop agent responses against the behavior contract cases. Read-only; fails when a safeguard is missing or a prohibited action appears.',
+      'Score captured Ploo agent responses against the behavior contract cases. Read-only; fails when a safeguard is missing or a prohibited action appears.',
     parameters: {
       type: 'object',
       properties: {

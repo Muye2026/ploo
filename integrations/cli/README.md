@@ -1,8 +1,8 @@
-# Product Loop CLI (`ploo`)
+# Ploo CLI (`ploo`)
 
 [English](#usage) · [中文](#中文)
 
-`ploo` is the terminal entrypoint for the Product Loop hardware product workflow. It is a **thin dispatcher**: every subcommand forwards to the matching stdlib-only script in [`core/scripts/`](../../core/scripts/), so no workflow logic is duplicated here.
+`ploo` is the terminal entrypoint for the Ploo hardware product workflow. It is a **thin dispatcher**: every subcommand forwards to the matching stdlib-only script in [`core/scripts/`](../../core/scripts/), so no workflow logic is duplicated here.
 
 ## Install
 
@@ -14,7 +14,7 @@ pipx install integrations/cli      # recommended
 pip install -e integrations/cli    # development
 ```
 
-Requirements: Python ≥ 3.8, nothing else. Core scripts are resolved automatically: the `--core` flag wins, then `$PRODUCT_LOOP_CORE`, then the checkout that installed the package, then every ancestor of the working directory — so `ploo` works anywhere inside a clone after `git pull`.
+Requirements: Python ≥ 3.8, nothing else. Core scripts are resolved automatically: the `--core` flag wins, then `$PLOO_CORE`, then the checkout that installed the package, then every ancestor of the working directory — so `ploo` works anywhere inside a clone after `git pull`.
 
 ## Usage
 
@@ -32,14 +32,14 @@ ploo run-state stale RUN_STATE OUTPUT --artifact-id interface-control --revision
 ploo normalize INPUT OUTPUT
 ploo review-matrix INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
 ploo handoff INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
-ploo evaluate-behavior --cases core/evals/product-loop-v2.jsonl --responses CAPTURED.jsonl
+ploo evaluate-behavior --cases core/evals/ploo-v2.jsonl --responses CAPTURED.jsonl
 ```
 
 Every command passes through to the core script, so the core scripts remain the single source of truth for behavior, and this CLI stays version-stable.
 
 ## 中文
 
-`ploo` 是 Product Loop 硬件产品工作流的终端入口。它是一个**薄分发器**:每个子命令都转发到 [`core/scripts/`](../../core/scripts/) 中仅依赖标准库的脚本,不复制任何工作流逻辑。
+`ploo` 是 Ploo 硬件产品工作流的终端入口。它是一个**薄分发器**:每个子命令都转发到 [`core/scripts/`](../../core/scripts/) 中仅依赖标准库的脚本,不复制任何工作流逻辑。
 
 ```bash
 pipx install integrations/cli   # 推荐
@@ -48,4 +48,4 @@ ploo run-state validate 路径/run-state.v2.json
 ploo --help
 ```
 
-核心目录自动解析:`--core` 优先,其次是环境变量 `PRODUCT_LOOP_CORE`,再是安装本包的仓库 checkout,最后向上遍历当前工作目录——所以在仓库克隆目录的任何位置都能直接运行 `ploo`。
+核心目录自动解析:`--core` 优先,其次是环境变量 `PLOO_CORE`,再是安装本包的仓库 checkout,最后向上遍历当前工作目录——所以在仓库克隆目录的任何位置都能直接运行 `ploo`。

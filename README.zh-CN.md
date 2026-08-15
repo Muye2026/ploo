@@ -1,8 +1,8 @@
-# product-loop
+# ploo
 
 **语言: 简体中文 | [English](README.md)**
 
-`product-loop` 是一个开放、可跨 Agent 移植的 Skill,用于编排小型硬件产品的概念视觉、工业设计、机械建模、原理图与 PCB、用户跟画以及下游交接。
+`ploo` 是一个开放、可跨 Agent 移植的 Skill,用于编排小型硬件产品的概念视觉、工业设计、机械建模、原理图与 PCB、用户跟画以及下游交接。
 
 它的核心规则很简单:Agent 可以在用户已批准的路线内检查、推荐并执行可逆步骤,但每条路线是否执行、由谁执行,始终由用户决定。
 
@@ -10,14 +10,14 @@
 
 核心 Skill 是一个与供应商无关的规划与决策编排器。Fusion 360 MCP、EasyEDA API/Skill,以及图片或视频生成器都是可选集成,不是安装依赖。
 
-| 可用工具 | Product Loop 仍可完成 |
+| 可用工具 | Ploo 仍可完成 |
 | --- | --- |
 | 没有任何 MCP 或插件 | 需求、架构、Design Pack、Electrical Pack、Interface Control、验收计划、跟画步骤和外部交接 |
 | 图片/视频供应商 | 同样的核心工作流,外加经用户批准的概念视觉 |
 | CAD 供应商 | 同样的核心工作流,外加经用户批准的直接机械执行 |
 | EasyEDA 供应商 | 同样的核心工作流,外加经用户批准的直接或混合原理图/PCB 执行 |
 
-缺少工具只会改变当前哪些路线可选。Product Loop 不得在未经用户重新决策的情况下安装可选供应商、自行选择降级方案,或把规划变成写操作。辅助脚本仅使用 Python 3 标准库。
+缺少工具只会改变当前哪些路线可选。Ploo 不得在未经用户重新决策的情况下安装可选供应商、自行选择降级方案,或把规划变成写操作。辅助脚本仅使用 Python 3 标准库。
 
 ## V2.1 新增
 
@@ -37,12 +37,12 @@ V2.1 不改变 V2 的产物 Schema。合法的 `schema_version: 2.0` 文件保�
 - 带读回、证据和恢复能力的 Fusion 360 MCP 与 EasyEDA 适配器协议。
 - 冲突门禁、依赖感知失效、可恢复状态和带证据的声明。
 
-Product Loop 产出的是设计候选方案和 EVT 输入。它不对 DFM、模具、公差链、合规性或量产发布作认证。
+Ploo 产出的是设计候选方案和 EVT 输入。它不对 DFM、模具、公差链、合规性或量产发布作认证。
 
 ## 仓库结构
 
 ```text
-product-loop/
+ploo/
 ├── core/
 │   ├── SKILL.md
 │   ├── agents/
@@ -85,7 +85,7 @@ product-loop/
 - 原理图:跳过、直接、跟画、混合或交接。
 - PCB:跳过、直接、跟画、混合或交接。
 
-能力不可用时绝不静默降级。Product Loop 会暂停并请用户选择新路线。
+能力不可用时绝不静默降级。Ploo 会暂停并请用户选择新路线。
 
 ## 辅助脚本
 
@@ -103,7 +103,7 @@ python3 core/scripts/manage_run_state.py stale RUN_STATE OUTPUT --artifact-id in
 python3 core/scripts/normalize_design_pack.py INPUT OUTPUT
 python3 core/scripts/build_review_matrix.py INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
 python3 core/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
-python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/product-loop-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
+python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/ploo-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
 `adapter_contracts.py` 提供纯安全校验:Fusion/EasyEDA 单元边界、写恢复分类、每次调用的危险工具授权、EasyEDA 身份/哈希预检,以及 CAD–PCB 共享几何比对。供应商写操作必须通过同进程的主机事务完成:授权确切的 bundle、执行只读预检、调用 `reserve_execution(...)`、对预留快照重新授权、消费一次性租约、单次调用供应商并记录回读。CLI 有意不暴露预留机制,因为它无法保存密封令牌,也无法保证预检确实发生过。决策引用是溯源指针,不是加密认证:主机必须提供从真实用户消息或审批记录中取得的稳定引用。合成的黄金 bundle 位于 `examples/v2-orchestrator-demo/`。行为用例和黄金捕获结果位于 `core/evals/`;评估器接受来自真实 Skill 运行捕获的结果,缺少保护措施或出现被禁止行为时判定失败。
@@ -121,11 +121,11 @@ python3 -m unittest discover -s tests -v
 当前 Codex 个人发现路径:
 
 ```bash
-git clone https://github.com/Muye2026/product-loop.git
-cd product-loop
+git clone https://github.com/Muye2026/ploo.git
+cd ploo
 skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
-ln -s "$(pwd)/core" "$skills_root/product-loop"
+ln -s "$(pwd)/core" "$skills_root/ploo"
 ```
 
 Codex、Claude Code、Cursor、OpenClaw、复制式安装、旧版 Codex 路径、更新、回滚和主机能力边界,详见 [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md)。基于复制的当前 Codex 安装,请仅在目标目录尚不存在时,从仓库根目录执行:
@@ -133,10 +133,10 @@ Codex、Claude Code、Cursor、OpenClaw、复制式安装、旧版 Codex 路径�
 ```bash
 skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
-if [ -e "$skills_root/product-loop" ]; then
-  echo "product-loop already exists; follow UPGRADING.md"
+if [ -e "$skills_root/ploo" ]; then
+  echo "ploo already exists; follow UPGRADING.md"
 else
-  cp -R core "$skills_root/product-loop"
+  cp -R core "$skills_root/ploo"
 fi
 ```
 

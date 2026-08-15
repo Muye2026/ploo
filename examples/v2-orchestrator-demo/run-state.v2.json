@@ -21,7 +21,12 @@
   "pending_decision_gate": {
     "decision_id": "gate-route-selection-001",
     "decision_type": "route_selection",
-    "scope": ["track:visualization", "track:mechanical", "track:schematic", "track:pcb"],
+    "scope": [
+      "track:visualization",
+      "track:mechanical",
+      "track:schematic",
+      "track:pcb"
+    ],
     "status": "pending",
     "question": "Which explicit route should each of the four tracks use?",
     "options": [
@@ -46,7 +51,7 @@
       {
         "artifact_id": "design-pack-demo-001",
         "revision": 1,
-        "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+        "content_hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
       }
     ]
   },
@@ -60,10 +65,19 @@
       "status": "unknown",
       "checked_at": null,
       "tool_schema_digest": null,
-      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "capabilities": {
+        "read": false,
+        "write": false,
+        "verify": false,
+        "export": false,
+        "rollback": false,
+        "render": false
+      },
       "operations": [],
       "units": {},
-      "limitations": ["Example capability report; probe at runtime."],
+      "limitations": [
+        "Example capability report; probe at runtime."
+      ],
       "evidence": []
     },
     {
@@ -74,10 +88,21 @@
       "status": "unknown",
       "checked_at": null,
       "tool_schema_digest": null,
-      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "capabilities": {
+        "read": false,
+        "write": false,
+        "verify": false,
+        "export": false,
+        "rollback": false,
+        "render": false
+      },
       "operations": [],
-      "units": {"public": "mm"},
-      "limitations": ["Example capability report; probe at runtime."],
+      "units": {
+        "public": "mm"
+      },
+      "limitations": [
+        "Example capability report; probe at runtime."
+      ],
       "evidence": []
     },
     {
@@ -88,10 +113,22 @@
       "status": "unknown",
       "checked_at": null,
       "tool_schema_digest": null,
-      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "capabilities": {
+        "read": false,
+        "write": false,
+        "verify": false,
+        "export": false,
+        "rollback": false,
+        "render": false
+      },
       "operations": [],
-      "units": {"public": "mm", "native_grid": "0.01 inch"},
-      "limitations": ["Example capability report; probe at runtime."],
+      "units": {
+        "public": "mm",
+        "native_grid": "0.01 inch"
+      },
+      "limitations": [
+        "Example capability report; probe at runtime."
+      ],
       "evidence": []
     },
     {
@@ -102,10 +139,22 @@
       "status": "unknown",
       "checked_at": null,
       "tool_schema_digest": null,
-      "capabilities": {"read": false, "write": false, "verify": false, "export": false, "rollback": false, "render": false},
+      "capabilities": {
+        "read": false,
+        "write": false,
+        "verify": false,
+        "export": false,
+        "rollback": false,
+        "render": false
+      },
       "operations": [],
-      "units": {"public": "mm", "native": "mil"},
-      "limitations": ["Example capability report; probe at runtime."],
+      "units": {
+        "public": "mm",
+        "native": "mil"
+      },
+      "limitations": [
+        "Example capability report; probe at runtime."
+      ],
       "evidence": []
     }
   ],
@@ -116,13 +165,15 @@
       "revision": 1,
       "status": "planned",
       "path": "design-pack.v2.json",
-      "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f",
-      "source_hashes": {"synthetic brief": "sha256:demo-brief-v1"},
+      "content_hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737",
+      "source_hashes": {
+        "synthetic brief": "sha256:demo-brief-v1"
+      },
       "provenance": {
         "source": "synthetic example brief",
-        "producer": "product-loop example",
+        "producer": "ploo example",
         "time": "2026-01-01T00:00:00Z",
-        "hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+        "hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
       },
       "evidence": [],
       "depends_on": [],
@@ -134,20 +185,22 @@
       "revision": 1,
       "status": "planned",
       "path": "electrical-pack.v2.json",
-      "content_hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb",
-      "source_hashes": {"design-pack-demo-001@1": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"},
+      "content_hash": "sha256:a4128e2d3ab805b36dac18bc71f1ba2e11c25f6ba334eefe930fd05a891adde2",
+      "source_hashes": {
+        "design-pack-demo-001@1": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
+      },
       "provenance": {
         "source": "synthetic example brief",
-        "producer": "product-loop example",
+        "producer": "ploo example",
         "time": "2026-01-01T00:00:00Z",
-        "hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb"
+        "hash": "sha256:a4128e2d3ab805b36dac18bc71f1ba2e11c25f6ba334eefe930fd05a891adde2"
       },
       "evidence": [],
       "depends_on": [
         {
           "artifact_id": "design-pack-demo-001",
           "revision": 1,
-          "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+          "content_hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
         }
       ],
       "invalidation_reasons": []
@@ -158,20 +211,22 @@
       "revision": 1,
       "status": "planned",
       "path": "interface-control.v2.json",
-      "content_hash": "sha256:ee9cae70efb2311af50f1adb9c543a60dce3652149cb57bd2d593e33611b9447",
-      "source_hashes": {"design-pack-demo-001@1": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"},
+      "content_hash": "sha256:96a667a0611be8c4e4b33af74850ad3b2f02a513a5d8d75fceb0eb6aff7ae27e",
+      "source_hashes": {
+        "design-pack-demo-001@1": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
+      },
       "provenance": {
         "source": "synthetic example brief",
-        "producer": "product-loop example",
+        "producer": "ploo example",
         "time": "2026-01-01T00:00:00Z",
-        "hash": "sha256:ee9cae70efb2311af50f1adb9c543a60dce3652149cb57bd2d593e33611b9447"
+        "hash": "sha256:96a667a0611be8c4e4b33af74850ad3b2f02a513a5d8d75fceb0eb6aff7ae27e"
       },
       "evidence": [],
       "depends_on": [
         {
           "artifact_id": "design-pack-demo-001",
           "revision": 1,
-          "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f"
+          "content_hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737"
         }
       ],
       "invalidation_reasons": []

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://product-loop.local/schemas/design-pack.v2.schema.json",
-  "title": "Product Loop Design Pack V2",
+  "$id": "https://ploo.local/schemas/design-pack.v2.schema.json",
+  "title": "Ploo Design Pack V2",
   "type": "object",
   "additionalProperties": false,
   "required": [

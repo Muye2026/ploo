@@ -34,7 +34,7 @@ MANDATORY_REVIEW_CATEGORIES = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build an evidence-oriented review report from a Product Loop design pack."
+        description="Build an evidence-oriented review report from a Ploo design pack."
     )
     parser.add_argument("input", type=Path)
     parser.add_argument("output", type=Path, nargs="?")

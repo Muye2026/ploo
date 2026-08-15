@@ -64,8 +64,8 @@ class SkillContractTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         upgrade = (ROOT / "UPGRADING.md").read_text(encoding="utf-8")
         self.assertIn("UPGRADING.md", readme)
-        self.assertIn("git -C /path/to/product-loop pull --ff-only", upgrade)
-        self.assertIn("product-loop.v1-backup-", upgrade)
+        self.assertIn("git -C /path/to/ploo pull --ff-only", upgrade)
+        self.assertIn("ploo.v1-backup-", upgrade)
         self.assertIn("migrate_v1_to_v2.py", upgrade)
         self.assertIn("waiting_user_decision", upgrade)
 
@@ -82,7 +82,7 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("Native discovery means", portability)
         self.assertIn("Manual entrypoint for another agent", portability)
         self.assertIn("Never infer provider support from the host name", portability)
-        self.assertIn("V2.1 is a workflow and distribution release", portability)
+        self.assertIn("V3.0 renamed the project from product-loop to ploo", portability)
 
 
 if __name__ == "__main__":

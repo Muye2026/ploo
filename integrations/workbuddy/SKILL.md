@@ -1,5 +1,5 @@
 ---
-name: product-loop
+name: ploo
 description: Orchestrate a small hardware product from brief to evidence-backed design artifacts, with every material route decided by the user.
 description_zh: 编排小型硬件产品从需求简报到证据支撑的设计产物(概念视觉、工业设计、机械建模、原理图/PCB、跟画、交接),所有关键路线由用户决策。
 description_en: Orchestrate a small hardware product from brief to evidence-backed design artifacts, with every material route decided by the user.
@@ -7,9 +7,9 @@ version: 1.0.0
 allowed-tools: Read,Write,Bash
 ---
 
-# Product Loop(WorkBuddy 入口)
+# Ploo(WorkBuddy 入口)
 
-本 Skill 是 Product Loop 的 WorkBuddy 入口。权威工作流在 Product Loop 仓库的 `core/SKILL.md`,本文件只做入口与边界声明。
+本 Skill 是 Ploo 的 WorkBuddy 入口。权威工作流在 Ploo 仓库的 `core/SKILL.md`,本文件只做入口与边界声明。
 
 ## 启动步骤(必须按序执行)
 
@@ -28,4 +28,4 @@ Fusion 360 MCP、EasyEDA、图片/视频生成器都是可选适配器,通过 `~
 
 ## English summary
 
-This skill is the WorkBuddy entrypoint for Product Loop. Load `core/SKILL.md` from the Product Loop repository (relative to this file: `../../core/SKILL.md`) as the authoritative workflow, resolve every relative reference against `core/`, run read-only capability discovery first, present all relevant routes at Route Gate 0, and wait for the user's decision at every gate. Optional providers (Fusion 360 MCP, EasyEDA, image/video) attach through host configuration such as `~/.workbuddy/mcp.json`; the planning layer is fully usable without them. A recommendation is never authorization.
+This skill is the WorkBuddy entrypoint for Ploo. Load `core/SKILL.md` from the Ploo repository (relative to this file: `../../core/SKILL.md`) as the authoritative workflow, resolve every relative reference against `core/`, run read-only capability discovery first, present all relevant routes at Route Gate 0, and wait for the user's decision at every gate. Optional providers (Fusion 360 MCP, EasyEDA, image/video) attach through host configuration such as `~/.workbuddy/mcp.json`; the planning layer is fully usable without them. A recommendation is never authorization.

@@ -1,8 +1,8 @@
-# product-loop
+# ploo
 
 **Languages: English | [简体中文](README.zh-CN.md)**
 
-`product-loop` is an open, agent-portable skill for orchestrating a small hardware product across concept visuals, industrial design, mechanical modeling, schematic and PCB work, guided user operation, and downstream handoff.
+`ploo` is an open, agent-portable skill for orchestrating a small hardware product across concept visuals, industrial design, mechanical modeling, schematic and PCB work, guided user operation, and downstream handoff.
 
 Its central rule is simple: the agent may inspect, recommend, and execute reversible steps inside an approved route, but the user decides whether each track runs and who performs it.
 
@@ -10,14 +10,14 @@ Its central rule is simple: the agent may inspect, recommend, and execute revers
 
 The core skill is a provider-neutral planning and decision orchestrator. Fusion 360 MCP, EasyEDA APIs/skills, and image or video generators are optional integrations, not install dependencies.
 
-| Available tools | Product Loop can still do |
+| Available tools | Ploo can still do |
 | --- | --- |
 | No MCP or plugin | Requirements, architecture, Design Pack, Electrical Pack, Interface Control, acceptance planning, guided steps, and external handoff |
 | Image/video provider | The same core workflow plus user-approved concept visuals |
 | CAD provider | The same core workflow plus user-approved direct mechanical execution |
 | EasyEDA provider | The same core workflow plus user-approved direct or hybrid schematic/PCB execution |
 
-Missing tools only change which routes are currently eligible. Product Loop must not install an optional provider, choose a fallback, or convert planning into a write operation without a new user decision. The helper scripts use only the Python 3 standard library.
+Missing tools only change which routes are currently eligible. Ploo must not install an optional provider, choose a fallback, or convert planning into a write operation without a new user decision. The helper scripts use only the Python 3 standard library.
 
 ## What V2.1 adds
 
@@ -37,12 +37,12 @@ V2.1 does not change the V2 artifact schemas. Valid `schema_version: 2.0` files 
 - Fusion 360 MCP and EasyEDA adapter protocols with readback, evidence, and recovery.
 - Conflict gates, dependency-aware invalidation, resumable state, and evidence-backed claims.
 
-Product Loop produces design candidates and EVT inputs. It does not certify DFM, tooling, tolerance stacks, compliance, or manufacturing release.
+Ploo produces design candidates and EVT inputs. It does not certify DFM, tooling, tolerance stacks, compliance, or manufacturing release.
 
 ## Repository layout
 
 ```text
-product-loop/
+ploo/
 ├── core/
 │   ├── SKILL.md
 │   ├── agents/
@@ -85,7 +85,7 @@ One core, thin host adapters. The core stays the single source of truth; every a
 - Schematic: skip, direct, guided, hybrid, or handoff.
 - PCB: skip, direct, guided, hybrid, or handoff.
 
-Unavailable capabilities never trigger silent fallback. Product Loop pauses and asks the user to choose a new route.
+Unavailable capabilities never trigger silent fallback. Ploo pauses and asks the user to choose a new route.
 
 ## Helper scripts
 
@@ -103,7 +103,7 @@ python3 core/scripts/manage_run_state.py stale RUN_STATE OUTPUT --artifact-id in
 python3 core/scripts/normalize_design_pack.py INPUT OUTPUT
 python3 core/scripts/build_review_matrix.py INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
 python3 core/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
-python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/product-loop-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
+python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/ploo-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
 `adapter_contracts.py` supplies pure safety checks for Fusion/EasyEDA unit boundaries, write recovery classification, per-call dangerous-tool authorization, EasyEDA identity/hash preflight, and CAD–PCB shared-geometry comparison. Provider writes must run through one same-process host transaction: authorize the exact bundle, perform read-only preflight, call `reserve_execution(...)`, reauthorize the reserved snapshot, consume the single-use lease, invoke the provider once, and record readback. The CLI intentionally does not expose reservation because it cannot preserve the sealed token or guarantee that preflight occurred. Decision references are provenance pointers, not cryptographic authentication: the host must supply a stable reference obtained from the real user message or approval record. The synthetic golden bundle is in `examples/v2-orchestrator-demo/`. Behavior cases and golden captured outcomes live in `core/evals/`; the evaluator accepts outcomes captured from real skill runs and fails on missing safeguards or prohibited actions.
@@ -121,11 +121,11 @@ Clone the repository, then install the inner `core/` directory. A symlink is rec
 For current Codex personal discovery:
 
 ```bash
-git clone https://github.com/Muye2026/product-loop.git
-cd product-loop
+git clone https://github.com/Muye2026/ploo.git
+cd ploo
 skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
-ln -s "$(pwd)/core" "$skills_root/product-loop"
+ln -s "$(pwd)/core" "$skills_root/ploo"
 ```
 
 Codex, Claude Code, Cursor, OpenClaw, copied installs, legacy Codex paths, updates, rollback, and host capability boundaries are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md). For a copy-based current Codex install, run this from the repository root only when the destination does not already exist:
@@ -133,10 +133,10 @@ Codex, Claude Code, Cursor, OpenClaw, copied installs, legacy Codex paths, updat
 ```bash
 skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
-if [ -e "$skills_root/product-loop" ]; then
-  echo "product-loop already exists; follow UPGRADING.md"
+if [ -e "$skills_root/ploo" ]; then
+  echo "ploo already exists; follow UPGRADING.md"
 else
-  cp -R core "$skills_root/product-loop"
+  cp -R core "$skills_root/ploo"
 fi
 ```
 

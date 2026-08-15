@@ -6,17 +6,20 @@
   "status": "planned",
   "provenance": {
     "source": "synthetic example brief",
-    "producer": "product-loop example",
+    "producer": "ploo example",
     "time": "2026-01-01T00:00:00Z",
-    "hash": "sha256:ca5cd43408f8dcde3038e4e43c7d61936ed36b151ad823e9cb2ccbb3fb693dcb"
+    "hash": "sha256:a4128e2d3ab805b36dac18bc71f1ba2e11c25f6ba334eefe930fd05a891adde2"
   },
   "evidence": [],
   "dependencies": [
     {
       "artifact_id": "design-pack-demo-001",
       "revision": 1,
-      "content_hash": "sha256:2fcf7b3612b8b3387f614e096b1c4ded22739263464fb0366d61ca21afeb3d8f",
-      "facets": ["power", "product envelope"],
+      "content_hash": "sha256:0f5784328b93fd4f2ee4ce9c0852ff79363416b9c216b7a795f7564d3f4ca737",
+      "facets": [
+        "power",
+        "product envelope"
+      ],
       "on_change": "review"
     }
   ],

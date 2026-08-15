@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Deterministically normalize legacy Product Loop design packs.
+"""Deterministically normalize legacy Ploo design packs.
 
 This helper performs shape normalization only. It never chooses V2 execution routes.
 """
@@ -53,7 +53,7 @@ VALID_MODES = {"full", "spec-only", "handoff"}
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Normalize a Product Loop design-pack JSON document."
+        description="Normalize a Ploo design-pack JSON document."
     )
     parser.add_argument("input", type=Path)
     parser.add_argument("output", type=Path, nargs="?")

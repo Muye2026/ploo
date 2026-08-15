@@ -1,9 +1,9 @@
 ---
-name: product-loop
+name: ploo
 description: Orchestrate a small hardware product from brief to evidence-backed design artifacts, including planning-only runs with no external execution backend, concept images or video, industrial design, optional Fusion 360 MCP modeling, optional EasyEDA schematic and PCB work, guided user operation, and downstream handoff. Use when an AI agent must plan, resume, execute, or review a multi-domain hardware workflow while preserving user authority over whether each track runs and whether work is direct, guided, hybrid, specification-only, or handed off. Best for small consumer electronics, desktop hardware, and lightweight robotic accessories; not a production DFM, tooling, tolerance-stack, or manufacturing-release certification skill.
 ---
 
-# Product Loop
+# Ploo
 
 Orchestrate product design as a dependency graph. Keep design truth provider-neutral, make material choices visible, and attach evidence to every implementation claim.
 
@@ -39,7 +39,7 @@ Probe independently:
 
 Record evidence in `CapabilityReport`. Do not infer write capability from connectivity alone. Do not choose a route during discovery.
 
-Product Loop has no mandatory execution backend. Fusion 360 MCP, EasyEDA APIs or skills, and image or video providers are optional adapters, not installation dependencies. When none are available, keep the provider-neutral planning layer usable: build the brief, architecture, contracts, interface controls, acceptance plan, guided instructions, and handoff package as authorized. Mark provider-backed routes unavailable; never require installation, invent a provider, select a fallback route, or block unrelated planning work.
+Ploo has no mandatory execution backend. Fusion 360 MCP, EasyEDA APIs or skills, and image or video providers are optional adapters, not installation dependencies. When none are available, keep the provider-neutral planning layer usable: build the brief, architecture, contracts, interface controls, acceptance plan, guided instructions, and handoff package as authorized. Mark provider-backed routes unavailable; never require installation, invent a provider, select a fallback route, or block unrelated planning work.
 
 ## Route Gate 0
 

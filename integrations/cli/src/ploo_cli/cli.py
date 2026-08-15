@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ploo — terminal entrypoint for the Product Loop hardware product workflow.
+"""ploo — terminal entrypoint for the Ploo hardware product workflow.
 
 A thin dispatcher over the provider-neutral, stdlib-only scripts in
 ``core/scripts/``. The CLI adds no workflow logic of its own: every subcommand
@@ -32,11 +32,11 @@ PASSTHROUGH = {name for name in SCRIPTS if name != "validate"}
 
 
 def find_core(explicit=None):
-    """Locate the product-loop core directory (the one containing scripts/).
+    """Locate the ploo core directory (the one containing scripts/).
 
-    Resolution order: ``--core`` flag, ``$PRODUCT_LOOP_CORE``, the checkout
+    Resolution order: ``--core`` flag, ``$PLOO_CORE``, the checkout
     that installed this package, then every ancestor of the working directory.
-    An explicit ``--core`` or ``$PRODUCT_LOOP_CORE`` that does not contain
+    An explicit ``--core`` or ``$PLOO_CORE`` that does not contain
     ``scripts/`` fails hard instead of silently falling back.
     """
     if explicit:
@@ -44,12 +44,12 @@ def find_core(explicit=None):
         if (candidate / "scripts").is_dir():
             return candidate
         sys.exit(f"ploo: --core {explicit} does not contain scripts/")
-    if os.environ.get("PRODUCT_LOOP_CORE"):
-        env = os.environ["PRODUCT_LOOP_CORE"]
+    if os.environ.get("PLOO_CORE"):
+        env = os.environ["PLOO_CORE"]
         candidate = Path(env).expanduser().resolve()
         if (candidate / "scripts").is_dir():
             return candidate
-        sys.exit(f"ploo: $PRODUCT_LOOP_CORE {env} does not contain scripts/")
+        sys.exit(f"ploo: $PLOO_CORE {env} does not contain scripts/")
     package_dir = Path(__file__).resolve().parent
     for ancestor in (package_dir, *package_dir.parents):
         candidate = ancestor / "core"
@@ -60,8 +60,8 @@ def find_core(explicit=None):
         if (candidate / "scripts").is_dir():
             return candidate
     sys.exit(
-        "ploo: cannot locate the product-loop core directory (core/scripts). "
-        "Run inside a repository checkout, set PRODUCT_LOOP_CORE, or pass --core DIR."
+        "ploo: cannot locate the ploo core directory (core/scripts). "
+        "Run inside a repository checkout, set PLOO_CORE, or pass --core DIR."
     )
 
 
@@ -69,7 +69,7 @@ def build_parser():
     parser = argparse.ArgumentParser(
         prog="ploo",
         description=(
-            "Terminal entrypoint for the Product Loop hardware product workflow. "
+            "Terminal entrypoint for the Ploo hardware product workflow. "
             "Every subcommand forwards to the matching script in core/scripts/."
         ),
     )
@@ -77,8 +77,8 @@ def build_parser():
     parser.add_argument(
         "--core",
         metavar="DIR",
-        help="path to the product-loop core directory "
-        "(overrides $PRODUCT_LOOP_CORE and repository discovery)",
+        help="path to the ploo core directory "
+        "(overrides $PLOO_CORE and repository discovery)",
     )
     sub = parser.add_subparsers(dest="command", required=True, metavar="COMMAND")
 

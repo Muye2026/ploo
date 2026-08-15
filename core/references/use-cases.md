@@ -27,4 +27,4 @@
 
 ## Non-goals
 
-Do not use this skill as the primary path for production tooling, tolerance stacks, final manufacturing release, large architectural systems, or certification. Product Loop may produce design candidates and EVT plans; it does not certify production readiness.
+Do not use this skill as the primary path for production tooling, tolerance stacks, final manufacturing release, large architectural systems, or certification. Ploo may produce design candidates and EVT plans; it does not certify production readiness.

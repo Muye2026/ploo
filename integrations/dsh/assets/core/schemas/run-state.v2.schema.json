@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://product-loop.local/schemas/run-state.v2.schema.json",
-  "title": "Product Loop Run State V2",
+  "$id": "https://ploo.local/schemas/run-state.v2.schema.json",
+  "title": "Ploo Run State V2",
   "type": "object",
   "additionalProperties": false,
   "required": [

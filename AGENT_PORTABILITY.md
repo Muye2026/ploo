@@ -1,6 +1,6 @@
-# Product Loop V2.1 Agent Portability
+# Ploo Agent Portability
 
-Product Loop follows the open [Agent Skills](https://agentskills.io/home) folder format: the installable unit is the inner `core/` directory, with `SKILL.md` as its entrypoint and references, schemas, scripts, and evaluations kept beside it.
+Ploo follows the open [Agent Skills](https://agentskills.io/home) folder format: the installable unit is the inner `core/` directory, with `SKILL.md` as its entrypoint and references, schemas, scripts, and evaluations kept beside it.
 
 The workflow is portable across skills-compatible agents. Tool access is not. A host may run the full planning and decision workflow without Fusion 360, EasyEDA, image generation, video generation, or any MCP server. Direct execution is available only when that host can probe a real provider operation and the user explicitly selects and authorizes that route.
 
@@ -10,12 +10,12 @@ This guide was verified against the linked official documentation on 2026-07-15.
 
 | Host | Native Agent Skills support | Recommended discovery path or UI | Typical invocation |
 | --- | --- | --- | --- |
-| Codex | Yes | Personal: `~/.agents/skills/product-loop`; repository: `.agents/skills/product-loop` | `$product-loop` or automatic matching |
-| Claude Code | Yes | Personal: `~/.claude/skills/product-loop`; project: `.claude/skills/product-loop` | `/product-loop` or automatic matching |
-| Cursor | Yes in editor and CLI from 2.4 | Add the inner folder from Cursor's Skills/Customize UI at user or workspace scope | `/product-loop` or automatic matching |
-| OpenClaw | Yes | Shared: `~/.agents/skills/product-loop`; managed: `~/.openclaw/skills/product-loop`; workspace: `<workspace>/skills/product-loop` | Skill name or slash-command discovery |
-| DeepSeek Harness | Yes | Shared: `~/.agents/skills/product-loop`; dsh-only: `~/.dsh/skills/product-loop`; project: `<repo>/.dsh/skills/product-loop` | Session skill catalog or automatic matching |
-| WorkBuddy | Yes (variant frontmatter) | Link `~/.workbuddy/connectors/skills/product-loop` to `integrations/workbuddy/` | Automatic matching after restart |
+| Codex | Yes | Personal: `~/.agents/skills/ploo`; repository: `.agents/skills/ploo` | `$ploo` or automatic matching |
+| Claude Code | Yes | Personal: `~/.claude/skills/ploo`; project: `.claude/skills/ploo` | `/ploo` or automatic matching |
+| Cursor | Yes in editor and CLI from 2.4 | Add the inner folder from Cursor's Skills/Customize UI at user or workspace scope | `/ploo` or automatic matching |
+| OpenClaw | Yes | Shared: `~/.agents/skills/ploo`; managed: `~/.openclaw/skills/ploo`; workspace: `<workspace>/skills/ploo` | Skill name or slash-command discovery |
+| DeepSeek Harness | Yes | Shared: `~/.agents/skills/ploo`; dsh-only: `~/.dsh/skills/ploo`; project: `<repo>/.dsh/skills/ploo` | Session skill catalog or automatic matching |
+| WorkBuddy | Yes (variant frontmatter) | Link `~/.workbuddy/connectors/skills/ploo` to `integrations/workbuddy/` | Automatic matching after restart |
 | Other agent | Host-dependent | Give the agent read access to the inner folder and explicitly load `core/SKILL.md` | Manual prompt entrypoint below |
 
 Native discovery means the host can find and progressively load `SKILL.md`. It does not mean the host has the same MCP servers, UI-control tools, permissions, or provider API signatures.
@@ -23,8 +23,8 @@ Native discovery means the host can find and progressively load `SKILL.md`. It d
 ## Clone once
 
 ```bash
-git clone https://github.com/Muye2026/product-loop.git
-cd product-loop
+git clone https://github.com/Muye2026/ploo.git
+cd ploo
 repo_root="$(pwd)"
 ```
 
@@ -36,10 +36,10 @@ Current Codex documentation uses `~/.agents/skills` for personal skills and `.ag
 
 ```bash
 mkdir -p "$HOME/.agents/skills"
-ln -s "$repo_root/core" "$HOME/.agents/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.agents/skills/ploo"
 ```
 
-Start a new task if the skill does not appear immediately. Existing installations under `${CODEX_HOME:-$HOME/.codex}/skills/product-loop` may continue to work in hosts that still scan the legacy location. Do not create a second visible copy if the old installation is already discovered. See [UPGRADING.md](UPGRADING.md) for a no-data-loss migration path.
+Start a new task if the skill does not appear immediately. Existing installations under `${CODEX_HOME:-$HOME/.codex}/skills/ploo` may continue to work in hosts that still scan the legacy location. Do not create a second visible copy if the old installation is already discovered. See [UPGRADING.md](UPGRADING.md) for a no-data-loss migration path.
 
 Codex-specific UI metadata remains in `core/agents/openai.yaml`; it is optional for other hosts and does not add a provider dependency.
 
@@ -49,14 +49,14 @@ Claude Code supports personal and project skills and follows symlinked skill dir
 
 ```bash
 mkdir -p "$HOME/.claude/skills"
-ln -s "$repo_root/core" "$HOME/.claude/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.claude/skills/ploo"
 ```
 
-Use `.claude/skills/product-loop` instead for a project-only installation. Invoke `/product-loop`, or ask Claude to use Product Loop for a hardware-product workflow. Product Loop uses only the standard `name` and `description` frontmatter fields, so it does not depend on Claude-only extensions.
+Use `.claude/skills/ploo` instead for a project-only installation. Invoke `/ploo`, or ask Claude to use Ploo for a hardware-product workflow. Ploo uses only the standard `name` and `description` frontmatter fields, so it does not depend on Claude-only extensions.
 
 ## Cursor
 
-Cursor supports Agent Skills in both the editor and CLI. In current Cursor versions, open the Skills/Customize surface, choose user or workspace scope, and add the inner `$repo_root/core` folder. Confirm that `product-loop` appears in the skills list, then invoke `/product-loop` or describe a matching hardware-planning task.
+Cursor supports Agent Skills in both the editor and CLI. In current Cursor versions, open the Skills/Customize surface, choose user or workspace scope, and add the inner `$repo_root/core` folder. Confirm that `ploo` appears in the skills list, then invoke `/ploo` or describe a matching hardware-planning task.
 
 Cursor's UI and distribution surfaces change more frequently than the open folder format. Prefer the current in-product Skills/Customize flow over copying a path from an older tutorial. If a managed workspace blocks local skills, ask the workspace administrator to distribute the same inner folder at team scope.
 
@@ -66,13 +66,13 @@ OpenClaw scans `~/.agents/skills`, so the Codex personal link above can be share
 
 ```bash
 mkdir -p "$HOME/.openclaw/skills"
-ln -s "$repo_root/core" "$HOME/.openclaw/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.openclaw/skills/ploo"
 ```
 
 For workspace-local installation, OpenClaw can install the inner directory:
 
 ```bash
-openclaw skills install "$repo_root/core" --as product-loop
+openclaw skills install "$repo_root/core" --as ploo
 ```
 
 OpenClaw's Git/local installs and registry-managed installs can have different update behavior. A symlink to a trusted local clone keeps updates explicit and reviewable: inspect the diff, run the tests, then run `git pull --ff-only`.
@@ -83,12 +83,12 @@ DeepSeek Harness (`dsh`) ships a filesystem skill provider that scans, in rank o
 
 ```bash
 mkdir -p "$HOME/.dsh/skills"
-ln -s "$repo_root/core" "$HOME/.dsh/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.dsh/skills/ploo"
 ```
 
-Project-scoped installs work the same way under `<repo>/.dsh/skills/product-loop` or `<repo>/.agents/skills/product-loop` (the latter doubles as Codex's repository-scoped path).
+Project-scoped installs work the same way under `<repo>/.dsh/skills/ploo` or `<repo>/.agents/skills/ploo` (the latter doubles as Codex's repository-scoped path).
 
-Verified against `@deepseek-ai/dsh` 0.1.0-rc.6: the skill appears in the session skill catalog and is both model- and user-invocable. For a deeper harness-level integration — host tools wrapping the core scripts, a runtime-embedded skill, and a dedicated `dsh --profile product-loop` preset — see [integrations/dsh/](integrations/dsh/).
+Verified against `@deepseek-ai/dsh` 0.1.0-rc.6: the skill appears in the session skill catalog and is both model- and user-invocable. For a deeper harness-level integration — host tools wrapping the core scripts, a runtime-embedded skill, and a dedicated `dsh --profile ploo` preset — see [integrations/dsh/](integrations/dsh/).
 
 ## WorkBuddy
 
@@ -96,7 +96,7 @@ WorkBuddy discovers skills from `~/.workbuddy/connectors/skills/<name>/SKILL.md`
 
 ```bash
 mkdir -p "$HOME/.workbuddy/connectors/skills"
-ln -s "$repo_root/integrations/workbuddy" "$HOME/.workbuddy/connectors/skills/product-loop"
+ln -s "$repo_root/integrations/workbuddy" "$HOME/.workbuddy/connectors/skills/ploo"
 ```
 
 MCP providers (Fusion 360, EasyEDA) attach through `~/.workbuddy/mcp.json`; without them the planning layer remains fully usable. See [integrations/workbuddy/README.md](integrations/workbuddy/README.md) for install and verification steps.
@@ -118,7 +118,7 @@ The agent must be able to read Markdown and JSON. Python 3 is optional for readi
 
 ## Capability tiers
 
-| Available host capability | Allowed Product Loop scope |
+| Available host capability | Allowed Ploo scope |
 | --- | --- |
 | File read/write only | Brief, architecture, component comparison, four V2 contracts, acceptance plan, guided steps, and handoff package |
 | Image/video provider | The planning scope plus user-approved concept visuals |
@@ -140,14 +140,14 @@ Fusion 360 and EasyEDA are optional provider adapters, not universal requirement
 6. Verify with API readback, source export, or a clear screenshot.
 7. On failure or lost capability, ask the user to retry, switch route, hand off, or pause; never silently substitute a backend.
 
-An adapter for a different CAD or EDA system may implement the common lifecycle documented in `core/SKILL.md`, but Product Loop must not claim that adapter exists until the host actually exposes and probes it.
+An adapter for a different CAD or EDA system may implement the common lifecycle documented in `core/SKILL.md`, but Ploo must not claim that adapter exists until the host actually exposes and probes it.
 
 ## Smoke test
 
 After installation, start a fresh task and ask:
 
 ```text
-Use Product Loop to plan a small desktop hardware product. Do read-only capability
+Use Ploo to plan a small desktop hardware product. Do read-only capability
 discovery, explain which direct routes are actually available, and stop at Route Gate 0.
 ```
 
@@ -170,7 +170,7 @@ python3 -m unittest discover -s "$repo_root/tests" -v
 
 Start a new host task if discovery is cached. For copied installs, back up the installed folder, replace it with the inner `core/` directory, verify the smoke test, and only then remove the backup. Updating the skill never edits existing CAD/EDA documents or project run data automatically.
 
-V2.1 is a workflow and distribution release. The public artifact contracts remain `schema_version: 2.0`, so valid V2 run files do not require a V2.1 data migration.
+V3.0 renamed the project from product-loop to ploo. The public artifact contracts remain `schema_version: 2.0`, so valid V2 run files require no data migration.
 
 ## Security
 

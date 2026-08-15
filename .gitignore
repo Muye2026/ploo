@@ -25,3 +25,6 @@ build/
 *.crt
 *.cer
 examples/**/generated/
+
+# dsh headless session runs created inside the workspace
+/runs/

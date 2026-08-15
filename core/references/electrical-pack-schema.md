@@ -17,7 +17,7 @@ Required root fields are:
   "status": "planned",
   "provenance": {
     "source": "approved brief",
-    "producer": "product-loop",
+    "producer": "ploo",
     "time": "2026-01-01T00:00:00Z",
     "hash": "sha256:..."
   },

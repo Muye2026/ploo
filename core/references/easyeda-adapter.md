@@ -1,6 +1,6 @@
 # EasyEDA Adapter
 
-本规范定义 `product-loop` 如何通过可插拔 adapter 把 provider-neutral 的 `electrical-pack.v2.json` 落实到 EasyEDA，同时兼容 API 直控、用户陪画和两者混合执行。它只定义执行边界、能力探测、证据和验收规则，不改变 Design Pack、电气真值或共享接口真值，也不替代器件数据手册、电气设计评审、制板厂叠层计算、样机测试或生产放行。
+本规范定义 `ploo` 如何通过可插拔 adapter 把 provider-neutral 的 `electrical-pack.v2.json` 落实到 EasyEDA，同时兼容 API 直控、用户陪画和两者混合执行。它只定义执行边界、能力探测、证据和验收规则，不改变 Design Pack、电气真值或共享接口真值，也不替代器件数据手册、电气设计评审、制板厂叠层计算、样机测试或生产放行。
 
 ## 目录
 
