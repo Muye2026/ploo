@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / "product-loop" / "scripts"
+SCRIPTS = ROOT / "core" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 from adapter_contracts import canonical_parameter_digest, document_digest  # noqa: E402

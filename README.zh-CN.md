@@ -43,7 +43,7 @@ Product Loop 产出的是设计候选方案和 EVT 输入。它不对 DFM、模�
 
 ```text
 product-loop/
-├── product-loop/
+├── core/
 │   ├── SKILL.md
 │   ├── agents/
 │   ├── references/
@@ -54,7 +54,7 @@ product-loop/
 └── assets/diagrams/
 ```
 
-可安装的 Skill 是内层 `product-loop/` 目录。示例是公开的合成数据,不随 Skill 安装。
+可安装的 Skill 是内层 `core/` 目录。示例是公开的合成数据,不随 Skill 安装。
 
 ## 核心产物
 
@@ -75,23 +75,23 @@ product-loop/
 ## 辅助脚本
 
 ```bash
-python3 product-loop/scripts/migrate_v1_to_v2.py INPUT --output-dir NEW_DIRECTORY
-python3 product-loop/scripts/validate_v2.py design-pack INPUT
-python3 product-loop/scripts/validate_bundle.py --run-state RUN_STATE --design-pack DESIGN_PACK --electrical-pack ELECTRICAL_PACK --interface-control INTERFACE_CONTROL --review-results REVIEW_RESULTS
-python3 product-loop/scripts/manage_run_state.py validate RUN_STATE
-python3 product-loop/scripts/manage_run_state.py resolve-routes RUN_STATE OUTPUT --decision-ref chat-message:route-choice-001 --visualization image --mechanical direct --schematic guided --pcb hybrid
-python3 product-loop/scripts/manage_run_state.py open-decision RUN_STATE OUTPUT --gate DECISION_GATE_JSON
-python3 product-loop/scripts/manage_run_state.py resolve-decision RUN_STATE OUTPUT --selected-option freeze --decision-ref approval-record:freeze-001
-python3 product-loop/scripts/manage_run_state.py record-execution RUN_STATE OUTPUT --step-id STEP --attempt-id ATTEMPT --status completed --result-fingerprint sha256:READBACK
-python3 product-loop/scripts/manage_run_state.py change-route RUN_STATE OUTPUT --track mechanical --decision-id DECISION
-python3 product-loop/scripts/manage_run_state.py stale RUN_STATE OUTPUT --artifact-id interface-control --revision 3 --reason "Board outline changed"
-python3 product-loop/scripts/normalize_design_pack.py INPUT OUTPUT
-python3 product-loop/scripts/build_review_matrix.py INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
-python3 product-loop/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
-python3 product-loop/scripts/evaluate_behavior_contracts.py --cases product-loop/evals/product-loop-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
+python3 core/scripts/migrate_v1_to_v2.py INPUT --output-dir NEW_DIRECTORY
+python3 core/scripts/validate_v2.py design-pack INPUT
+python3 core/scripts/validate_bundle.py --run-state RUN_STATE --design-pack DESIGN_PACK --electrical-pack ELECTRICAL_PACK --interface-control INTERFACE_CONTROL --review-results REVIEW_RESULTS
+python3 core/scripts/manage_run_state.py validate RUN_STATE
+python3 core/scripts/manage_run_state.py resolve-routes RUN_STATE OUTPUT --decision-ref chat-message:route-choice-001 --visualization image --mechanical direct --schematic guided --pcb hybrid
+python3 core/scripts/manage_run_state.py open-decision RUN_STATE OUTPUT --gate DECISION_GATE_JSON
+python3 core/scripts/manage_run_state.py resolve-decision RUN_STATE OUTPUT --selected-option freeze --decision-ref approval-record:freeze-001
+python3 core/scripts/manage_run_state.py record-execution RUN_STATE OUTPUT --step-id STEP --attempt-id ATTEMPT --status completed --result-fingerprint sha256:READBACK
+python3 core/scripts/manage_run_state.py change-route RUN_STATE OUTPUT --track mechanical --decision-id DECISION
+python3 core/scripts/manage_run_state.py stale RUN_STATE OUTPUT --artifact-id interface-control --revision 3 --reason "Board outline changed"
+python3 core/scripts/normalize_design_pack.py INPUT OUTPUT
+python3 core/scripts/build_review_matrix.py INPUT OUTPUT --run-state RUN_STATE --review-results REVIEW_RESULTS
+python3 core/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --handoff-data HANDOFF_DATA
+python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/product-loop-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
-`adapter_contracts.py` 提供纯安全校验:Fusion/EasyEDA 单元边界、写恢复分类、每次调用的危险工具授权、EasyEDA 身份/哈希预检,以及 CAD–PCB 共享几何比对。供应商写操作必须通过同进程的主机事务完成:授权确切的 bundle、执行只读预检、调用 `reserve_execution(...)`、对预留快照重新授权、消费一次性租约、单次调用供应商并记录回读。CLI 有意不暴露预留机制,因为它无法保存密封令牌,也无法保证预检确实发生过。决策引用是溯源指针,不是加密认证:主机必须提供从真实用户消息或审批记录中取得的稳定引用。合成的黄金 bundle 位于 `examples/v2-orchestrator-demo/`。行为用例和黄金捕获结果位于 `product-loop/evals/`;评估器接受来自真实 Skill 运行捕获的结果,缺少保护措施或出现被禁止行为时判定失败。
+`adapter_contracts.py` 提供纯安全校验:Fusion/EasyEDA 单元边界、写恢复分类、每次调用的危险工具授权、EasyEDA 身份/哈希预检,以及 CAD–PCB 共享几何比对。供应商写操作必须通过同进程的主机事务完成:授权确切的 bundle、执行只读预检、调用 `reserve_execution(...)`、对预留快照重新授权、消费一次性租约、单次调用供应商并记录回读。CLI 有意不暴露预留机制,因为它无法保存密封令牌,也无法保证预检确实发生过。决策引用是溯源指针,不是加密认证:主机必须提供从真实用户消息或审批记录中取得的稳定引用。合成的黄金 bundle 位于 `examples/v2-orchestrator-demo/`。行为用例和黄金捕获结果位于 `core/evals/`;评估器接受来自真实 Skill 运行捕获的结果,缺少保护措施或出现被禁止行为时判定失败。
 
 ## 测试
 
@@ -101,7 +101,7 @@ python3 -m unittest discover -s tests -v
 
 ## 安装
 
-克隆仓库,然后安装内层 `product-loop/` 目录。推荐使用符号链接,因为之后 `git pull --ff-only` 拉取的更新对所有链接的主机立即可见。
+克隆仓库,然后安装内层 `core/` 目录。推荐使用符号链接,因为之后 `git pull --ff-only` 拉取的更新对所有链接的主机立即可见。
 
 当前 Codex 个人发现路径:
 
@@ -110,7 +110,7 @@ git clone https://github.com/Muye2026/product-loop.git
 cd product-loop
 skills_root="$HOME/.agents/skills"
 mkdir -p "$skills_root"
-ln -s "$(pwd)/product-loop" "$skills_root/product-loop"
+ln -s "$(pwd)/core" "$skills_root/product-loop"
 ```
 
 Codex、Claude Code、Cursor、OpenClaw、复制式安装、旧版 Codex 路径、更新、回滚和主机能力边界,详见 [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md)。基于复制的当前 Codex 安装,请仅在目标目录尚不存在时,从仓库根目录执行:
@@ -121,7 +121,7 @@ mkdir -p "$skills_root"
 if [ -e "$skills_root/product-loop" ]; then
   echo "product-loop already exists; follow UPGRADING.md"
 else
-  cp -R product-loop "$skills_root/product-loop"
+  cp -R core "$skills_root/product-loop"
 fi
 ```
 

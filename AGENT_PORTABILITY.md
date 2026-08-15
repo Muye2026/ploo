@@ -1,6 +1,6 @@
 # Product Loop V2.1 Agent Portability
 
-Product Loop follows the open [Agent Skills](https://agentskills.io/home) folder format: the installable unit is the inner `product-loop/` directory, with `SKILL.md` as its entrypoint and references, schemas, scripts, and evaluations kept beside it.
+Product Loop follows the open [Agent Skills](https://agentskills.io/home) folder format: the installable unit is the inner `core/` directory, with `SKILL.md` as its entrypoint and references, schemas, scripts, and evaluations kept beside it.
 
 The workflow is portable across skills-compatible agents. Tool access is not. A host may run the full planning and decision workflow without Fusion 360, EasyEDA, image generation, video generation, or any MCP server. Direct execution is available only when that host can probe a real provider operation and the user explicitly selects and authorizes that route.
 
@@ -14,7 +14,7 @@ This guide was verified against the linked official documentation on 2026-07-15.
 | Claude Code | Yes | Personal: `~/.claude/skills/product-loop`; project: `.claude/skills/product-loop` | `/product-loop` or automatic matching |
 | Cursor | Yes in editor and CLI from 2.4 | Add the inner folder from Cursor's Skills/Customize UI at user or workspace scope | `/product-loop` or automatic matching |
 | OpenClaw | Yes | Shared: `~/.agents/skills/product-loop`; managed: `~/.openclaw/skills/product-loop`; workspace: `<workspace>/skills/product-loop` | Skill name or slash-command discovery |
-| Other agent | Host-dependent | Give the agent read access to the inner folder and explicitly load `product-loop/SKILL.md` | Manual prompt entrypoint below |
+| Other agent | Host-dependent | Give the agent read access to the inner folder and explicitly load `core/SKILL.md` | Manual prompt entrypoint below |
 
 Native discovery means the host can find and progressively load `SKILL.md`. It does not mean the host has the same MCP servers, UI-control tools, permissions, or provider API signatures.
 
@@ -26,7 +26,7 @@ cd product-loop
 repo_root="$(pwd)"
 ```
 
-All links below must point to `$repo_root/product-loop`, not the repository root. Keeping one clone and linking each host to the same inner directory makes `git pull --ff-only` update every linked host at once.
+All links below must point to `$repo_root/core`, not the repository root. Keeping one clone and linking each host to the same inner directory makes `git pull --ff-only` update every linked host at once.
 
 ## Codex
 
@@ -34,12 +34,12 @@ Current Codex documentation uses `~/.agents/skills` for personal skills and `.ag
 
 ```bash
 mkdir -p "$HOME/.agents/skills"
-ln -s "$repo_root/product-loop" "$HOME/.agents/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.agents/skills/product-loop"
 ```
 
 Start a new task if the skill does not appear immediately. Existing installations under `${CODEX_HOME:-$HOME/.codex}/skills/product-loop` may continue to work in hosts that still scan the legacy location. Do not create a second visible copy if the old installation is already discovered. See [UPGRADING.md](UPGRADING.md) for a no-data-loss migration path.
 
-Codex-specific UI metadata remains in `product-loop/agents/openai.yaml`; it is optional for other hosts and does not add a provider dependency.
+Codex-specific UI metadata remains in `core/agents/openai.yaml`; it is optional for other hosts and does not add a provider dependency.
 
 ## Claude Code
 
@@ -47,14 +47,14 @@ Claude Code supports personal and project skills and follows symlinked skill dir
 
 ```bash
 mkdir -p "$HOME/.claude/skills"
-ln -s "$repo_root/product-loop" "$HOME/.claude/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.claude/skills/product-loop"
 ```
 
 Use `.claude/skills/product-loop` instead for a project-only installation. Invoke `/product-loop`, or ask Claude to use Product Loop for a hardware-product workflow. Product Loop uses only the standard `name` and `description` frontmatter fields, so it does not depend on Claude-only extensions.
 
 ## Cursor
 
-Cursor supports Agent Skills in both the editor and CLI. In current Cursor versions, open the Skills/Customize surface, choose user or workspace scope, and add the inner `$repo_root/product-loop` folder. Confirm that `product-loop` appears in the skills list, then invoke `/product-loop` or describe a matching hardware-planning task.
+Cursor supports Agent Skills in both the editor and CLI. In current Cursor versions, open the Skills/Customize surface, choose user or workspace scope, and add the inner `$repo_root/core` folder. Confirm that `product-loop` appears in the skills list, then invoke `/product-loop` or describe a matching hardware-planning task.
 
 Cursor's UI and distribution surfaces change more frequently than the open folder format. Prefer the current in-product Skills/Customize flow over copying a path from an older tutorial. If a managed workspace blocks local skills, ask the workspace administrator to distribute the same inner folder at team scope.
 
@@ -64,24 +64,24 @@ OpenClaw scans `~/.agents/skills`, so the Codex personal link above can be share
 
 ```bash
 mkdir -p "$HOME/.openclaw/skills"
-ln -s "$repo_root/product-loop" "$HOME/.openclaw/skills/product-loop"
+ln -s "$repo_root/core" "$HOME/.openclaw/skills/product-loop"
 ```
 
 For workspace-local installation, OpenClaw can install the inner directory:
 
 ```bash
-openclaw skills install "$repo_root/product-loop" --as product-loop
+openclaw skills install "$repo_root/core" --as product-loop
 ```
 
 OpenClaw's Git/local installs and registry-managed installs can have different update behavior. A symlink to a trusted local clone keeps updates explicit and reviewable: inspect the diff, run the tests, then run `git pull --ff-only`.
 
 ## Manual entrypoint for another agent
 
-If an agent can read files but does not natively discover Agent Skills, attach or expose the inner `product-loop/` directory and use this prompt:
+If an agent can read files but does not natively discover Agent Skills, attach or expose the inner `core/` directory and use this prompt:
 
 ```text
-Load product-loop/SKILL.md as the authoritative workflow.
-Resolve every relative reference from the product-loop directory.
+Load core/SKILL.md as the authoritative workflow.
+Resolve every relative reference from the core directory.
 Run read-only capability discovery first.
 Present all relevant Route Gate 0 choices and wait for my selection.
 Do not generate visuals, model, draw a schematic, draw a PCB, install a provider,
@@ -114,7 +114,7 @@ Fusion 360 and EasyEDA are optional provider adapters, not universal requirement
 6. Verify with API readback, source export, or a clear screenshot.
 7. On failure or lost capability, ask the user to retry, switch route, hand off, or pause; never silently substitute a backend.
 
-An adapter for a different CAD or EDA system may implement the common lifecycle documented in `product-loop/SKILL.md`, but Product Loop must not claim that adapter exists until the host actually exposes and probes it.
+An adapter for a different CAD or EDA system may implement the common lifecycle documented in `core/SKILL.md`, but Product Loop must not claim that adapter exists until the host actually exposes and probes it.
 
 ## Smoke test
 
@@ -142,7 +142,7 @@ git -C "$repo_root" pull --ff-only
 python3 -m unittest discover -s "$repo_root/tests" -v
 ```
 
-Start a new host task if discovery is cached. For copied installs, back up the installed folder, replace it with the inner `product-loop/` directory, verify the smoke test, and only then remove the backup. Updating the skill never edits existing CAD/EDA documents or project run data automatically.
+Start a new host task if discovery is cached. For copied installs, back up the installed folder, replace it with the inner `core/` directory, verify the smoke test, and only then remove the backup. Updating the skill never edits existing CAD/EDA documents or project run data automatically.
 
 V2.1 is a workflow and distribution release. The public artifact contracts remain `schema_version: 2.0`, so valid V2 run files do not require a V2.1 data migration.
 

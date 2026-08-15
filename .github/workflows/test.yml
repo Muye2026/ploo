@@ -12,11 +12,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python -m compileall -q product-loop/scripts tests
+      - run: python -m compileall -q core/scripts tests
       - run: python -m unittest discover -s tests -v
-      - run: python product-loop/scripts/validate_v2.py design-pack examples/v2-orchestrator-demo/design-pack.v2.json
-      - run: python product-loop/scripts/validate_v2.py electrical-pack examples/v2-orchestrator-demo/electrical-pack.v2.json
-      - run: python product-loop/scripts/validate_v2.py interface-control examples/v2-orchestrator-demo/interface-control.v2.json
-      - run: python product-loop/scripts/validate_v2.py run-state examples/v2-orchestrator-demo/run-state.v2.json
-      - run: python product-loop/scripts/validate_bundle.py --run-state examples/v2-orchestrator-demo/run-state.v2.json --design-pack examples/v2-orchestrator-demo/design-pack.v2.json --electrical-pack examples/v2-orchestrator-demo/electrical-pack.v2.json --interface-control examples/v2-orchestrator-demo/interface-control.v2.json
-      - run: python product-loop/scripts/evaluate_behavior_contracts.py --cases product-loop/evals/product-loop-v2.jsonl --responses product-loop/evals/product-loop-v2-golden-responses.jsonl
+      - run: python core/scripts/validate_v2.py design-pack examples/v2-orchestrator-demo/design-pack.v2.json
+      - run: python core/scripts/validate_v2.py electrical-pack examples/v2-orchestrator-demo/electrical-pack.v2.json
+      - run: python core/scripts/validate_v2.py interface-control examples/v2-orchestrator-demo/interface-control.v2.json
+      - run: python core/scripts/validate_v2.py run-state examples/v2-orchestrator-demo/run-state.v2.json
+      - run: python core/scripts/validate_bundle.py --run-state examples/v2-orchestrator-demo/run-state.v2.json --design-pack examples/v2-orchestrator-demo/design-pack.v2.json --electrical-pack examples/v2-orchestrator-demo/electrical-pack.v2.json --interface-control examples/v2-orchestrator-demo/interface-control.v2.json
+      - run: python core/scripts/evaluate_behavior_contracts.py --cases core/evals/product-loop-v2.jsonl --responses core/evals/product-loop-v2-golden-responses.jsonl

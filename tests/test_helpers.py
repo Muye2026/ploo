@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / "product-loop" / "scripts"
+SCRIPTS = ROOT / "core" / "scripts"
 
 
 def load_script(name):

@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL_ROOT = ROOT / "product-loop"
+SKILL_ROOT = ROOT / "core"
 
 
 class SkillContractTests(unittest.TestCase):

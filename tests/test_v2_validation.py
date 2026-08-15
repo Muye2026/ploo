@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / "product-loop" / "scripts"
+SCRIPTS = ROOT / "core" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 from manage_run_state import (  # noqa: E402
@@ -76,7 +76,7 @@ class GoldenExampleTests(unittest.TestCase):
 
     def test_electrical_reference_root_example_matches_schema(self):
         reference = (
-            ROOT / "product-loop" / "references" / "electrical-pack-schema.md"
+            ROOT / "core" / "references" / "electrical-pack-schema.md"
         ).read_text(encoding="utf-8")
         match = re.search(r"```json\n(.*?)\n```", reference, flags=re.DOTALL)
         self.assertIsNotNone(match)

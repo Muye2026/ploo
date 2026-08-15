@@ -4,7 +4,7 @@ V2 keeps the planning layer usable without Fusion 360 MCP, EasyEDA, or image/vid
 
 ## 0. V2 to V2.1
 
-If the installed skill is a symlink to this repository's inner `product-loop/` directory, `git pull --ff-only` is enough. Valid V2 files remain `schema_version: 2.0` and need no data migration.
+If the installed skill is a symlink to this repository's inner `core/` directory, `git pull --ff-only` is enough. Valid V2 files remain `schema_version: 2.0` and need no data migration.
 
 Current Codex documentation recommends `~/.agents/skills/product-loop` for personal discovery. Older Product Loop releases documented `${CODEX_HOME:-$HOME/.codex}/skills/product-loop`. If the old location is still discovered, it can remain in place. To migrate discovery paths without touching the repository or run data:
 
@@ -29,7 +29,7 @@ do
 done
 ```
 
-- If `readlink` prints the repository's inner `product-loop/` path, this is a symlink install.
+- If `readlink` prints the repository's inner `core/` path, this is a symlink install.
 - If it prints nothing and `SKILL.md` is inside the directory, this is usually a copied install.
 - If another installer manages the directory, use its update flow after making a backup. Do not copy a second `product-loop/` directory inside the existing one.
 
@@ -52,7 +52,7 @@ git -C /path/to/product-loop pull --ff-only
 skills_root="${CODEX_HOME:-$HOME/.codex}/skills"
 backup="$skills_root/product-loop.v1-backup-$(date +%Y%m%d-%H%M%S)"
 mv "$skills_root/product-loop" "$backup"
-cp -R /path/to/product-loop/product-loop "$skills_root/product-loop"
+cp -R /path/to/product-loop/core "$skills_root/product-loop"
 ```
 
 If the repository is not already present, clone it first:
@@ -69,7 +69,7 @@ From the repository root:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 product-loop/scripts/migrate_v1_to_v2.py --help
+python3 core/scripts/migrate_v1_to_v2.py --help
 ```
 
 Confirm the installed entrypoint exists:
@@ -87,7 +87,7 @@ V2.1 discovery should present four independent route choices and state that reco
 The skill files and project/run data are separate. Existing briefs and V1 Design Packs are not rewritten during installation. The recommended command creates a new directory containing separate standard V2 files plus a migration manifest:
 
 ```bash
-python3 product-loop/scripts/migrate_v1_to_v2.py \
+python3 core/scripts/migrate_v1_to_v2.py \
   /path/to/design-pack.v1.json \
   --output-dir /path/to/v2-migration
 ```
@@ -95,7 +95,7 @@ python3 product-loop/scripts/migrate_v1_to_v2.py \
 The new directory contains `design-pack.v2.json`, `run-state.v2.json`, and `migration-bundle.v2.json`. To keep only the nested compatibility bundle, use the legacy two-positional-path form:
 
 ```bash
-python3 product-loop/scripts/migrate_v1_to_v2.py \
+python3 core/scripts/migrate_v1_to_v2.py \
   /path/to/design-pack.v1.json \
   /path/to/migration-bundle.v2.json
 ```
@@ -105,8 +105,8 @@ Both forms refuse to overwrite an existing file or directory and reject identica
 Validate the split outputs before using them:
 
 ```bash
-python3 product-loop/scripts/validate_v2.py design-pack /path/to/v2-migration/design-pack.v2.json
-python3 product-loop/scripts/validate_v2.py run-state /path/to/v2-migration/run-state.v2.json
+python3 core/scripts/validate_v2.py design-pack /path/to/v2-migration/design-pack.v2.json
+python3 core/scripts/validate_v2.py run-state /path/to/v2-migration/run-state.v2.json
 ```
 
 Migration is deliberately conservative:
