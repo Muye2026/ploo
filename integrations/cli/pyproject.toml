@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "product-loop-cli"
+version = "0.1.0"
+description = "Terminal entrypoint (ploo) for the Product Loop hardware product workflow"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Product Loop contributors" }]
+keywords = ["product-loop", "hardware", "design-pack", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+# The CLI is a thin dispatcher over core/scripts/, which is stdlib-only.
+dependencies = []
+
+[project.scripts]
+ploo = "product_loop_cli.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

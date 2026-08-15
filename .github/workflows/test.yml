@@ -20,3 +20,8 @@ jobs:
       - run: python core/scripts/validate_v2.py run-state examples/v2-orchestrator-demo/run-state.v2.json
       - run: python core/scripts/validate_bundle.py --run-state examples/v2-orchestrator-demo/run-state.v2.json --design-pack examples/v2-orchestrator-demo/design-pack.v2.json --electrical-pack examples/v2-orchestrator-demo/electrical-pack.v2.json --interface-control examples/v2-orchestrator-demo/interface-control.v2.json
       - run: python core/scripts/evaluate_behavior_contracts.py --cases core/evals/product-loop-v2.jsonl --responses core/evals/product-loop-v2-golden-responses.jsonl
+      - run: pip install -e integrations/cli
+      - run: python -m unittest discover -s integrations/cli/tests -v
+      - run: ploo --version
+      - run: ploo validate design-pack examples/v2-orchestrator-demo/design-pack.v2.json
+      - run: ploo run-state validate examples/v2-orchestrator-demo/run-state.v2.json
