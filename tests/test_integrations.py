@@ -35,8 +35,8 @@ class DshPluginContractTests(unittest.TestCase):
         entry = (self.pkg_dir / "lib" / "index.js").read_text(encoding="utf-8")
         for symbol in ("apply", "inject", "name"):
             self.assertRegex(entry, rf"export \{{[^}}]*\b{symbol}\b[^}}]*\}}")
-        self.assertIn('"tools"', entry)
-        self.assertIn('"skills"', entry)
+        self.assertIn("'tools'", entry)
+        self.assertIn("'skills'", entry)
 
     def test_assets_snapshot_tracked(self):
         for rel in ("SKILL.md", "scripts/validate_v2.py", "schemas/run-state.v2.schema.json"):
