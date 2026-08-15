@@ -1,5 +1,13 @@
 # Changelog
 
+## V2.2 — 2026-08-15
+
+- Restructured the repository into a single `core/` skill plus thin host adapters under `integrations/`; the inner `product-loop/` directory is now `core/`.
+- Added the `ploo` terminal CLI (`integrations/cli`), a stdlib-only dispatcher over the core scripts.
+- Added the DeepSeek Harness bundle plugin (`integrations/dsh`): a runtime-registered skill, eight `ploo_*` host tools, a synced core snapshot, and a `product-loop` profile preset.
+- Added the WorkBuddy entrypoint (`integrations/workbuddy`) and host contract tests for every integration.
+- Documented DeepSeek Harness and WorkBuddy installation in AGENT_PORTABILITY.md. Artifact contracts remain `schema_version: 2.0`; no run-data migration is required.
+
 ## V2.1 — 2026-07-15
 
 - Documented native Agent Skills installation for Codex, Claude Code, Cursor, and OpenClaw, plus a manual entrypoint for other agents.

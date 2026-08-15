@@ -49,12 +49,27 @@ product-loop/
 │   ├── references/
 │   ├── schemas/
 │   └── scripts/
+├── integrations/
+│   ├── cli/          # ploo 终端入口
+│   ├── dsh/          # DeepSeek Harness 打包插件 + profile 预设
+│   └── workbuddy/    # WorkBuddy Skill 入口
 ├── tests/
 ├── examples/
 └── assets/diagrams/
 ```
 
-可安装的 Skill 是内层 `core/` 目录。示例是公开的合成数据,不随 Skill 安装。
+可安装的 Skill 是 `core/` 目录。示例是公开的合成数据,不随 Skill 安装。
+
+## 宿主接入
+
+一个核心,多套薄外壳。核心是唯一的真相来源;每个接入层只引用或快照核心,绝不复制工作流规则。
+
+| 宿主 | 接入方式 | 入口 |
+| --- | --- | --- |
+| Agent Skills 宿主(Codex、Claude Code、Cursor、OpenClaw) | `core/` 本身就是开放的 Agent Skills 格式 | [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md) |
+| 终端 | `ploo` CLI,分发到 `core/scripts/` | [integrations/cli/](integrations/cli/) |
+| DeepSeek Harness | 打包插件:运行时 Skill、8 个 `ploo_*` 工具、profile 预设 | [integrations/dsh/](integrations/dsh/) |
+| WorkBuddy | WorkBuddy 格式的 Skill 入口 | [integrations/workbuddy/](integrations/workbuddy/) |
 
 ## 核心产物
 

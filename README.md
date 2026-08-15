@@ -49,12 +49,27 @@ product-loop/
 │   ├── references/
 │   ├── schemas/
 │   └── scripts/
+├── integrations/
+│   ├── cli/          # ploo terminal entrypoint
+│   ├── dsh/          # DeepSeek Harness bundle plugin + profile preset
+│   └── workbuddy/    # WorkBuddy skill entrypoint
 ├── tests/
 ├── examples/
 └── assets/diagrams/
 ```
 
-The installable skill is the inner `core/` directory. Examples are public synthetic fixtures and are not installed with the skill.
+The installable skill is the `core/` directory. Examples are public synthetic fixtures and are not installed with the skill.
+
+## Integrations
+
+One core, thin host adapters. The core stays the single source of truth; every adapter references or snapshots it and never duplicates its rules.
+
+| Host | Integration | Entry point |
+| --- | --- | --- |
+| Agent Skills hosts (Codex, Claude Code, Cursor, OpenClaw) | `core/` itself follows the open Agent Skills format | [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md) |
+| Terminal | `ploo` CLI dispatching to `core/scripts/` | [integrations/cli/](integrations/cli/) |
+| DeepSeek Harness | Bundle plugin: runtime skill, eight `ploo_*` tools, profile preset | [integrations/dsh/](integrations/dsh/) |
+| WorkBuddy | WorkBuddy-format skill entrypoint | [integrations/workbuddy/](integrations/workbuddy/) |
 
 ## Core artifacts
 

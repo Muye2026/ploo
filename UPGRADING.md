@@ -1,8 +1,20 @@
-# Upgrading Product Loop to V2.1
+# Upgrading Product Loop
 
 V2 keeps the planning layer usable without Fusion 360 MCP, EasyEDA, or image/video plugins. It adds explicit route decisions, strict V2 artifacts, dependency-aware invalidation, and optional provider adapters. V2.1 adds cross-Agent installation guidance and does not change the V2 artifact schemas. Updating the skill does not modify a CAD/EDA document or migrate project data automatically.
 
-## 0. V2 to V2.1
+## 0. V2.1 to V2.2: repository layout change
+
+V2.2 reorganizes the repository into `core/` plus `integrations/`. The installable skill moved from the inner `product-loop/` directory to `core/`; the workflow, contracts, and `schema_version: 2.0` artifacts are unchanged.
+
+If the installed skill is a symlink into a repository clone, re-point it after `git pull --ff-only`:
+
+```bash
+ln -sfn /path/to/product-loop/core "$HOME/.agents/skills/product-loop"
+```
+
+For copied installs, replace the destination with the new `core/` directory instead of the old inner directory. New host integrations (terminal CLI, DeepSeek Harness, WorkBuddy) are documented in [AGENT_PORTABILITY.md](AGENT_PORTABILITY.md) and [integrations/](integrations/).
+
+## 1. V2 to V2.1
 
 If the installed skill is a symlink to this repository's inner `core/` directory, `git pull --ff-only` is enough. Valid V2 files remain `schema_version: 2.0` and need no data migration.
 
