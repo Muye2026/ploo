@@ -46,8 +46,9 @@ In the profile's `cordis.patch.yml`, extend the inserted row:
 ### Development
 
 ```bash
-node scripts/sync-core.mjs   # re-snapshot ../../core into assets/core (run after core changes)
-node scripts/verify.mjs      # offline smoke: package shape, asset sync, mock apply, tool execution
+node scripts/sync-core.mjs          # re-snapshot ../../core into assets/core (run after core changes)
+node scripts/sync-core.mjs --check  # verify only: exit non-zero when the snapshot is stale
+node scripts/verify.mjs             # offline smoke: package shape, asset sync, mock apply, tool execution
 ```
 
 `sync-core.mjs` must run (and its result be committed) whenever `core/` changes; CI rejects a stale snapshot.
@@ -85,8 +86,9 @@ dsh --profile ploo
 ### 开发
 
 ```bash
-node scripts/sync-core.mjs   # core/ 变更后重新同步快照并提交
-node scripts/verify.mjs      # 离线冒烟:包形态、快照同步、mock 注册、工具执行
+node scripts/sync-core.mjs          # core/ 变更后重新同步快照并提交
+node scripts/sync-core.mjs --check  # 仅校验:快照陈旧时以非零码退出
+node scripts/verify.mjs             # 离线冒烟:包形态、快照同步、mock 注册、工具执行
 ```
 
 ### 安全边界

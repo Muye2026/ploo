@@ -65,7 +65,7 @@ class SkillContractTests(unittest.TestCase):
         upgrade = (ROOT / "UPGRADING.md").read_text(encoding="utf-8")
         self.assertIn("UPGRADING.md", readme)
         self.assertIn("git -C /path/to/ploo pull --ff-only", upgrade)
-        self.assertIn("ploo.v1-backup-", upgrade)
+        self.assertIn("ploo.v3-backup-", upgrade)
         self.assertIn("migrate_v1_to_v2.py", upgrade)
         self.assertIn("waiting_user_decision", upgrade)
 

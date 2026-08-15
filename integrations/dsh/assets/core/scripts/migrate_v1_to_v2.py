@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 import sys
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -432,27 +431,25 @@ def _json_text(value: Mapping[str, Any]) -> str:
 
 
 def _write_new_atomic(path: Path, value: Mapping[str, Any]) -> None:
-    """Atomically publish a new file without overwriting an existing path."""
+    """Publish a new file, refusing to overwrite an existing path.
+
+    Uses an exclusive create (O_EXCL) so the no-overwrite guarantee also
+    holds on filesystems without hard-link support (FAT/exFAT, some
+    network mounts), where the previous os.link-based publish failed.
+    """
     if os.path.lexists(path):
         raise ValidationError(f"output already exists: {path}")
     if not path.parent.is_dir():
         raise ValidationError(f"output parent directory does not exist: {path.parent}")
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent)
-    )
-    temporary = Path(temporary_name)
+    rendered = _json_text(value)
     try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(_json_text(value))
-            handle.flush()
-            os.fsync(handle.fileno())
-        try:
-            os.link(temporary, path)
-        except FileExistsError as exc:
-            raise ValidationError(f"output already exists: {path}") from exc
-    finally:
-        if temporary.exists():
-            temporary.unlink()
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    except FileExistsError as exc:
+        raise ValidationError(f"output already exists: {path}") from exc
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle.write(rendered)
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def _write_split_directory(path: Path, bundle: Mapping[str, Any]) -> None:

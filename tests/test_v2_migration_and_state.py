@@ -418,6 +418,60 @@ class RunStateManagementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError, "must reflect child status"):
             validate_document(updated, expected_kind="run-state")
 
+    def test_route_change_recovery_without_step_and_track_scope_fails_cleanly(self):
+        routed = resolve_routes(
+            self.state,
+            {"visualization": "skip", "mechanical": "direct", "schematic": "skip", "pcb": "skip"},
+            "chat-message:recovery-scope-routes",
+        )
+        gate = {
+            "decision_id": "decision-recovery-missing-scope-001",
+            "decision_type": "route_change",
+            "scope": ["recovery:capability-lost"],
+            "status": "pending",
+            "question": "The provider vanished mid-run. How should execution recover?",
+            "options": [
+                {"id": "pause", "label": "Pause", "description": "Stop here.", "impact": "The card is blocked."},
+            ],
+            "recommendation": "pause",
+            "recommendation_rationale": "No replacement route was probed.",
+            "impact": ["The affected execution card is blocked."],
+            "selected_option": None, "decided_by": None, "decided_at": None,
+            "decision_evidence": [], "dependency_revisions": [],
+        }
+        opened = open_decision(routed, gate)
+        with self.assertRaisesRegex(ValidationError, "step: and track:"):
+            resolve_pending_decision(
+                opened, "pause", "approval-record:recovery-missing-scope-001"
+            )
+
+    def test_manage_cli_rejects_same_input_and_output_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "run-state.json"
+            path.write_text(json.dumps(self.state), encoding="utf-8")
+            before = path.read_text(encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPTS / "manage_run_state.py"),
+                    "resolve-routes",
+                    str(path),
+                    str(path),
+                    "--decision-ref", "chat-message:same-path-routes",
+                    "--visualization", "skip",
+                    "--mechanical", "skip",
+                    "--schematic", "skip",
+                    "--pcb", "skip",
+                ],
+                cwd=str(ROOT),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("never overwrite", result.stderr)
+            self.assertEqual(path.read_text(encoding="utf-8"), before)
+
 
 if __name__ == "__main__":
     unittest.main()

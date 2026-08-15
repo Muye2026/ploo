@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Simplified documentation after the rename: README version-history sections replaced by a current Capabilities summary, UPGRADING.md compressed and its stale paths fixed, validation results refreshed, `docs/architecture.md` linked from the README, and the stale `product-loop-flow.mmd` renamed and redrawn as `ploo-flow.mmd`.
+- Consolidated duplicated rules in `core/references/`: the reserved-write sequence, adapter lifecycle, unit boundary, cross-domain comparison groups, and invalidation rules now have one authoritative home each; adapters point instead of restating. Unified adapter terminology (`RunPlan`, `awaiting_user_route`).
+- Hardened `manage_run_state.py`: mutating actions refuse same-path input/output, and malformed execution-recovery decisions fail with a clear validation error instead of an uncaught crash.
+- Migrate V1 publishes outputs with an exclusive create, so the no-overwrite guarantee also holds on filesystems without hard-link support.
+- `sync-core.mjs` gains a `--check` mode and rejects unknown arguments; shared snapshot helpers in `snapshot.mjs` keep `sync-core.mjs` and `verify.mjs` from drifting apart.
+- The `ploo_migrate` and `ploo_run_state` host tools now validate their output requirements up front with clear errors.
+- Added `node_modules/` to `.gitignore`.
+
 ## V3.0 — 2026-08-15
 
 - Renamed the project from product-loop to ploo: skill name, CLI package (`ploo-cli`), DeepSeek Harness plugin (`dsh-ploo`), WorkBuddy skill, documentation, and the GitHub repository (`Muye2026/ploo`; the old URL redirects).

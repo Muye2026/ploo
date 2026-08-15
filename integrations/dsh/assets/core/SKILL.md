@@ -111,7 +111,7 @@ export(formats, artifact_root) -> ArtifactManifest
 
 For Fusion 360, read [references/fusion360-adapter.md](references/fusion360-adapter.md). For EasyEDA, read [references/easyeda-adapter.md](references/easyeda-adapter.md). Do not invent provider APIs or silently substitute another backend.
 
-Before every provider write, obtain a full-bundle authorization bound to the exact state, capability, probed provider operation, parameters, targets, and attempt. Use it for read-only preflight, atomically reserve the attempt and any high-risk approval, revalidate the updated bundle for a single-use write lease, guard the actual call, invoke that one provider operation once, then record readback. A pending decision, stale/blocked dependency, changed hash, mismatched attempt, or prior reservation blocks the write.
+Every provider write follows the reserved-write sequence in [references/workflow-state-schema.md](references/workflow-state-schema.md): full-bundle authorization, read-only preflight, atomic reservation, single-use lease, one guarded call, then recorded readback. A pending decision, stale/blocked dependency, changed hash, mismatched attempt, or prior reservation blocks the write.
 
 ### Execution boundary
 
@@ -145,8 +145,6 @@ Use [references/handoff-brief-template.md](references/handoff-brief-template.md)
 
 ## V1 compatibility
 
-Migrate V1 inputs before resuming. Map `checkpointed` to `confirmation_policy: material_decisions`. Map `auto` only to continuous cadence inside approved routes; it never grants route or material-decision authority. Missing routes must enter `waiting_user_decision`.
-
-Use `scripts/migrate_v1_to_v2.py` for migration, `scripts/validate_v2.py` for each document, `scripts/validate_bundle.py` before any cross-document freeze or execution, and `scripts/manage_run_state.py` for route resolution, non-route decision gates, validation, and descendant invalidation. Treat any validator failure as blocking; never repair a material value by guessing.
+Migrate V1 inputs before resuming: `checkpointed` maps to `confirmation_policy: material_decisions`, and `auto` only grants continuous cadence inside approved routes — it never grants route or material-decision authority. Missing routes must enter `waiting_user_decision`. Use `scripts/migrate_v1_to_v2.py` for migration, `scripts/validate_v2.py` per document, `scripts/validate_bundle.py` before any freeze or execution, and `scripts/manage_run_state.py` for routes, gates, and invalidation. Treat any validator failure as blocking; never repair a material value by guessing.
 
 Read [references/checkpoint-mode.md](references/checkpoint-mode.md) for migration semantics and [references/use-cases.md](references/use-cases.md) for examples and boundaries.

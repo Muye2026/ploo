@@ -149,7 +149,7 @@ export function buildTools({ coreDir, pythonPath }) {
           description: 'run-state action.',
         },
         input: ABS('Path to run-state.v2.json.'),
-        output: ABS('Output path for mutating actions (must differ from input).'),
+        output: ABS('Output path for mutating actions (must differ from input). Required for every action except validate.'),
         args: {
           type: 'array',
           items: { type: 'string' },
@@ -164,8 +164,15 @@ export function buildTools({ coreDir, pythonPath }) {
     timeoutMs: 120_000,
     isConcurrencySafe: (args) => args && args.action === 'validate',
     async execute(args, exec) {
-      const argv = [requireString(args, 'action'), requireString(args, 'input')]
+      const action = requireString(args, 'action')
+      const input = requireString(args, 'input')
       const output = optionalString(args, 'output')
+      if (action !== 'validate' && !output) {
+        throw new Error(
+          'ploo: mutating run-state actions require an "output" path (it must differ from "input")',
+        )
+      }
+      const argv = [action, input]
       if (output) argv.push(output)
       argv.push(...optionalStringArray(args, 'args'))
       return run('manage_run_state.py', argv, exec)
@@ -175,12 +182,12 @@ export function buildTools({ coreDir, pythonPath }) {
   definitions.push({
     name: 'ploo_migrate',
     description:
-      'Migrate a V1 Ploo design pack into V2 artifacts. Creates a new output directory (design-pack.v2.json, run-state.v2.json, migration-bundle.v2.json); never overwrites existing files.',
+      'Migrate a V1 Ploo design pack into V2 artifacts. Requires exactly one of outputDir (new directory with design-pack.v2.json, run-state.v2.json, migration-bundle.v2.json) or legacyOutput (single-file migration-bundle.v2.json); never overwrites existing files.',
     parameters: {
       type: 'object',
       properties: {
         input: ABS('Path to the V1 design pack JSON.'),
-        outputDir: ABS('New directory for the split V2 outputs.'),
+        outputDir: ABS('New directory for the split V2 outputs (exactly one of outputDir/legacyOutput is required).'),
         legacyOutput: ABS('Legacy single-file migration-bundle.v2.json output (alternative to outputDir).'),
         sourceRef: {
           type: 'string',
@@ -197,6 +204,9 @@ export function buildTools({ coreDir, pythonPath }) {
       const argv = [requireString(args, 'input')]
       const outputDir = optionalString(args, 'outputDir')
       const legacyOutput = optionalString(args, 'legacyOutput')
+      if (!outputDir && !legacyOutput) {
+        throw new Error('ploo: migrate requires exactly one of "outputDir" or "legacyOutput"')
+      }
       if (outputDir && legacyOutput) {
         throw new Error('ploo: pass either outputDir or legacyOutput, not both')
       }

@@ -4,10 +4,11 @@ Use `run-state.v2.json` for orchestration state. Do not store design truth here.
 
 ## Required domains
 
-- `schema_version`, `run_id`, and one unified run `status`
+- `schema_version`, `document_type`, `run_id`, and one unified run `status`
 - `decision_authority: user`
 - `confirmation_policy: material_decisions`
-- selected route and resolved user decision ID for each track
+- `execution_cadence` (`stepwise` or continuous within approved routes)
+- `track_routes`: selected route and resolved user decision ID for each track
 - `route_decision_ids` linking every selected route to a resolved user decision
 - at most one currently presented pending decision gate; other resolved or superseded decisions live in the ledger
 - decision ledger with `decision_type`, machine-readable `scope`, candidates, recommendation rationale, user selection, timestamp, impact, and dependency revisions

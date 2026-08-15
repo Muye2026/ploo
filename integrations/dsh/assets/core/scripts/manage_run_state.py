@@ -291,11 +291,22 @@ def resolve_pending_decision(
     if resolved["decision_type"] == "route_change" and any(
         item.startswith("recovery:") for item in resolved["scope"]
     ):
-        step_scope = next(item for item in resolved["scope"] if item.startswith("step:"))
-        track_scope = next(item for item in resolved["scope"] if item.startswith("track:"))
-        step_id = step_scope.split(":", 1)[1]
-        track = track_scope.split(":", 1)[1]
-        card = next(item for item in updated["operation_cards"] if item["step_id"] == step_id)
+        step_scopes = [item for item in resolved["scope"] if item.startswith("step:")]
+        track_scopes = [item for item in resolved["scope"] if item.startswith("track:")]
+        if not step_scopes or not track_scopes:
+            raise ValidationError(
+                "execution recovery scope must contain both step: and track: entries"
+            )
+        step_id = step_scopes[0].split(":", 1)[1]
+        track = track_scopes[0].split(":", 1)[1]
+        card = next(
+            (item for item in updated["operation_cards"] if item["step_id"] == step_id),
+            None,
+        )
+        if card is None:
+            raise ValidationError(
+                "execution recovery references an unknown operation card step_id"
+            )
         if selected_option == "pause":
             card["status"] = "blocked"
         else:
@@ -721,6 +732,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    if args.command != "validate" and args.input.resolve() == args.output.resolve():
+        print(
+            "run-state error: input and output paths must differ; "
+            "mutating actions never overwrite their input",
+            file=sys.stderr,
+        )
+        return 1
     try:
         state = load_and_validate(args.input, expected_kind="run-state")
         if args.command == "validate":

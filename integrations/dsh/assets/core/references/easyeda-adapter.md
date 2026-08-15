@@ -84,18 +84,7 @@
 
 ### 2.4 Provider-neutral adapter interface
 
-EasyEDA adapter 实现以下语义接口：
-
-```text
-probe(context) -> CapabilityReport
-plan(pack, artifacts) -> RunPlan
-execute_step(step, session) -> StepResult
-verify(step, result, checks) -> VerificationResult
-rollback(checkpoint) -> RollbackResult
-export(formats, artifact_root) -> ArtifactManifest
-```
-
-`pack` 传入 Electrical Pack，`artifacts` 传入 Interface Control、用户决策和已批准的上游产物。`RunPlan` 只能使用 provider-neutral 意图，例如“验证关键网络端点”“放置结构约束器件”“应用已确认的网络规则”。EasyEDA 类名、方法名、窗口 ID、文档 UUID 和 bridge 端口只存在于 adapter resolution、capability report、operation journal 或 evidence 中。
+EasyEDA adapter 实现 [SKILL.md](../SKILL.md) 的 common adapter lifecycle：`probe / plan / execute_step / verify / rollback / export`。差异：`plan(pack, artifacts) -> RunPlan` 中 `pack` 传入 Electrical Pack，`artifacts` 传入 Interface Control、用户决策和已批准的上游产物；`RunPlan` 只能使用 provider-neutral 意图，例如“验证关键网络端点”“放置结构约束器件”“应用已确认的网络规则”。EasyEDA 类名、方法名、窗口 ID、文档 UUID 和 bridge 端口只存在于 adapter resolution、capability report、operation journal 或 evidence 中。
 
 <a id="capability-probe"></a>
 
@@ -167,7 +156,7 @@ API 文档中不存在的方法视为 `unavailable`。不得根据方法名风�
 
 每个 API 写入批次必须生成 `prewrite_gate`，结果只能为 `pass`、`block` 或 `provisional`。`provisional` 只允许用户明确接受的临时板框或粗布局，不允许关键网络布线、最终阻抗规则或候选冻结。
 
-写前门禁先取得 `authorize_execute_step(...)` 返回的全 bundle 执行授权，并核对 token 中的 capability、真实 provider operation、risk class、call、attempt、参数 digest 和 `operation:<material_digest>`；再直接比对已验证操作卡中的 `route_decision_id`、`operation_step_id`、工程/文档 UUID 和输入 artifact hash，与 bridge/API 独立 readback 的实际值。Operation digest 覆盖目标对象、预期变化、禁止触碰项、回滚、验收、所需证据和依赖版本；任一字段变化都会使旧授权失效。不得让调用方用 `route_authorized: true`、`schematic_frozen: true` 或 `hash_matches: true` 之类二手布尔值代替原始 ID/hash。PCB 写入还要精确比对原理图与 Interface Control 的 freeze-decision ID 和当前 hash；任何一个缺失或不一致都应 fail closed。
+写前门禁按 [workflow-state-schema.md](workflow-state-schema.md) 的写序列执行：先取得 `authorize_execute_step(...)` 的全 bundle `authorized` token，只读 preflight 独立核对真实 provider operation、risk class、call、attempt、参数 digest 与 `operation:<material_digest>`，并直接比对已验证操作卡中的 `route_decision_id`、`operation_step_id`、工程/文档 UUID 和输入 artifact hash 与 bridge/API readback 的实际值。不得让调用方用 `route_authorized: true`、`schematic_frozen: true` 或 `hash_matches: true` 之类二手布尔值代替原始 ID/hash。PCB 写入还要精确比对原理图与 Interface Control 的 freeze-decision ID 和当前 hash；任何一个缺失或不一致都应 fail closed。
 
 ### 4.1 目标身份
 
@@ -229,18 +218,7 @@ API 文档中不存在的方法视为 `unavailable`。不得根据方法名风�
 
 一个批次只能完成一个语义目标，例如“移动一个接口器件组”或“设置一个网络类”，不能把同步、布局、布线和铺铜混在同一批次。
 
-直控执行顺序固定为：
-
-1. 用完整 bundle 的 `authorized` token 做只读写前门禁，独立回读窗口、工程、文档、输入 hash 和真实 API schema。
-2. 读取并保存本批基线。
-3. 原子写入本 attempt 的 `execution_reservations`；高风险卡同时预留唯一一次授权。
-4. 对更新后的完整 bundle 取得一次性 `reserved` lease；用真实 API 方法和真实参数通过 guard。
-5. guard 消费 lease 后，立即只执行 `execution_capability_id` 绑定的一个 API 写入。
-6. 校验 API 返回值。
-7. 重新读取目标对象、关联网络和必要规则，以 fingerprint 完结 reservation。
-8. 比较实际差异与 `expected_delta`。
-9. 运行本阶段适用的定向检查或 DRC。
-10. 保存证据；验收检查记为 `pass` 或 `fail`，Operation Card 随后按证据进入 `verified`、`implemented-unverified` 或 `blocked`。
+直控执行顺序遵循 [workflow-state-schema.md](workflow-state-schema.md) 的写序列（authorize → 只读 preflight → reserve → lease → guard → 单次调用 → readback），并叠加 EasyEDA 特有要求：先读取并保存本批基线（§4.2 快照）；guard 用真实 API 方法和真实参数校验；执行后校验 API 返回值，重新读取目标对象、关联网络和必要规则，以 fingerprint 完结 reservation；比较实际差异与 `expected_delta`，运行本阶段适用的定向检查或 DRC；保存证据后，验收检查记为 `pass` 或 `fail`，Operation Card 按证据进入 `verified`、`implemented-unverified` 或 `blocked`。
 
 一次 API 返回成功不能替代 readback。超时、断线或 `null` 返回时，必须先查询实际文档状态，确认是否已经部分写入；禁止直接重试，以免重复创建或重复移动。
 
@@ -267,16 +245,7 @@ API 文档中不存在的方法视为 `unavailable`。不得根据方法名风�
 
 ### 7.1 原理图冻结
 
-原理图只有同时满足以下条件才能标为 `frozen`：
-
-- 严格 DRC：fatal 0、error 0、warning 0。
-- 关键网络的端点集合验证通过。
-- 未使用引脚具有明确 NC 清单。
-- 所有进入 PCB 的器件有封装绑定。
-- pin-pad、Pin 1、极性和关键连接器方向通过检查。
-- 冻结结果绑定工程、页面、规则集和源 hash。
-
-存在警告豁免时，只能标为 `conditional`，不能标为严格冻结。
+原理图冻结条件遵循 [electrical-pack-schema.md](electrical-pack-schema.md) 的 schematic freeze 规则：严格 DRC（fatal/error/warning 全 0）、关键网络端点集合、NC 清单、封装绑定、pin-pad/Pin 1/极性/连接器方向。EasyEDA 特有：冻结结果绑定工程、页面、规则集和源 hash；存在警告豁免时只能标为 `conditional`，不能标为严格冻结。
 
 ### 7.2 PCB 检查节点
 
@@ -319,31 +288,7 @@ FPC 还必须核对实际物料是顶接或底接、触点朝向、排线正反�
 
 ## 9. 单位规则
 
-V2 电气契约统一使用毫米。适配器只在调用 API 的边界转换成本地域单位：
-
-- PCB：`1 native unit = 1 mil = 0.0254 mm`。
-- 原理图：`1 native unit = 0.01 inch = 10 mil = 0.254 mm`。
-
-换算公式：
-
-```text
-pcb_native = mm / 0.0254
-pcb_mm = pcb_native * 0.0254
-
-schematic_native = mm / 0.254
-schematic_mm = schematic_native * 0.254
-```
-
-所有坐标、长度、线宽和间距都必须记录 `input_mm`、`native_value`、`native_unit` 和 round-trip 结果。API 参数若要求整数，应按照该方法文档和活动网格规则取整，并以半个本地域网格作为最大 round-trip 误差。
-
-写前必须执行：
-
-- round-trip 误差检查。
-- 板框或页面合理范围检查。
-- 10 倍尺度异常检查。
-- 原理图单位和 PCB 单位混用检查。
-
-角度使用 API 文档规定的度数或枚举，不适用上述长度换算。
+单位规则遵循 [electrical-pack-schema.md](electrical-pack-schema.md) 的 EasyEDA 单位边界（PCB：`1 mil = 0.0254 mm`；原理图：`0.01 inch = 0.254 mm`；写前 round-trip、范围、10 倍尺度和混用检查）。EasyEDA 特有：API 参数要求整数时，按方法文档和活动网格规则取整，以半个本地域网格为最大 round-trip 误差；角度使用 API 文档规定的度数或枚举，不适用长度换算。
 
 ## 10. 操作卡
 
@@ -407,7 +352,7 @@ planned -> waiting_user_decision
 
 ## 11. 失败处理与重新选路线
 
-以下任一事件都会使当前领域路线进入 `route_selection_required`：
+以下任一事件都会使当前领域路线进入 `awaiting_user_route`（journal 级子状态；Run State 统一状态仍为 `waiting_user_decision` 或 `blocked`）：
 
 - bridge 或目标窗口断开。
 - 目标工程、文档或文档类型发生变化。

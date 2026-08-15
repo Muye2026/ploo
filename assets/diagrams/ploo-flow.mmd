@@ -1,0 +1,14 @@
+flowchart TB
+    A[Phase 0: read-only capability discovery] --> B{Route Gate 0:<br/>user selects every track}
+    B --> C[Brief, architecture, component selection]
+    C --> D[Visual direction] --> E[Appearance and structure freeze]
+    C --> F[Electrical architecture] --> G[Schematic] --> H[Schematic freeze]
+    C --> I[Shared interfaces] --> J[Interface freeze]
+    E --> K[Mechanical: direct MCP, guided, or handoff]
+    H --> L[PCB: direct, guided, hybrid, or handoff]
+    J --> K
+    J --> L
+    K --> M[Cross-domain review: board and enclosure match]
+    L --> M
+    M --> N[EVT validation plan and handoff package]
+    B -. lost capability .-> O[waiting_user_decision:<br/>user picks a new route]

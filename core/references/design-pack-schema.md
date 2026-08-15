@@ -6,7 +6,7 @@ The authoritative JSON Schema is `../schemas/design-pack.v2.schema.json`.
 
 ## Required V2 fields
 
-- `schema_version`: `2.0`
+- `schema_version`: `2.0`, and `document_type`: `design_pack`
 - `artifact_id`, `revision`, `status`, nullable `architecture_decision_id`, and nullable `freeze_decision_id`
 - `product_goal`
 - `hard_constraints`
@@ -25,7 +25,7 @@ The authoritative JSON Schema is `../schemas/design-pack.v2.schema.json`.
 - `acceptance_checks`
 - `provenance` and `evidence`
 
-Optional references may point to the electrical pack and interface-control artifact. Do not embed provider tool names, local paths, credentials, or live session IDs.
+Optional references may point to the electrical pack and interface-control artifact (`artifact_refs`), and migrations may carry a `migration` block. Do not embed provider tool names, local paths, credentials, or live session IDs.
 
 ## Structured-item pattern
 

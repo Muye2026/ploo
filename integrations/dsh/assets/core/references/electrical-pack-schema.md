@@ -288,7 +288,7 @@ Before `pcb_candidate` or `waiting_evt`, require:
 - strict final DRC with zero fatal, error, and warning and reliable evidence
 - all pre-EVT `must` verification requirements have passing evidence
 - a user candidate decision referencing current hashes
-- a verified cross-domain check whose evidence matches PCB thickness, holes, connectors, height zones, and antenna keep-outs against the same Interface Control revision (and CAD revision when mechanical work is selected)
+- a verified cross-domain check covering the five mandatory comparison groups (see workflow-state-schema.md) against the same Interface Control revision (and CAD revision when mechanical work is selected)
 
 Device selection, confirmed footprint/Pin 1/FPC binding, layer count, and stack-up each carry a dedicated Decision Gate ID. The final schematic freeze or PCB candidate selection does not retroactively prove those earlier material choices.
 
@@ -313,10 +313,9 @@ Record the source value, native value, round-trip value, and error. Before writi
 
 ## Invalidation and EVT boundary
 
+通用失效规则遵循 [workflow-state-schema.md](workflow-state-schema.md) 的失效清单。电气侧补充：
+
 - Device, pin, net, or binding changes invalidate schematic freeze and PCB descendants.
-- Board outline, holes, connector position, battery/FPC volume, or height-zone changes invalidate affected PCB placement and enclosure descendants, not unrelated schematic networks.
-- Layer count or stack-up changes invalidate PCB rules, routing, DRC, and candidate status.
-- Route changes invalidate execution plans and journals, not already verified electrical truth.
 - EasyEDA connection or permission failure opens a new user route gate; it does not rewrite the Electrical Pack.
 
 Static design checks end at `pcb_candidate`. `waiting_evt` requires `evt_plan_ref` to resolve to a verified Run State `evt_plan` artifact whose exact dependency is the current PCB candidate. It still awaits physical fabrication, assembly, power, interface, signal, thermal, RF, ESD, and mechanical validation.

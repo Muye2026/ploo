@@ -140,7 +140,7 @@ Fusion 360 and EasyEDA are optional provider adapters, not universal requirement
 6. Verify with API readback, source export, or a clear screenshot.
 7. On failure or lost capability, ask the user to retry, switch route, hand off, or pause; never silently substitute a backend.
 
-An adapter for a different CAD or EDA system may implement the common lifecycle documented in `core/SKILL.md`, but Ploo must not claim that adapter exists until the host actually exposes and probes it.
+An adapter for a different CAD or EDA system may implement the common lifecycle documented in `core/SKILL.md`, but Ploo must not claim that adapter exists until the host actually exposes and probes it. The mechanical details of the reserved-write sequence live in `core/references/workflow-state-schema.md`; adapters implement it, never restate it.
 
 ## Smoke test
 

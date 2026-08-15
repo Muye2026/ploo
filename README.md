@@ -19,25 +19,18 @@ The core skill is a provider-neutral planning and decision orchestrator. Fusion 
 
 Missing tools only change which routes are currently eligible. Ploo must not install an optional provider, choose a fallback, or convert planning into a write operation without a new user decision. The helper scripts use only the Python 3 standard library.
 
-## What V2.1 adds
-
-- Native Agent Skills installation guidance for Codex, Claude Code, Cursor, and OpenClaw.
-- A manual entrypoint for agents that can read the folder but do not support native skill discovery.
-- A strict separation between workflow portability and optional CAD, EDA, image, video, or MCP capability.
-- A current Codex personal-install path plus a safe migration path for legacy `~/.codex/skills` users.
-
-V2.1 does not change the V2 artifact schemas. Valid `schema_version: 2.0` files remain compatible.
-
-## What V2 introduced
+## Capabilities
 
 - A mandatory user Route Gate after read-only capability discovery.
 - Independent visual, mechanical, schematic, and PCB tracks.
 - Direct, guided, hybrid, specification-only, and handoff execution paths.
 - Provider-neutral Design Pack, Electrical Pack, Interface Control, and Run State contracts.
-- Fusion 360 MCP and EasyEDA adapter protocols with readback, evidence, and recovery.
+- Optional Fusion 360 MCP and EasyEDA adapter protocols with readback, evidence, and recovery.
 - Conflict gates, dependency-aware invalidation, resumable state, and evidence-backed claims.
 
 Ploo produces design candidates and EVT inputs. It does not certify DFM, tooling, tolerance stacks, compliance, or manufacturing release.
+
+V3.0 renamed the project from product-loop to ploo; the artifact contracts remain `schema_version: 2.0`. Release history lives in [CHANGELOG.md](CHANGELOG.md).
 
 ## Repository layout
 
@@ -53,12 +46,13 @@ ploo/
 │   ├── cli/          # ploo terminal entrypoint
 │   ├── dsh/          # DeepSeek Harness bundle plugin + profile preset
 │   └── workbuddy/    # WorkBuddy skill entrypoint
+├── docs/             # architecture notes
 ├── tests/
 ├── examples/
 └── assets/diagrams/
 ```
 
-The installable skill is the `core/` directory. Examples are public synthetic fixtures and are not installed with the skill.
+The installable skill is the `core/` directory. Examples are public synthetic fixtures and are not installed with the skill. Architecture notes live in [docs/architecture.md](docs/architecture.md).
 
 ## Integrations
 
@@ -81,7 +75,7 @@ One core, thin host adapters. The core stays the single source of truth; every a
 ## Route choices
 
 - Visualization: skip, image, video, or image+video.
-- Mechanical: skip, specification, direct MCP, guided, or handoff.
+- Mechanical: skip, spec (specification-only), direct MCP, guided, or handoff.
 - Schematic: skip, direct, guided, hybrid, or handoff.
 - PCB: skip, direct, guided, hybrid, or handoff.
 
@@ -106,7 +100,7 @@ python3 core/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --
 python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/ploo-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
-`adapter_contracts.py` supplies pure safety checks for Fusion/EasyEDA unit boundaries, write recovery classification, per-call dangerous-tool authorization, EasyEDA identity/hash preflight, and CAD–PCB shared-geometry comparison. Provider writes must run through one same-process host transaction: authorize the exact bundle, perform read-only preflight, call `reserve_execution(...)`, reauthorize the reserved snapshot, consume the single-use lease, invoke the provider once, and record readback. The CLI intentionally does not expose reservation because it cannot preserve the sealed token or guarantee that preflight occurred. Decision references are provenance pointers, not cryptographic authentication: the host must supply a stable reference obtained from the real user message or approval record. The synthetic golden bundle is in `examples/v2-orchestrator-demo/`. Behavior cases and golden captured outcomes live in `core/evals/`; the evaluator accepts outcomes captured from real skill runs and fails on missing safeguards or prohibited actions.
+`adapter_contracts.py` supplies pure safety checks for Fusion/EasyEDA unit boundaries, write recovery classification, per-call dangerous-tool authorization, EasyEDA identity/hash preflight, and CAD–PCB shared-geometry comparison. Provider writes must run through the reserved-write sequence documented in [core/references/workflow-state-schema.md](core/references/workflow-state-schema.md). The CLI intentionally does not expose reservation because it cannot preserve the sealed token or guarantee that preflight occurred. Decision references are provenance pointers, not cryptographic authentication: the host must supply a stable reference obtained from the real user message or approval record. The synthetic golden bundle is in `examples/v2-orchestrator-demo/`. Behavior cases and golden captured outcomes live in `core/evals/`; the evaluator accepts outcomes captured from real skill runs and fails on missing safeguards or prohibited actions.
 
 ## Test
 
@@ -140,7 +134,7 @@ else
 fi
 ```
 
-After installing or updating, start a new agent task if the host caches skill discovery. Existing V1 or V2 users should follow [UPGRADING.md](UPGRADING.md); it covers symlink and copied installs, safe backup, V1 data migration, V2.1 path compatibility, verification, and rollback. Release changes are summarized in [CHANGELOG.md](CHANGELOG.md).
+After installing or updating, start a new agent task if the host caches skill discovery. Existing V1 or V2 users should follow [UPGRADING.md](UPGRADING.md); it covers symlink and copied installs, safe backup, V1 data migration, legacy path compatibility, verification, and rollback. Release changes are summarized in [CHANGELOG.md](CHANGELOG.md).
 
 ## Maintainer rules
 

@@ -19,25 +19,18 @@
 
 缺少工具只会改变当前哪些路线可选。Ploo 不得在未经用户重新决策的情况下安装可选供应商、自行选择降级方案,或把规划变成写操作。辅助脚本仅使用 Python 3 标准库。
 
-## V2.1 新增
-
-- 面向 Codex、Claude Code、Cursor 和 OpenClaw 的原生 Agent Skills 安装指引。
-- 为能读取目录但不支持原生 Skill 发现的 Agent 提供手动入口。
-- 严格分离工作流可移植性与可选的 CAD、EDA、图片、视频或 MCP 能力。
-- 当前 Codex 个人安装路径,以及旧版 `~/.codex/skills` 用户的安全迁移路径。
-
-V2.1 不改变 V2 的产物 Schema。合法的 `schema_version: 2.0` 文件保持兼容。
-
-## V2 引入
+## 能力
 
 - 只读能力探测之后的强制用户路线门禁(Route Gate)。
 - 相互独立的视觉、机械、原理图和 PCB 路线。
 - 直接、跟画、混合、仅规格说明和交接五种执行路径。
 - 与供应商无关的 Design Pack、Electrical Pack、Interface Control 和 Run State 契约。
-- 带读回、证据和恢复能力的 Fusion 360 MCP 与 EasyEDA 适配器协议。
+- 可选的 Fusion 360 MCP 与 EasyEDA 适配器协议,带读回、证据和恢复能力。
 - 冲突门禁、依赖感知失效、可恢复状态和带证据的声明。
 
 Ploo 产出的是设计候选方案和 EVT 输入。它不对 DFM、模具、公差链、合规性或量产发布作认证。
+
+V3.0 将项目从 product-loop 更名为 ploo;产物契约仍为 `schema_version: 2.0`。发布历史见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 仓库结构
 
@@ -53,12 +46,13 @@ ploo/
 │   ├── cli/          # ploo 终端入口
 │   ├── dsh/          # DeepSeek Harness 打包插件 + profile 预设
 │   └── workbuddy/    # WorkBuddy Skill 入口
+├── docs/             # 架构说明
 ├── tests/
 ├── examples/
 └── assets/diagrams/
 ```
 
-可安装的 Skill 是 `core/` 目录。示例是公开的合成数据,不随 Skill 安装。
+可安装的 Skill 是 `core/` 目录。示例是公开的合成数据,不随 Skill 安装。架构说明见 [docs/architecture.md](docs/architecture.md)。
 
 ## 宿主接入
 
@@ -81,7 +75,7 @@ ploo/
 ## 路线选择
 
 - 视觉:跳过、图片、视频或图片+视频。
-- 机械:跳过、仅规格说明、直接 MCP、跟画或交接。
+- 机械:跳过、仅规格说明(spec)、直接 MCP、跟画或交接。
 - 原理图:跳过、直接、跟画、混合或交接。
 - PCB:跳过、直接、跟画、混合或交接。
 
@@ -106,7 +100,7 @@ python3 core/scripts/emit_handoff_brief.py INPUT OUTPUT --run-state RUN_STATE --
 python3 core/scripts/evaluate_behavior_contracts.py --cases core/evals/ploo-v2.jsonl --responses CAPTURED_RESPONSES.jsonl
 ```
 
-`adapter_contracts.py` 提供纯安全校验:Fusion/EasyEDA 单元边界、写恢复分类、每次调用的危险工具授权、EasyEDA 身份/哈希预检,以及 CAD–PCB 共享几何比对。供应商写操作必须通过同进程的主机事务完成:授权确切的 bundle、执行只读预检、调用 `reserve_execution(...)`、对预留快照重新授权、消费一次性租约、单次调用供应商并记录回读。CLI 有意不暴露预留机制,因为它无法保存密封令牌,也无法保证预检确实发生过。决策引用是溯源指针,不是加密认证:主机必须提供从真实用户消息或审批记录中取得的稳定引用。合成的黄金 bundle 位于 `examples/v2-orchestrator-demo/`。行为用例和黄金捕获结果位于 `core/evals/`;评估器接受来自真实 Skill 运行捕获的结果,缺少保护措施或出现被禁止行为时判定失败。
+`adapter_contracts.py` 提供纯安全校验:Fusion/EasyEDA 单元边界、写恢复分类、每次调用的危险工具授权、EasyEDA 身份/哈希预检,以及 CAD–PCB 共享几何比对。供应商写操作必须遵循 [core/references/workflow-state-schema.md](core/references/workflow-state-schema.md) 中记录的预留写序列。CLI 有意不暴露预留机制,因为它无法保存密封令牌,也无法保证预检确实发生过。决策引用是溯源指针,不是加密认证:主机必须提供从真实用户消息或审批记录中取得的稳定引用。合成的黄金 bundle 位于 `examples/v2-orchestrator-demo/`。行为用例和黄金捕获结果位于 `core/evals/`;评估器接受来自真实 Skill 运行捕获的结果,缺少保护措施或出现被禁止行为时判定失败。
 
 ## 测试
 
@@ -140,7 +134,7 @@ else
 fi
 ```
 
-安装或更新后,如果主机缓存了 Skill 发现结果,请启动新的 Agent 任务。V1 或 V2 用户应遵循 [UPGRADING.md](UPGRADING.md),其中涵盖符号链接与复制安装、安全备份、V1 数据迁移、V2.1 路径兼容、验证和回滚。发布变更摘要见 [CHANGELOG.md](CHANGELOG.md)。
+安装或更新后,如果主机缓存了 Skill 发现结果,请启动新的 Agent 任务。V1 或 V2 用户应遵循 [UPGRADING.md](UPGRADING.md),其中涵盖符号链接与复制安装、安全备份、V1 数据迁移、旧路径兼容、验证和回滚。发布变更摘要见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 维护者规则
 

@@ -13,11 +13,12 @@
  *
  * Exits non-zero on the first failure; safe to run with no DSH installation.
  */
-import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
+import { readFileSync, readdirSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { snapshotFiles } from './snapshot.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const pkgDir = join(here, '..')
@@ -45,38 +46,9 @@ if (!patch.includes('insert:')) fail('cordis.patch.yml must contain an insert ro
 if (failures === 0) ok('package.json and cordis.patch.yml bundle shape')
 
 // 2. asset sync ------------------------------------------------------------
-const SYNCED = ['SKILL.md', 'agents', 'references', 'schemas', 'scripts', 'evals']
-const hashTree = (root) => {
-  const files = new Map()
-  const walk = (dir) => {
-    for (const entry of readdirSync(dir)) {
-      const full = join(dir, entry)
-      if (entry === '__pycache__' || entry.endsWith('.pyc')) continue
-      const stat = statSync(full)
-      if (stat.isDirectory()) walk(full)
-      else {
-        const digest = createHash('sha256').update(readFileSync(full)).digest('hex')
-        files.set(relative(root, full), digest)
-      }
-    }
-  }
-  walk(root)
-  return files
-}
 {
-  const repoFiles = new Map()
-  const assetFiles = new Map()
-  for (const entry of SYNCED) {
-    const repoPath = join(repoRoot, 'core', entry)
-    const assetPath = join(pkgDir, 'assets', 'core', entry)
-    if (!existsSync(assetPath)) {
-      fail(`assets/core/${entry} missing; run node integrations/dsh/scripts/sync-core.mjs`)
-      continue
-    }
-    const sub = statSync(repoPath).isDirectory() ? hashTree : (p) => new Map([[entry, createHash('sha256').update(readFileSync(p)).digest('hex')]])
-    for (const [k, v] of sub(repoPath)) repoFiles.set(entry === k ? k : join(entry, k), v)
-    for (const [k, v] of sub(assetPath)) assetFiles.set(entry === k ? k : join(entry, k), v)
-  }
+  const repoFiles = snapshotFiles(join(repoRoot, 'core'))
+  const assetFiles = snapshotFiles(join(pkgDir, 'assets', 'core'))
   const stale = []
   for (const [file, digest] of repoFiles) {
     if (assetFiles.get(file) !== digest) stale.push(file)

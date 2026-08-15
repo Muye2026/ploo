@@ -45,18 +45,7 @@ Design Pack、Appearance Spec、Structure Spec 和同一 revision 的 Interface 
 
 ## 3. Provider-neutral Adapter Interface
 
-所有 CAD adapter 应实现同一语义接口：
-
-```text
-probe(context) -> CapabilityReport
-plan(pack, artifacts) -> CadRunPlan
-execute_step(step, session) -> StepResult
-verify(step, result, checks) -> VerificationResult
-rollback(checkpoint) -> RollbackResult
-export(formats, artifact_root) -> ArtifactManifest
-```
-
-`CadRunPlan` 使用 provider-neutral 操作和验收意图，例如“创建参数化主壳体”“切除端口避让区”“检查包络尺寸”。只有 adapter 内部可以把这些意图映射为 `create_sketch`、`extrude`、`shell` 等 Fusion 工具。
+所有 CAD adapter 实现 [SKILL.md](../SKILL.md) 的 common adapter lifecycle：`probe / plan / execute_step / verify / rollback / export`。Fusion adapter 的差异：`plan(pack, artifacts) -> RunPlan` 只使用 provider-neutral 操作和验收意图，例如“创建参数化主壳体”“切除端口避让区”“检查包络尺寸”。只有 adapter 内部可以把这些意图映射为 `create_sketch`、`extrude`、`shell` 等 Fusion 工具。
 
 `context` 由宿主注入，至少包含：
 
@@ -80,7 +69,7 @@ Probe 必须以 MCP 实时发现结果为准，不以 README 中的工具总数�
 3. 检查返回中是否存在 `mode: mock`
 4. 调用 `get_scene_info`，确认 Fusion Add-in、活动设计和场景可访问
 5. 调用 `get_design_type`，确认设计处于 `parametric`
-6. 比对本次 `CadRunPlan` 所需的任务级能力
+6. 比对本次 `RunPlan` 所需的任务级能力
 7. 保存工具 schema digest，供执行前复核接口是否漂移
 
 `ping` 不访问 Fusion API，因此不能单独证明 CAD 路径可用。
@@ -95,7 +84,7 @@ Probe 必须以 MCP 实时发现结果为准，不以 README 中的工具总数�
 - 回滚：`undo`
 - 原生 checkpoint：`export_f3d`
 - 视觉复核：`render_view` 或 `export_view_sheet` 至少一个
-- 当前 `CadRunPlan` 实际需要的建模与验收工具
+- 当前 `RunPlan` 实际需要的建模与验收工具
 
 不得为了通过 probe 要求所有 Fusion 工具都存在；也不得只因工具同名就判定兼容。required 字段、枚举或语义不兼容时，状态应为 `incompatible`。若多个 adapter 或 MCP endpoint 同时满足条件，必须让用户选择目标。
 
@@ -132,12 +121,11 @@ Mock mode 只能用于 adapter 合同测试和 dry-run，不得产出或宣称�
 每步按以下协议执行：
 
 1. **Before**：记录设计类型、目标对象 readback、参数旧值和预期 delta。
-2. **Authorize and preflight**：对完整 V2 bundle 调用 `authorize_execute_step`，使用 `authorized` token 只读核对真实工具 schema、场景、对象、参数与输入 hash。
-3. **Reserve and lease**：原子预留 attempt 与高风险授权，再对更新后的完整 bundle 调用 `authorize_reserved_execute_step`，取得该 reservation 的一次性 `reserved` lease。
-4. **Guard and execute**：guard 用真实工具名和真实参数核对 lease 的 capability、provider operation、risk class 和 digest；消费 lease 后立即只调用这一个工具。对象必须使用稳定名称，优先 `body_name`，避免 `body_index`。
-5. **Check result**：同时检查 MCP `isError`、业务返回 `ok`、结构化 `error_kind` 和 `deltas`。
-6. **Readback**：调用只读工具确认真实场景状态，不能把“没有抛异常”视为成功，并用 readback fingerprint 完结 reservation。
-7. **Commit**：仅在 readback 通过后把步骤标记为 committed，并写入 operation journal。
+2. **Authorize, preflight, reserve, lease**：按 [workflow-state-schema.md](workflow-state-schema.md) 的写序列执行——`authorize_execute_step` → 只读 preflight（核对真实工具 schema、场景、对象、参数与输入 hash）→ `reserve_execution(...)` → `authorize_reserved_execute_step` 取得该 reservation 的一次性 `reserved` lease。
+3. **Guard and execute**：guard 用真实工具名和真实参数核对 lease 的 capability、provider operation、risk class 和 digest；消费 lease 后立即只调用这一个工具。对象必须使用稳定名称，优先 `body_name`，避免 `body_index`。
+4. **Check result**：同时检查 MCP `isError`、业务返回 `ok`、结构化 `error_kind` 和 `deltas`。
+5. **Readback**：调用只读工具确认真实场景状态，不能把“没有抛异常”视为成功，并用 readback fingerprint 完结 reservation。
+6. **Commit**：仅在 readback 通过后把步骤标记为 committed，并写入 operation journal。
 
 推荐验证映射：
 
@@ -177,8 +165,7 @@ Mock mode 只能用于 adapter 合同测试和 dry-run，不得产出或宣称�
 - 所有 CAM、toolpath 和 post-process 工具
 - 写入 `artifact_root` 之外路径的导出调用
 
-确需使用时，必须在调用前单独向用户说明：工具名、provider-neutral capability、完整参数、影响范围、验证方法和回滚限制，并取得针对该次调用的明确授权。
-该授权必须写入 decision ledger，并由对应 Operation Card 的 `authorization_decision_ids` 引用；scope 必须同时绑定 `run`、`step`、单次 `call_id`、`attempt_id`、canonical `parameter_digest` 与 `operation:<material_digest>`。Operation digest 覆盖目标对象、预期变化、禁止触碰项、回滚、验收、证据和输入版本；任一材料字段变化都会让旧授权失效。每张卡只允许一个执行 capability，并且恰好一条匹配该次调用的危险授权；同进程 host 在只读 preflight 后调用 `reserve_execution(...)`，原子写入 call reservation 和 authorization consumption，更新后的 bundle 再签发一次性 write lease。guard 从真实 parameters 自行重算 digest，不能信任调用方复用旧摘要。参数、目标、影响范围、超时重试或 run 改变都必须重新确认。adapter 必须使用 probe 固化的真实工具名映射，例如 `execute_code -> cad.execute_code`、`cam_generate_toolpath -> cad.cam.generate_toolpath`，不得一边按工具名授权、一边按 capability 验证。所有 delete/remove/purge/clear/destroy/wipe/erase/reset 与未分类破坏性工具 fail closed。
+确需使用时，必须在调用前单独向用户说明：工具名、provider-neutral capability、完整参数、影响范围、验证方法和回滚限制，并取得针对该次调用的明确授权。授权 scope、material digest 与 reservation 绑定遵循 [workflow-state-schema.md](workflow-state-schema.md) 的高风险卡规则和 [decision-gates.md](decision-gates.md) 的高风险门规则。Fusion 特有要求：adapter 必须使用 probe 固化的真实工具名映射，例如 `execute_code -> cad.execute_code`、`cam_generate_toolpath -> cad.cam.generate_toolpath`，不得一边按工具名授权、一边按 capability 验证。所有 delete/remove/purge/clear/destroy/wipe/erase/reset 与未分类破坏性工具 fail closed。
 
 导出工具必须同时提交 `artifact_root` 和实际输出路径。路径归一化后处于 root 内才是常规导出；缺少路径信息或越界写出必须把该次导出卡提升为高风险，并在其唯一 capability 授权 scope 中加入规范化后的 `output:<path>`。
 
