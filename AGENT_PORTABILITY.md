@@ -14,6 +14,7 @@ This guide was verified against the linked official documentation on 2026-07-15.
 | Claude Code | Yes | Personal: `~/.claude/skills/product-loop`; project: `.claude/skills/product-loop` | `/product-loop` or automatic matching |
 | Cursor | Yes in editor and CLI from 2.4 | Add the inner folder from Cursor's Skills/Customize UI at user or workspace scope | `/product-loop` or automatic matching |
 | OpenClaw | Yes | Shared: `~/.agents/skills/product-loop`; managed: `~/.openclaw/skills/product-loop`; workspace: `<workspace>/skills/product-loop` | Skill name or slash-command discovery |
+| DeepSeek Harness | Yes | Shared: `~/.agents/skills/product-loop`; dsh-only: `~/.dsh/skills/product-loop`; project: `<repo>/.dsh/skills/product-loop` | Session skill catalog or automatic matching |
 | Other agent | Host-dependent | Give the agent read access to the inner folder and explicitly load `core/SKILL.md` | Manual prompt entrypoint below |
 
 Native discovery means the host can find and progressively load `SKILL.md`. It does not mean the host has the same MCP servers, UI-control tools, permissions, or provider API signatures.
@@ -74,6 +75,19 @@ openclaw skills install "$repo_root/core" --as product-loop
 ```
 
 OpenClaw's Git/local installs and registry-managed installs can have different update behavior. A symlink to a trusted local clone keeps updates explicit and reviewable: inspect the diff, run the tests, then run `git pull --ff-only`.
+
+## DeepSeek Harness
+
+DeepSeek Harness (`dsh`) ships a filesystem skill provider that scans, in rank order: the project `.dsh/skills` directory, the project `.agents/skills` directory, any configured custom roots, the user-level `~/.dsh/skills`, and the shared user-level `~/.agents/skills`. The Codex personal link above is therefore discovered by DeepSeek Harness with no extra setup. A dsh-only install works too:
+
+```bash
+mkdir -p "$HOME/.dsh/skills"
+ln -s "$repo_root/core" "$HOME/.dsh/skills/product-loop"
+```
+
+Project-scoped installs work the same way under `<repo>/.dsh/skills/product-loop` or `<repo>/.agents/skills/product-loop` (the latter doubles as Codex's repository-scoped path).
+
+Verified against `@deepseek-ai/dsh` 0.1.0-rc.6: the skill appears in the session skill catalog and is both model- and user-invocable. For a deeper harness-level integration — host tools wrapping the core scripts, a runtime-embedded skill, and a dedicated `dsh --profile product-loop` preset — see [integrations/dsh/](integrations/dsh/).
 
 ## Manual entrypoint for another agent
 
@@ -161,3 +175,4 @@ V2.1 is a workflow and distribution release. The public artifact contracts remai
 - [Cursor 2.4: Agent Skills in editor and CLI](https://cursor.com/changelog/2-4)
 - [Cursor Customize surface](https://cursor.com/changelog)
 - [OpenClaw Skills](https://docs.openclaw.ai/skills)
+- [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Harness)
