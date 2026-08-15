@@ -1,5 +1,7 @@
 # product-loop
 
+**Languages: English | [简体中文](README.zh-CN.md)**
+
 `product-loop` is an open, agent-portable skill for orchestrating a small hardware product across concept visuals, industrial design, mechanical modeling, schematic and PCB work, guided user operation, and downstream handoff.
 
 Its central rule is simple: the agent may inspect, recommend, and execute reversible steps inside an approved route, but the user decides whether each track runs and who performs it.
