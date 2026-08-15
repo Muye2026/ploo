@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Loop"
+  short_description: "Hardware planning with optional CAD, EDA, and visuals"
+  default_prompt: "Use $product-loop to plan this hardware product even with no execution backend, then present user-approved visual, mechanical, schematic, PCB, guided, or handoff routes."

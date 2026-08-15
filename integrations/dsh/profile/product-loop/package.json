@@ -1,0 +1,14 @@
+{
+  "name": "dsh-profile-product-loop",
+  "private": true,
+  "description": "DeepSeek Harness profile preset that boots a Product Loop agent (web UI).",
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app",
+        "dsh-product-loop"
+      ]
+    }
+  }
+}

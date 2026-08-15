@@ -1,0 +1,30 @@
+{
+  "name": "dsh-product-loop",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness bundle plugin for the Product Loop hardware product workflow: ploo_* host tools over core/scripts plus a runtime-registered product-loop skill.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "sync-core": "node scripts/sync-core.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "license": "MIT"
+}

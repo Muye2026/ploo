@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-loop.local/schemas/interface-control.v2.schema.json",
+  "title": "Product Loop Interface Control V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "document_type", "artifact_id", "revision", "status", "freeze_decision_id", "provenance",
+    "evidence", "units", "coordinate_system", "product_envelope", "pcb", "mounting_holes",
+    "interface_features", "keepouts", "height_zones", "volumes", "dependencies"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "document_type": {"const": "interface_control"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "status": {"$ref": "#/$defs/artifact_status"},
+    "freeze_decision_id": {"type": ["string", "null"]},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "units": {"const": "mm"},
+    "coordinate_system": {"$ref": "#/$defs/coordinate_system"},
+    "product_envelope": {"$ref": "#/$defs/product_envelope"},
+    "pcb": {"$ref": "#/$defs/pcb_geometry"},
+    "mounting_holes": {"type": "array", "items": {"$ref": "#/$defs/mounting_hole"}},
+    "interface_features": {"type": "array", "items": {"$ref": "#/$defs/interface_feature"}},
+    "keepouts": {"type": "array", "items": {"$ref": "#/$defs/keepout"}},
+    "height_zones": {"type": "array", "items": {"$ref": "#/$defs/height_zone"}},
+    "volumes": {"type": "array", "items": {"$ref": "#/$defs/volume"}},
+    "dependencies": {"type": "array", "items": {"$ref": "#/$defs/dependency"}}
+  },
+  "$defs": {
+    "artifact_status": {
+      "enum": ["planned", "waiting_user_decision", "implemented-unverified", "verified", "stale", "blocked"]
+    },
+    "evidence_type": {
+      "enum": ["api_readback", "source_export", "screenshot", "user_self_report", "unverified"]
+    },
+    "item_status": {"enum": ["confirmed", "assumed", "missing", "conflict"]},
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "producer", "time", "hash"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "producer": {"type": "string", "minLength": 1},
+        "time": {"type": ["string", "null"]},
+        "hash": {"type": ["string", "null"]}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "type", "source", "captured_at", "ref", "note"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "type": {"$ref": "#/$defs/evidence_type"},
+        "source": {"type": "string", "minLength": 1},
+        "captured_at": {"type": ["string", "null"]},
+        "ref": {"type": ["string", "null"]},
+        "note": {"type": "string"}
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "revision", "content_hash"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 1},
+        "content_hash": {"type": ["string", "null"]}
+      }
+    },
+    "vector3": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"type": "number"}
+    },
+    "nullable_vector3": {
+      "type": ["array", "null"], "minItems": 3, "maxItems": 3,
+      "items": {"type": "number"}
+    },
+    "size3": {
+      "type": ["array", "null"], "minItems": 3, "maxItems": 3,
+      "items": {"type": "number"}
+    },
+    "source_refs": {
+      "type": "array", "items": {"type": "string", "minLength": 1}
+    },
+    "pose": {
+      "type": "object", "additionalProperties": false,
+      "required": ["position_mm", "rotation_deg"],
+      "properties": {
+        "position_mm": {"$ref": "#/$defs/vector3"},
+        "rotation_deg": {"$ref": "#/$defs/vector3"}
+      }
+    },
+    "coordinate_system": {
+      "type": "object", "additionalProperties": false,
+      "required": ["origin_mm", "x_axis", "y_axis", "z_axis", "datum_refs"],
+      "properties": {
+        "origin_mm": {"$ref": "#/$defs/vector3"},
+        "x_axis": {"$ref": "#/$defs/vector3"},
+        "y_axis": {"$ref": "#/$defs/vector3"},
+        "z_axis": {"$ref": "#/$defs/vector3"},
+        "datum_refs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "product_envelope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["size_mm", "status", "source_refs"],
+      "properties": {
+        "size_mm": {"$ref": "#/$defs/size3"},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "pcb_geometry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["outline_points_mm", "thickness_mm", "board_origin_mm", "status", "source_refs"],
+      "properties": {
+        "outline_points_mm": {"type": "array", "items": {"$ref": "#/$defs/vector3"}},
+        "thickness_mm": {"type": ["number", "null"]},
+        "board_origin_mm": {"$ref": "#/$defs/nullable_vector3"},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "mounting_hole": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "position_mm", "diameter_mm", "status", "source_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "position_mm": {"$ref": "#/$defs/nullable_vector3"},
+        "diameter_mm": {"type": ["number", "null"]},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "interface_feature": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "id", "type", "name", "pose", "size_mm", "orientation_note", "linked_electrical_ids",
+        "status", "source_refs"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["connector", "button", "indicator", "sensor", "opening", "switch"]},
+        "name": {"type": "string", "minLength": 1},
+        "pose": {"oneOf": [{"$ref": "#/$defs/pose"}, {"type": "null"}]},
+        "size_mm": {"$ref": "#/$defs/size3"},
+        "orientation_note": {"type": "string"},
+        "linked_electrical_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "keepout": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "category", "pose", "size_mm", "rule", "status", "source_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "category": {"enum": ["antenna", "rf", "thermal", "service", "fastener", "cable", "mechanical"]},
+        "pose": {"oneOf": [{"$ref": "#/$defs/pose"}, {"type": "null"}]},
+        "size_mm": {"$ref": "#/$defs/size3"},
+        "rule": {"type": "string", "minLength": 1},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "height_zone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "pose", "size_mm", "side", "max_height_mm", "status", "source_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "pose": {"oneOf": [{"$ref": "#/$defs/pose"}, {"type": "null"}]},
+        "size_mm": {"$ref": "#/$defs/size3"},
+        "side": {"enum": ["top", "bottom", "both"]},
+        "max_height_mm": {"type": ["number", "null"]},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    },
+    "volume": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "type", "pose", "size_mm", "entry_exit_note", "status", "source_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"enum": ["battery", "fpc", "cable", "harness", "other"]},
+        "pose": {"oneOf": [{"$ref": "#/$defs/pose"}, {"type": "null"}]},
+        "size_mm": {"$ref": "#/$defs/size3"},
+        "entry_exit_note": {"type": "string"},
+        "status": {"$ref": "#/$defs/item_status"},
+        "source_refs": {"$ref": "#/$defs/source_refs"}
+      }
+    }
+  }
+}

@@ -25,3 +25,7 @@ jobs:
       - run: ploo --version
       - run: ploo validate design-pack examples/v2-orchestrator-demo/design-pack.v2.json
       - run: ploo run-state validate examples/v2-orchestrator-demo/run-state.v2.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node integrations/dsh/scripts/verify.mjs

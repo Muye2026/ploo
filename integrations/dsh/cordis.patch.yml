@@ -1,0 +1,9 @@
+# DeepSeek Harness bundle patch for the Product Loop plugin.
+# `name` must equal the npm package name so the loader can resolve it.
+# Optional config (kept commented by default):
+#   config:
+#     coreDir: /absolute/path/to/product-loop/core   # live checkout override
+#     pythonPath: python3                            # interpreter for core scripts
+- insert:
+    - id: product-loop
+      name: dsh-product-loop
