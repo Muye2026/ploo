@@ -15,6 +15,7 @@ This guide was verified against the linked official documentation on 2026-07-15.
 | Cursor | Yes in editor and CLI from 2.4 | Add the inner folder from Cursor's Skills/Customize UI at user or workspace scope | `/product-loop` or automatic matching |
 | OpenClaw | Yes | Shared: `~/.agents/skills/product-loop`; managed: `~/.openclaw/skills/product-loop`; workspace: `<workspace>/skills/product-loop` | Skill name or slash-command discovery |
 | DeepSeek Harness | Yes | Shared: `~/.agents/skills/product-loop`; dsh-only: `~/.dsh/skills/product-loop`; project: `<repo>/.dsh/skills/product-loop` | Session skill catalog or automatic matching |
+| WorkBuddy | Yes (variant frontmatter) | Link `~/.workbuddy/connectors/skills/product-loop` to `integrations/workbuddy/` | Automatic matching after restart |
 | Other agent | Host-dependent | Give the agent read access to the inner folder and explicitly load `core/SKILL.md` | Manual prompt entrypoint below |
 
 Native discovery means the host can find and progressively load `SKILL.md`. It does not mean the host has the same MCP servers, UI-control tools, permissions, or provider API signatures.
@@ -88,6 +89,17 @@ ln -s "$repo_root/core" "$HOME/.dsh/skills/product-loop"
 Project-scoped installs work the same way under `<repo>/.dsh/skills/product-loop` or `<repo>/.agents/skills/product-loop` (the latter doubles as Codex's repository-scoped path).
 
 Verified against `@deepseek-ai/dsh` 0.1.0-rc.6: the skill appears in the session skill catalog and is both model- and user-invocable. For a deeper harness-level integration — host tools wrapping the core scripts, a runtime-embedded skill, and a dedicated `dsh --profile product-loop` preset — see [integrations/dsh/](integrations/dsh/).
+
+## WorkBuddy
+
+WorkBuddy discovers skills from `~/.workbuddy/connectors/skills/<name>/SKILL.md` with a variant frontmatter (`description_zh`, `description_en`, `allowed-tools`, `version`). The [integrations/workbuddy/](integrations/workbuddy/) folder is a ready-made entrypoint in that format; it points the agent at `core/SKILL.md` as the authoritative workflow instead of duplicating rules:
+
+```bash
+mkdir -p "$HOME/.workbuddy/connectors/skills"
+ln -s "$repo_root/integrations/workbuddy" "$HOME/.workbuddy/connectors/skills/product-loop"
+```
+
+MCP providers (Fusion 360, EasyEDA) attach through `~/.workbuddy/mcp.json`; without them the planning layer remains fully usable. See [integrations/workbuddy/README.md](integrations/workbuddy/README.md) for install and verification steps.
 
 ## Manual entrypoint for another agent
 
